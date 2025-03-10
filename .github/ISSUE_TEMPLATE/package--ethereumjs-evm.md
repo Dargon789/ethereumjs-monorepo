@@ -2,9 +2,6 @@
 name: 'Package: @ethereumjs/evm'
 about: Create issue for @ethereumjs/evm package
 title: ''
-labels: ''
+labels: 'package: evm'
 assignees: ''
-
 ---
-
-
