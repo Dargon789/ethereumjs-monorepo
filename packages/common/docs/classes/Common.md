@@ -6,7 +6,11 @@
 
 # Class: Common
 
+<<<<<<< HEAD
 Defined in: [common.ts:45](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L45)
+=======
+Defined in: [common.ts:44](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L44)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Common class to access chain and hardfork parameters and to provide
 a unified and shared view on the network and hardfork state.
@@ -17,11 +21,19 @@ can be created via the main constructor).
 
 ## Constructors
 
+<<<<<<< HEAD
 ### Constructor
 
 > **new Common**(`opts`): `Common`
 
 Defined in: [common.ts:62](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L62)
+=======
+### new Common()
+
+> **new Common**(`opts`): `Common`
+
+Defined in: [common.ts:61](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L61)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -39,7 +51,11 @@ Defined in: [common.ts:62](https://github.com/ethereumjs/ethereumjs-monorepo/blo
 
 > `readonly` **customCrypto**: [`CustomCrypto`](../interfaces/CustomCrypto.md)
 
+<<<<<<< HEAD
 Defined in: [common.ts:53](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L53)
+=======
+Defined in: [common.ts:52](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L52)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -47,7 +63,11 @@ Defined in: [common.ts:53](https://github.com/ethereumjs/ethereumjs-monorepo/blo
 
 > `readonly` **DEFAULT\_HARDFORK**: `string`
 
+<<<<<<< HEAD
 Defined in: [common.ts:46](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L46)
+=======
+Defined in: [common.ts:45](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L45)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -55,7 +75,11 @@ Defined in: [common.ts:46](https://github.com/ethereumjs/ethereumjs-monorepo/blo
 
 > **events**: `EventEmitter`\<[`CommonEvent`](../interfaces/CommonEvent.md)\>
 
+<<<<<<< HEAD
 Defined in: [common.ts:60](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L60)
+=======
+Defined in: [common.ts:59](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L59)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Methods
 
@@ -63,7 +87,11 @@ Defined in: [common.ts:60](https://github.com/ethereumjs/ethereumjs-monorepo/blo
 
 > **activeOnBlock**(`blockNumber`): `boolean`
 
+<<<<<<< HEAD
 Defined in: [common.ts:472](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L472)
+=======
+Defined in: [common.ts:469](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L469)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Alias to hardforkIsActiveOnBlock when hardfork is set
 
@@ -85,7 +113,11 @@ True if HF is active on block number
 
 > **bootstrapNodes**(): [`BootstrapNodeConfig`](../interfaces/BootstrapNodeConfig.md)[]
 
+<<<<<<< HEAD
 Defined in: [common.ts:729](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L729)
+=======
+Defined in: [common.ts:725](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L725)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns bootstrap nodes for the current chain
 
@@ -101,7 +133,11 @@ Dict with bootstrap nodes
 
 > **chainId**(): `bigint`
 
+<<<<<<< HEAD
 Defined in: [common.ts:753](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L753)
+=======
+Defined in: [common.ts:749](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L749)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the Id of current chain
 
@@ -117,7 +153,11 @@ chain Id
 
 > **chainName**(): `string`
 
+<<<<<<< HEAD
 Defined in: [common.ts:761](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L761)
+=======
+Defined in: [common.ts:757](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L757)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the name of current chain
 
@@ -133,7 +173,11 @@ chain name (lower case)
 
 > **consensusAlgorithm**(): `string`
 
+<<<<<<< HEAD
 Defined in: [common.ts:802](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L802)
+=======
+Defined in: [common.ts:798](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L798)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the concrete consensus implementation
 algorithm or protocol for the network
@@ -153,7 +197,11 @@ Note: This value can update along a Hardfork.
 
 > **consensusConfig**(): `object`
 
+<<<<<<< HEAD
 Defined in: [common.ts:828](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L828)
+=======
+Defined in: [common.ts:824](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L824)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns a dictionary with consensus configuration
 parameters based on the consensus algorithm
@@ -177,7 +225,11 @@ Note: This value can update along a Hardfork.
 
 > **consensusType**(): `string`
 
+<<<<<<< HEAD
 Defined in: [common.ts:780](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L780)
+=======
+Defined in: [common.ts:776](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L776)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the consensus type of the network
 Possible values: "pow"|"poa"|"pos"
@@ -194,7 +246,11 @@ Note: This value can update along a Hardfork.
 
 > **copy**(): `Common`
 
+<<<<<<< HEAD
 Defined in: [common.ts:849](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L849)
+=======
+Defined in: [common.ts:845](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L845)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns a deep copy of this Common instance.
 
@@ -208,7 +264,11 @@ Returns a deep copy of this Common instance.
 
 > **dnsNetworks**(): `string`[]
 
+<<<<<<< HEAD
 Defined in: [common.ts:737](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L737)
+=======
+Defined in: [common.ts:733](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L733)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns DNS networks for the current chain
 
@@ -224,7 +284,11 @@ Array of DNS ENR urls
 
 > **eipBlock**(`eip`): `null` \| `bigint`
 
+<<<<<<< HEAD
 Defined in: [common.ts:535](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L535)
+=======
+Defined in: [common.ts:532](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L532)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the hardfork change block for eip
 
@@ -248,7 +312,11 @@ Block number or null if unscheduled
 
 > **eips**(): `number`[]
 
+<<<<<<< HEAD
 Defined in: [common.ts:770](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L770)
+=======
+Defined in: [common.ts:766](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L766)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the additionally activated EIPs
 (by using the `eips` constructor option)
@@ -265,7 +333,11 @@ List of EIPs
 
 > **eipTimestamp**(`eip`): `null` \| `bigint`
 
+<<<<<<< HEAD
 Defined in: [common.ts:553](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L553)
+=======
+Defined in: [common.ts:550](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L550)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the scheduled timestamp of the EIP (if scheduled and scheduled by timestamp)
 
@@ -287,9 +359,15 @@ Scheduled timestamp. If this EIP is unscheduled, or the EIP is scheduled by bloc
 
 ### forkHash()
 
+<<<<<<< HEAD
 > **forkHash**(`hardfork?`, `genesisHash?`): `` `0x${string}` ``
 
 Defined in: [common.ts:660](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L660)
+=======
+> **forkHash**(`hardfork`?, `genesisHash`?): `` `0x${string}` ``
+
+Defined in: [common.ts:657](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L657)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns an eth/64 compliant fork hash (EIP-2124)
 
@@ -317,7 +395,11 @@ Genesis block hash of the network, optional if already defined and not needed to
 
 > **genesis**(): [`GenesisBlockConfig`](../interfaces/GenesisBlockConfig.md)
 
+<<<<<<< HEAD
 Defined in: [common.ts:709](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L709)
+=======
+Defined in: [common.ts:705](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L705)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the Genesis parameters of the current chain
 
@@ -333,7 +415,11 @@ Genesis dictionary
 
 > **getHardforkBy**(`opts`): `string`
 
+<<<<<<< HEAD
 Defined in: [common.ts:169](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L169)
+=======
+Defined in: [common.ts:168](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L168)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the hardfork either based on block number (older HFs) or
 timestamp (Shanghai upwards).
@@ -356,7 +442,11 @@ The name of the HF
 
 > **gteHardfork**(`hardfork`): `boolean`
 
+<<<<<<< HEAD
 Defined in: [common.ts:503](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L503)
+=======
+Defined in: [common.ts:500](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L500)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Alias to hardforkGteHardfork when hardfork is set
 
@@ -380,7 +470,11 @@ True if hardfork set is greater than hardfork provided
 
 > **hardfork**(): `string`
 
+<<<<<<< HEAD
 Defined in: [common.ts:745](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L745)
+=======
+Defined in: [common.ts:741](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L741)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the hardfork set
 
@@ -394,9 +488,15 @@ Hardfork name
 
 ### hardforkBlock()
 
+<<<<<<< HEAD
 > **hardforkBlock**(`hardfork?`): `null` \| `bigint`
 
 Defined in: [common.ts:512](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L512)
+=======
+> **hardforkBlock**(`hardfork`?): `null` \| `bigint`
+
+Defined in: [common.ts:509](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L509)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the hardfork change block for hardfork provided or set
 
@@ -420,7 +520,11 @@ Block number or null if unscheduled
 
 > **hardforkForForkHash**(`forkHash`): `null` \| [`HardforkTransitionConfig`](../interfaces/HardforkTransitionConfig.md)
 
+<<<<<<< HEAD
 Defined in: [common.ts:680](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L680)
+=======
+Defined in: [common.ts:676](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L676)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -442,7 +546,11 @@ Array with hardfork data (name, block, forkHash)
 
 > **hardforkGteHardfork**(`hardfork1`, `hardfork2`): `boolean`
 
+<<<<<<< HEAD
 Defined in: [common.ts:483](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L483)
+=======
+Defined in: [common.ts:480](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L480)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Sequence based check if given or set HF1 is greater than or equal HF2
 
@@ -472,7 +580,11 @@ True if HF1 gte HF2
 
 > **hardforkIsActiveOnBlock**(`hardfork`, `blockNumber`): `boolean`
 
+<<<<<<< HEAD
 Defined in: [common.ts:457](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L457)
+=======
+Defined in: [common.ts:454](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L454)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Checks if set or provided hardfork is active on block number
 
@@ -500,7 +612,11 @@ True if HF is active on block number
 
 > **hardforks**(): [`HardforkTransitionConfig`](../interfaces/HardforkTransitionConfig.md)[]
 
+<<<<<<< HEAD
 Defined in: [common.ts:717](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L717)
+=======
+Defined in: [common.ts:713](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L713)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the hardforks for current chain
 
@@ -514,9 +630,15 @@ Array with arrays of hardforks
 
 ### hardforkTimestamp()
 
+<<<<<<< HEAD
 > **hardforkTimestamp**(`hardfork?`): `null` \| `bigint`
 
 Defined in: [common.ts:521](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L521)
+=======
+> **hardforkTimestamp**(`hardfork`?): `null` \| `bigint`
+
+Defined in: [common.ts:518](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L518)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -534,7 +656,11 @@ Defined in: [common.ts:521](https://github.com/ethereumjs/ethereumjs-monorepo/bl
 
 > **isActivatedEIP**(`eip`): `boolean`
 
+<<<<<<< HEAD
 Defined in: [common.ts:444](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L444)
+=======
+Defined in: [common.ts:441](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L441)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Checks if an EIP is activated by either being included in the EIPs
 manually passed in with the [CommonOpts.eips](../interfaces/BaseOpts.md#eips) or in a
@@ -557,9 +683,15 @@ by the [CommonOpts.eips](../interfaces/BaseOpts.md#eips) constructor option
 
 ### nextHardforkBlockOrTimestamp()
 
+<<<<<<< HEAD
 > **nextHardforkBlockOrTimestamp**(`hardfork?`): `null` \| `bigint`
 
 Defined in: [common.ts:571](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L571)
+=======
+> **nextHardforkBlockOrTimestamp**(`hardfork`?): `null` \| `bigint`
+
+Defined in: [common.ts:568](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L568)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the change block for the next hardfork after the hardfork provided or set
 
@@ -583,7 +715,11 @@ Block timestamp, number or null if not available
 
 > **param**(`name`): `bigint`
 
+<<<<<<< HEAD
 Defined in: [common.ts:360](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L360)
+=======
+Defined in: [common.ts:357](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L357)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns a parameter for the current chain setup
 
@@ -609,9 +745,15 @@ The value requested (throws if not found)
 
 ### paramByBlock()
 
+<<<<<<< HEAD
 > **paramByBlock**(`name`, `blockNumber`, `timestamp?`): `bigint`
 
 Defined in: [common.ts:430](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L430)
+=======
+> **paramByBlock**(`name`, `blockNumber`, `timestamp`?): `bigint`
+
+Defined in: [common.ts:427](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L427)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns a parameter for the hardfork active on block number or
 optional provided total difficulty (Merge HF)
@@ -647,7 +789,11 @@ The value requested or `BigInt(0)` if not found
 
 > **paramByEIP**(`name`, `eip`): `undefined` \| `bigint`
 
+<<<<<<< HEAD
 Defined in: [common.ts:410](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L410)
+=======
+Defined in: [common.ts:407](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L407)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns a parameter corresponding to an EIP
 
@@ -677,7 +823,11 @@ The value requested (throws if not found)
 
 > **paramByHardfork**(`name`, `hardfork`): `bigint`
 
+<<<<<<< HEAD
 Defined in: [common.ts:376](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L376)
+=======
+Defined in: [common.ts:373](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L373)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Returns the parameter corresponding to a hardfork
 
@@ -707,7 +857,11 @@ The value requested (throws if not found)
 
 > **resetParams**(`params`): `void`
 
+<<<<<<< HEAD
 Defined in: [common.ts:135](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L135)
+=======
+Defined in: [common.ts:134](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L134)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Fully resets the internal Common EIP params set with the values provided.
 
@@ -737,7 +891,11 @@ Example Format:
 
 > **setEIPs**(`eips`): `void`
 
+<<<<<<< HEAD
 Defined in: [common.ts:275](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L275)
+=======
+Defined in: [common.ts:274](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L274)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Sets the active EIPs
 
@@ -757,7 +915,11 @@ Sets the active EIPs
 
 > **setForkHashes**(`genesisHash`): `void`
 
+<<<<<<< HEAD
 Defined in: [common.ts:692](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L692)
+=======
+Defined in: [common.ts:688](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L688)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Sets any missing forkHashes on the passed-in Common instance
 
@@ -779,7 +941,11 @@ The genesis block hash
 
 > **setHardfork**(`hardfork`): `void`
 
+<<<<<<< HEAD
 Defined in: [common.ts:144](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L144)
+=======
+Defined in: [common.ts:143](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L143)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Sets the hardfork to get params for
 
@@ -789,7 +955,11 @@ Sets the hardfork to get params for
 
 `string`
 
+<<<<<<< HEAD
 String identifier (e.g. 'byzantium') or [Hardfork](../variables/Hardfork.md) enum
+=======
+String identifier (e.g. 'byzantium') or [Hardfork](../enumerations/Hardfork.md) enum
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -801,7 +971,11 @@ String identifier (e.g. 'byzantium') or [Hardfork](../variables/Hardfork.md) enu
 
 > **setHardforkBy**(`opts`): `string`
 
+<<<<<<< HEAD
 Defined in: [common.ts:252](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L252)
+=======
+Defined in: [common.ts:251](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L251)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Sets a new hardfork either based on block number (older HFs) or
 timestamp (Shanghai upwards).
@@ -824,7 +998,11 @@ The name of the HF set
 
 > **updateParams**(`params`): `void`
 
+<<<<<<< HEAD
 Defined in: [common.ts:108](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L108)
+=======
+Defined in: [common.ts:107](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/common.ts#L107)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Update the internal Common EIP params set. Existing values
 will get preserved unless there is a new value for a parameter

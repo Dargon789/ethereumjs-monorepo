@@ -6,7 +6,11 @@
 
 # Class: CasperConsensus
 
+<<<<<<< HEAD
 Defined in: [consensus/casper.ts:10](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L10)
+=======
+Defined in: [consensus/casper.ts:10](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L10)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 This class encapsulates Casper-related consensus functionality when used with the Blockchain class.
 
@@ -16,11 +20,19 @@ This class encapsulates Casper-related consensus functionality when used with th
 
 ## Constructors
 
+<<<<<<< HEAD
 ### Constructor
 
 > **new CasperConsensus**(): `CasperConsensus`
 
 Defined in: [consensus/casper.ts:13](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L13)
+=======
+### new CasperConsensus()
+
+> **new CasperConsensus**(): `CasperConsensus`
+
+Defined in: [consensus/casper.ts:13](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L13)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -32,7 +44,11 @@ Defined in: [consensus/casper.ts:13](https://github.com/ethereumjs/ethereumjs-mo
 
 > **algorithm**: `ConsensusAlgorithm`
 
+<<<<<<< HEAD
 Defined in: [consensus/casper.ts:11](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L11)
+=======
+Defined in: [consensus/casper.ts:11](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L11)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Implementation of
 
@@ -44,7 +60,11 @@ Defined in: [consensus/casper.ts:11](https://github.com/ethereumjs/ethereumjs-mo
 
 > **genesisInit**(): `Promise`\<`void`\>
 
+<<<<<<< HEAD
 Defined in: [consensus/casper.ts:17](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L17)
+=======
+Defined in: [consensus/casper.ts:17](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L17)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Initialize genesis for consensus mechanism
 
@@ -62,7 +82,11 @@ Initialize genesis for consensus mechanism
 
 > **newBlock**(): `Promise`\<`void`\>
 
+<<<<<<< HEAD
 Defined in: [consensus/casper.ts:32](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L32)
+=======
+Defined in: [consensus/casper.ts:32](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L32)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Update consensus on new block
 
@@ -80,7 +104,11 @@ Update consensus on new block
 
 > **setup**(): `Promise`\<`void`\>
 
+<<<<<<< HEAD
 Defined in: [consensus/casper.ts:19](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L19)
+=======
+Defined in: [consensus/casper.ts:19](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L19)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Set up consensus mechanism
 
@@ -98,7 +126,11 @@ Set up consensus mechanism
 
 > **validateConsensus**(): `Promise`\<`void`\>
 
+<<<<<<< HEAD
 Defined in: [consensus/casper.ts:21](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L21)
+=======
+Defined in: [consensus/casper.ts:21](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L21)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Validate block consensus parameters
 
@@ -116,7 +148,11 @@ Validate block consensus parameters
 
 > **validateDifficulty**(`header`): `Promise`\<`void`\>
 
+<<<<<<< HEAD
 Defined in: [consensus/casper.ts:23](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L23)
+=======
+Defined in: [consensus/casper.ts:23](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/casper.ts#L23)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 

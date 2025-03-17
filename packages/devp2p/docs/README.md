@@ -4,6 +4,19 @@
 
 # @ethereumjs/devp2p
 
+<<<<<<< HEAD
+=======
+## Namespaces
+
+- [ETH](@ethereumjs/namespaces/ETH/README.md)
+- [SNAP](@ethereumjs/namespaces/SNAP/README.md)
+
+## Enumerations
+
+- [DISCONNECT\_REASON](enumerations/DISCONNECT_REASON.md)
+- [ProtocolType](enumerations/ProtocolType.md)
+
+>>>>>>> b7777441e (ethereumjs-monoepo)
 ## Classes
 
 - [BanList](classes/BanList.md)
@@ -27,7 +40,10 @@
 - [DPTEvent](interfaces/DPTEvent.md)
 - [DPTOptions](interfaces/DPTOptions.md)
 - [DPTServerOptions](interfaces/DPTServerOptions.md)
+<<<<<<< HEAD
 - [EthStatusMsg](interfaces/EthStatusMsg.md)
+=======
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [KBucketEvent](interfaces/KBucketEvent.md)
 - [KBucketOptions](interfaces/KBucketOptions.md)
 - [PeerEvent](interfaces/PeerEvent.md)
@@ -40,6 +56,7 @@
 
 ## Type Aliases
 
+<<<<<<< HEAD
 - [DISCONNECT\_REASON](type-aliases/DISCONNECT_REASON.md)
 - [DNSOptions](type-aliases/DNSOptions.md)
 - [EthMessageCodes](type-aliases/EthMessageCodes.md)
@@ -48,10 +65,15 @@
 - [ProtocolType](type-aliases/ProtocolType.md)
 - [SendMethod](type-aliases/SendMethod.md)
 - [SnapMessageCodes](type-aliases/SnapMessageCodes.md)
+=======
+- [DNSOptions](type-aliases/DNSOptions.md)
+- [SendMethod](type-aliases/SendMethod.md)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Variables
 
 - [devp2pDebug](variables/devp2pDebug.md)
+<<<<<<< HEAD
 - [DISCONNECT\_REASON](variables/DISCONNECT_REASON.md)
 - [DisconnectReasonNames](variables/DisconnectReasonNames.md)
 - [EthMessageCodeNames](variables/EthMessageCodeNames.md)
@@ -61,6 +83,8 @@
 - [ProtocolType](variables/ProtocolType.md)
 - [SnapMessageCodeNames](variables/SnapMessageCodeNames.md)
 - [SnapMessageCodes](variables/SnapMessageCodes.md)
+=======
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Functions
 

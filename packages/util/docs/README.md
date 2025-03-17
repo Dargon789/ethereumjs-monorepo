@@ -4,12 +4,26 @@
 
 # @ethereumjs/util
 
+<<<<<<< HEAD
+=======
+## Enumerations
+
+- [CLRequestType](enumerations/CLRequestType.md)
+- [KeyEncoding](enumerations/KeyEncoding.md)
+- [TypeOutput](enumerations/TypeOutput.md)
+- [ValueEncoding](enumerations/ValueEncoding.md)
+- [VerkleLeafType](enumerations/VerkleLeafType.md)
+
+>>>>>>> b7777441e (ethereumjs-monoepo)
 ## Classes
 
 - [Account](classes/Account.md)
 - [Address](classes/Address.md)
 - [CLRequest](classes/CLRequest.md)
+<<<<<<< HEAD
 - [EthereumJSError](classes/EthereumJSError.md)
+=======
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [Lock](classes/Lock.md)
 - [MapDB](classes/MapDB.md)
 - [PrioritizedTaskExecutor](classes/PrioritizedTaskExecutor.md)
@@ -24,6 +38,10 @@
 - [DB](interfaces/DB.md)
 - [DelBatch](interfaces/DelBatch.md)
 - [EthersProvider](interfaces/EthersProvider.md)
+<<<<<<< HEAD
+=======
+- [GenesisState](interfaces/GenesisState.md)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [JSONRPCWithdrawal](interfaces/JSONRPCWithdrawal.md)
 - [KZG](interfaces/KZG.md)
 - [PartialAccountData](interfaces/PartialAccountData.md)
@@ -40,6 +58,7 @@
 ## Type Aliases
 
 - [AccountBodyBytes](type-aliases/AccountBodyBytes.md)
+<<<<<<< HEAD
 - [AddressLike](type-aliases/AddressLike.md)
 - [BatchDBOp](type-aliases/BatchDBOp.md)
 - [BigIntLike](type-aliases/BigIntLike.md)
@@ -53,16 +72,32 @@
 - [EthereumJSErrorMetaData](type-aliases/EthereumJSErrorMetaData.md)
 - [EthereumJSErrorObject](type-aliases/EthereumJSErrorObject.md)
 - [KeyEncoding](type-aliases/KeyEncoding.md)
+=======
+- [AccountState](type-aliases/AccountState.md)
+- [AddressLike](type-aliases/AddressLike.md)
+- [BatchDBOp](type-aliases/BatchDBOp.md)
+- [BigIntLike](type-aliases/BigIntLike.md)
+- [BytesLike](type-aliases/BytesLike.md)
+- [DBObject](type-aliases/DBObject.md)
+- [EncodingOpts](type-aliases/EncodingOpts.md)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [NestedUint8Array](type-aliases/NestedUint8Array.md)
 - [NumericString](type-aliases/NumericString.md)
 - [PrefixedHexString](type-aliases/PrefixedHexString.md)
 - [RequestBytes](type-aliases/RequestBytes.md)
+<<<<<<< HEAD
 - [ToBytesInputTypes](type-aliases/ToBytesInputTypes.md)
 - [TypeOutput](type-aliases/TypeOutput.md)
 - [TypeOutputReturnType](type-aliases/TypeOutputReturnType.md)
 - [ValueEncoding](type-aliases/ValueEncoding.md)
 - [VerkleLeafBasicData](type-aliases/VerkleLeafBasicData.md)
 - [VerkleLeafType](type-aliases/VerkleLeafType.md)
+=======
+- [StoragePair](type-aliases/StoragePair.md)
+- [ToBytesInputTypes](type-aliases/ToBytesInputTypes.md)
+- [TypeOutputReturnType](type-aliases/TypeOutputReturnType.md)
+- [VerkleLeafBasicData](type-aliases/VerkleLeafBasicData.md)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [WithdrawalBytes](type-aliases/WithdrawalBytes.md)
 - [WithdrawalData](type-aliases/WithdrawalData.md)
 
@@ -91,6 +126,7 @@
 - [BIGINT\_8](variables/BIGINT_8.md)
 - [BIGINT\_96](variables/BIGINT_96.md)
 - [BIGINT\_NEG1](variables/BIGINT_NEG1.md)
+<<<<<<< HEAD
 - [BINARY\_TREE\_BALANCE\_BYTES\_LENGTH](variables/BINARY_TREE_BALANCE_BYTES_LENGTH.md)
 - [BINARY\_TREE\_BALANCE\_OFFSET](variables/BINARY_TREE_BALANCE_OFFSET.md)
 - [BINARY\_TREE\_BASIC\_DATA\_LEAF\_KEY](variables/BINARY_TREE_BASIC_DATA_LEAF_KEY.md)
@@ -110,6 +146,9 @@
 - [~~bytesToUnprefixedHex~~](variables/bytesToUnprefixedHex.md)
 - [CLRequestType](variables/CLRequestType.md)
 - [DEFAULT\_ERROR\_CODE](variables/DEFAULT_ERROR_CODE.md)
+=======
+- [~~bytesToUnprefixedHex~~](variables/bytesToUnprefixedHex.md)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [ETHER\_TO\_WEI](variables/ETHER_TO_WEI.md)
 - [GWEI\_TO\_WEI](variables/GWEI_TO_WEI.md)
 - [KECCAK256\_NULL](variables/KECCAK256_NULL.md)
@@ -118,7 +157,10 @@
 - [KECCAK256\_RLP\_ARRAY](variables/KECCAK256_RLP_ARRAY.md)
 - [KECCAK256\_RLP\_ARRAY\_S](variables/KECCAK256_RLP_ARRAY_S.md)
 - [KECCAK256\_RLP\_S](variables/KECCAK256_RLP_S.md)
+<<<<<<< HEAD
 - [KeyEncoding](variables/KeyEncoding.md)
+=======
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [MAX\_INTEGER](variables/MAX_INTEGER.md)
 - [MAX\_INTEGER\_BIGINT](variables/MAX_INTEGER_BIGINT.md)
 - [MAX\_UINT64](variables/MAX_UINT64.md)
@@ -130,8 +172,11 @@
 - [SECP256K1\_ORDER\_DIV\_2](variables/SECP256K1_ORDER_DIV_2.md)
 - [SHA256\_NULL](variables/SHA256_NULL.md)
 - [TWO\_POW256](variables/TWO_POW256.md)
+<<<<<<< HEAD
 - [TypeOutput](variables/TypeOutput.md)
 - [ValueEncoding](variables/ValueEncoding.md)
+=======
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [VERKLE\_BALANCE\_BYTES\_LENGTH](variables/VERKLE_BALANCE_BYTES_LENGTH.md)
 - [VERKLE\_BALANCE\_OFFSET](variables/VERKLE_BALANCE_OFFSET.md)
 - [VERKLE\_BASIC\_DATA\_LEAF\_KEY](variables/VERKLE_BASIC_DATA_LEAF_KEY.md)
@@ -147,7 +192,10 @@
 - [VERKLE\_NONCE\_OFFSET](variables/VERKLE_NONCE_OFFSET.md)
 - [VERKLE\_VERSION\_BYTES\_LENGTH](variables/VERKLE_VERSION_BYTES_LENGTH.md)
 - [VERKLE\_VERSION\_OFFSET](variables/VERKLE_VERSION_OFFSET.md)
+<<<<<<< HEAD
 - [VerkleLeafType](variables/VerkleLeafType.md)
+=======
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Functions
 
@@ -174,7 +222,10 @@
 - [bytesToInt32](functions/bytesToInt32.md)
 - [bytesToUtf8](functions/bytesToUtf8.md)
 - [calculateSigRecovery](functions/calculateSigRecovery.md)
+<<<<<<< HEAD
 - [chunkifyBinaryTreeCode](functions/chunkifyBinaryTreeCode.md)
+=======
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [chunkifyCode](functions/chunkifyCode.md)
 - [commitmentsToVersionedHashes](functions/commitmentsToVersionedHashes.md)
 - [compareBytes](functions/compareBytes.md)
@@ -195,6 +246,7 @@
 - [createWithdrawal](functions/createWithdrawal.md)
 - [createWithdrawalFromBytesArray](functions/createWithdrawalFromBytesArray.md)
 - [createZeroAddress](functions/createZeroAddress.md)
+<<<<<<< HEAD
 - [decodeBinaryTreeLeafBasicData](functions/decodeBinaryTreeLeafBasicData.md)
 - [decodeVerkleLeafBasicData](functions/decodeVerkleLeafBasicData.md)
 - [ecrecover](functions/ecrecover.md)
@@ -203,6 +255,14 @@
 - [equalsBits](functions/equalsBits.md)
 - [equalsBytes](functions/equalsBytes.md)
 - [~~EthereumJSErrorWithoutCode~~](functions/EthereumJSErrorWithoutCode.md)
+=======
+- [decodeVerkleLeafBasicData](functions/decodeVerkleLeafBasicData.md)
+- [ecrecover](functions/ecrecover.md)
+- [ecsign](functions/ecsign.md)
+- [encodeVerkleLeafBasicData](functions/encodeVerkleLeafBasicData.md)
+- [equalsBits](functions/equalsBits.md)
+- [equalsBytes](functions/equalsBytes.md)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [fetchFromProvider](functions/fetchFromProvider.md)
 - [formatBigDecimal](functions/formatBigDecimal.md)
 - [fromAscii](functions/fromAscii.md)
@@ -211,6 +271,7 @@
 - [fromUtf8](functions/fromUtf8.md)
 - [generateAddress](functions/generateAddress.md)
 - [generateAddress2](functions/generateAddress2.md)
+<<<<<<< HEAD
 - [generateBinaryTreeChunkSuffixes](functions/generateBinaryTreeChunkSuffixes.md)
 - [generateBinaryTreeCodeStems](functions/generateBinaryTreeCodeStems.md)
 - [generateChunkSuffixes](functions/generateChunkSuffixes.md)
@@ -222,6 +283,11 @@
 - [getBinaryTreeKeyForCodeChunk](functions/getBinaryTreeKeyForCodeChunk.md)
 - [getBinaryTreeKeyForStorageSlot](functions/getBinaryTreeKeyForStorageSlot.md)
 - [getBinaryTreeStem](functions/getBinaryTreeStem.md)
+=======
+- [generateChunkSuffixes](functions/generateChunkSuffixes.md)
+- [generateCodeStems](functions/generateCodeStems.md)
+- [getBinarySize](functions/getBinarySize.md)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [getBlobs](functions/getBlobs.md)
 - [getKeys](functions/getKeys.md)
 - [getProvider](functions/getProvider.md)
@@ -250,6 +316,10 @@
 - [matchingBitsLength](functions/matchingBitsLength.md)
 - [matchingBytesLength](functions/matchingBytesLength.md)
 - [padToEven](functions/padToEven.md)
+<<<<<<< HEAD
+=======
+- [parseGethGenesisState](functions/parseGethGenesisState.md)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 - [privateToAddress](functions/privateToAddress.md)
 - [privateToPublic](functions/privateToPublic.md)
 - [pubToAddress](functions/pubToAddress.md)

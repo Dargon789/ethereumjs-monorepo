@@ -6,7 +6,11 @@
 
 # Class: `abstract` BaseVerkleNode\<T\>
 
+<<<<<<< HEAD
 Defined in: [node/baseVerkleNode.ts:7](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L7)
+=======
+Defined in: [node/baseVerkleNode.ts:7](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L7)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Extended by
 
@@ -17,7 +21,11 @@ Defined in: [node/baseVerkleNode.ts:7](https://github.com/ethereumjs/ethereumjs-
 
 ### T
 
+<<<<<<< HEAD
 `T` *extends* [`VerkleNodeType`](../type-aliases/VerkleNodeType.md)
+=======
+`T` *extends* [`VerkleNodeType`](../enumerations/VerkleNodeType.md)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Implements
 
@@ -25,11 +33,19 @@ Defined in: [node/baseVerkleNode.ts:7](https://github.com/ethereumjs/ethereumjs-
 
 ## Constructors
 
+<<<<<<< HEAD
 ### Constructor
 
 > **new BaseVerkleNode**\<`T`\>(`options`): `BaseVerkleNode`\<`T`\>
 
 Defined in: [node/baseVerkleNode.ts:10](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L10)
+=======
+### new BaseVerkleNode()
+
+> **new BaseVerkleNode**\<`T`\>(`options`): `BaseVerkleNode`\<`T`\>
+
+Defined in: [node/baseVerkleNode.ts:10](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L10)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -47,7 +63,11 @@ Defined in: [node/baseVerkleNode.ts:10](https://github.com/ethereumjs/ethereumjs
 
 > **commitment**: `Uint8Array`
 
+<<<<<<< HEAD
 Defined in: [node/baseVerkleNode.ts:8](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L8)
+=======
+Defined in: [node/baseVerkleNode.ts:8](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L8)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Methods
 
@@ -55,7 +75,11 @@ Defined in: [node/baseVerkleNode.ts:8](https://github.com/ethereumjs/ethereumjs-
 
 > **hash**(): `Uint8Array`
 
+<<<<<<< HEAD
 Defined in: [node/baseVerkleNode.ts:16](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L16)
+=======
+Defined in: [node/baseVerkleNode.ts:16](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L16)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -71,7 +95,11 @@ Defined in: [node/baseVerkleNode.ts:16](https://github.com/ethereumjs/ethereumjs
 
 > `abstract` **raw**(): `Uint8Array`\<`ArrayBufferLike`\>[]
 
+<<<<<<< HEAD
 Defined in: [node/baseVerkleNode.ts:21](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L21)
+=======
+Defined in: [node/baseVerkleNode.ts:21](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L21)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -83,7 +111,11 @@ Defined in: [node/baseVerkleNode.ts:21](https://github.com/ethereumjs/ethereumjs
 
 > **serialize**(): `Uint8Array`
 
+<<<<<<< HEAD
 Defined in: [node/baseVerkleNode.ts:26](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L26)
+=======
+Defined in: [node/baseVerkleNode.ts:26](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/verkle/src/node/baseVerkleNode.ts#L26)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 

@@ -6,7 +6,11 @@
 
 # Interface: Consensus
 
+<<<<<<< HEAD
 Defined in: [types.ts:217](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L217)
+=======
+Defined in: [types.ts:217](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L217)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Interface that a consensus class needs to implement.
 
@@ -16,7 +20,11 @@ Interface that a consensus class needs to implement.
 
 > **algorithm**: `string`
 
+<<<<<<< HEAD
 Defined in: [types.ts:218](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L218)
+=======
+Defined in: [types.ts:218](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L218)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Methods
 
@@ -24,7 +32,11 @@ Defined in: [types.ts:218](https://github.com/ethereumjs/ethereumjs-monorepo/blo
 
 > **genesisInit**(`genesisBlock`): `Promise`\<`void`\>
 
+<<<<<<< HEAD
 Defined in: [types.ts:223](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L223)
+=======
+Defined in: [types.ts:223](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L223)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Initialize genesis for consensus mechanism
 
@@ -44,9 +56,15 @@ genesis block
 
 ### newBlock()
 
+<<<<<<< HEAD
 > **newBlock**(`block`, `commonAncestor?`, `ancientHeaders?`): `Promise`\<`void`\>
 
 Defined in: [types.ts:244](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L244)
+=======
+> **newBlock**(`block`, `commonAncestor`?, `ancientHeaders`?): `Promise`\<`void`\>
+
+Defined in: [types.ts:244](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L244)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Update consensus on new block
 
@@ -80,7 +98,11 @@ array of ancestor block headers (optional)
 
 > **setup**(`__namedParameters`): `Promise`\<`void`\>
 
+<<<<<<< HEAD
 Defined in: [types.ts:228](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L228)
+=======
+Defined in: [types.ts:228](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L228)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Set up consensus mechanism
 
@@ -100,7 +122,11 @@ Set up consensus mechanism
 
 > **validateConsensus**(`block`): `Promise`\<`void`\>
 
+<<<<<<< HEAD
 Defined in: [types.ts:234](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L234)
+=======
+Defined in: [types.ts:234](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L234)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 Validate block consensus parameters
 
@@ -122,7 +148,11 @@ block to be validated
 
 > **validateDifficulty**(`header`): `Promise`\<`void`\>
 
+<<<<<<< HEAD
 Defined in: [types.ts:236](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L236)
+=======
+Defined in: [types.ts:236](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/types.ts#L236)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 

@@ -7,6 +7,9 @@
     "biome:fix": "npx @biomejs/biome check --write",
     "checkNpmVersion": "./scripts/check-npm-version.sh",
     "clean": "./config/cli/clean-root.sh",
+    "cspell": "npm run cspell:ts && npm run cspell:md",
+    "cspell:md": "npx cspell --gitignore -e \"./packages/ethereum-tests\" -e \"./packages/client/withdrawals-testnet/**\" -e \"./packages/**/docs\" -c ./config/cspell-md.json \"**.md\" --cache --show-suggestions --show-context",
+    "cspell:ts": "npx cspell --gitignore -e \"./packages/ethereum-tests\" -e \"./packages/wallet/test\" -e \"./packages/client/archive\" -c ./config/cspell-ts.json \"./packages/**/*.ts\" --cache --show-suggestions --show-context",
     "docs:build": "npm run docs:build --workspaces --if-present",
     "e2e:inject": "node ./scripts/e2e-inject-resolutions.js",
     "e2e:publish": "./scripts/e2e-publish.sh",
@@ -21,6 +24,12 @@
     "test:browser": "npm run test:browser --workspaces --if-present",
     "preinstall": "npm run checkNpmVersion",
     "postinstall": "npm run build --workspaces --if-present",
+    "preinstall": "npm run checkNpmVersion",
+    "postinstall": "npm run build --workspaces",
+    "install-browser-deps": "npm install webdriverio@9.8.0 @vitest/browser@3.0.5",
+    "lint": "npm run biome && eslint --format codeframe --config ./config/eslint.cjs . --ext .js,.ts",
+    "lint:diff": "./config/cli/lint-diff.sh",
+    "lint:fix": "npm run biome:fix && eslint --fix --config ./config/eslint.cjs . --ext .js,.ts",
     "prepare": "git config --local core.hooksPath .githooks",
     "sc": "npm run spellcheck",
     "sort-package-json": "sort-package-json \"package.json\" \"packages/*/package.json\"",
@@ -28,6 +37,12 @@
     "spellcheck:ts": "npx cspell --gitignore -e \"./packages/ethereum-tests\" -e \"./packages/wallet/test\" -e \"./packages/client/archive\" -c ./config/cspell-ts.json \"./packages/**/*.ts\" --cache --show-suggestions --show-context",
     "spellcheck:md": "npx cspell --gitignore -e \"./packages/ethereum-tests\" -e \"./packages/client/withdrawals-testnet/**\" -e \"./packages/**/docs\" -c ./config/cspell-md.json \"**.md\" --cache --show-suggestions --show-context",
     "install-browser-deps": "npm install playwright@1.15.1 @vitest/browser@3.0.8"
+    "test": "npm run test --workspaces --if-present",
+    "test:browser": "npm run test:browser --workspaces --if-present",
+    "test:node": "npm run test:node --workspaces --if-present"
+  },
+  "resolutions": {
+    "puppeteer-core": "^23.6.1"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -57,6 +72,52 @@
     "vite-plugin-top-level-await": "^1.5.0",
     "vite-plugin-wasm": "^3.4.1",
     "vitest": "3.1.2"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "*"
+  },
+    "@types/node": "22.13.10",
+    "@types/tape": "5.8.1",
+    "@typescript-eslint/eslint-plugin": "8.26.1",
+    "@typescript-eslint/parser": "8.26.1",
+    "@vitest/coverage-v8": "3.0.8",
+    "@vitest/ui": "3.0.8",
+    "cspell": "8.17.5",
+    "embedme": "1.22.1",
+    "eslint": "^9.22.0",
+    "eslint-config-typestrict": "^1.0.5",
+    "eslint-formatter-codeframe": "7.32.1",
+    "eslint-plugin-ethereumjs": "file:./eslint",
+    "eslint-plugin-github": "5.1.8",
+    "eslint-plugin-implicit-dependencies": "1.1.1",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-simple-import-sort": "12.1.1",
+    "eslint-plugin-sonarjs": "3.0.2",
+    "lint-staged": "15.5.0",
+    "lockfile-lint-api": "^5.5.1",
+    "sort-package-json": "3.0.0",
+    "tape": "5.9.0",
+    "tsx": "^4.19.3",
+    "typedoc": "0.28.0",
+    "typedoc-plugin-markdown": "4.5.0",
+    "typescript": "5.8.2",
+    "vite-plugin-top-level-await": "1.4.4",
+    "vitest": "3.0.8"
+  },
+  "peerDependencies": {
+    "@vitest/browser": "^3.0.8",
+    "webdriverio": "^9.8.0"
+  },
+  "peerDependenciesMeta": {
+    "@vitest/browser": {
+      "optional": true
+    },
+    "playwright": {
+      "optional": true
+    },
+    "webdriverio": {
+      "optional": true
+    }
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "*"

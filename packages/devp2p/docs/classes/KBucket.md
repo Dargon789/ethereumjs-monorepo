@@ -6,6 +6,7 @@
 
 # Class: KBucket
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/kbucket.ts:11](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L11)
 
 ## Constructors
@@ -15,6 +16,17 @@ Defined in: [packages/devp2p/src/dpt/kbucket.ts:11](https://github.com/ethereumj
 > **new KBucket**(`localNodeId`): `KBucket`
 
 Defined in: [packages/devp2p/src/dpt/kbucket.ts:15](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L15)
+=======
+Defined in: [packages/devp2p/src/dpt/kbucket.ts:11](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L11)
+
+## Constructors
+
+### new KBucket()
+
+> **new KBucket**(`localNodeId`): `KBucket`
+
+Defined in: [packages/devp2p/src/dpt/kbucket.ts:15](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L15)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -32,7 +44,11 @@ Defined in: [packages/devp2p/src/dpt/kbucket.ts:15](https://github.com/ethereumj
 
 > **events**: `EventEmitter`
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/kbucket.ts:12](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L12)
+=======
+Defined in: [packages/devp2p/src/dpt/kbucket.ts:12](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L12)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Methods
 
@@ -40,7 +56,11 @@ Defined in: [packages/devp2p/src/dpt/kbucket.ts:12](https://github.com/ethereumj
 
 > **add**(`peer`): `void` \| `KBucket`
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/kbucket.ts:53](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L53)
+=======
+Defined in: [packages/devp2p/src/dpt/kbucket.ts:53](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L53)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -58,7 +78,11 @@ Defined in: [packages/devp2p/src/dpt/kbucket.ts:53](https://github.com/ethereumj
 
 > **closest**(`id`): [`PeerInfo`](../interfaces/PeerInfo.md)[]
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/kbucket.ts:71](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L71)
+=======
+Defined in: [packages/devp2p/src/dpt/kbucket.ts:71](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L71)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -76,7 +100,11 @@ Defined in: [packages/devp2p/src/dpt/kbucket.ts:71](https://github.com/ethereumj
 
 > **get**(`obj`): `null` \| [`PeerInfo`](../interfaces/PeerInfo.md)
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/kbucket.ts:58](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L58)
+=======
+Defined in: [packages/devp2p/src/dpt/kbucket.ts:58](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L58)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -94,7 +122,11 @@ Defined in: [packages/devp2p/src/dpt/kbucket.ts:58](https://github.com/ethereumj
 
 > **getAll**(): [`PeerInfo`](../interfaces/PeerInfo.md)[]
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/kbucket.ts:67](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L67)
+=======
+Defined in: [packages/devp2p/src/dpt/kbucket.ts:67](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L67)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -106,7 +138,11 @@ Defined in: [packages/devp2p/src/dpt/kbucket.ts:67](https://github.com/ethereumj
 
 > **remove**(`obj`): `void`
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/kbucket.ts:75](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L75)
+=======
+Defined in: [packages/devp2p/src/dpt/kbucket.ts:75](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L75)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -124,7 +160,11 @@ Defined in: [packages/devp2p/src/dpt/kbucket.ts:75](https://github.com/ethereumj
 
 > `static` **getKeys**(`obj`): `string`[]
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/kbucket.ts:42](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L42)
+=======
+Defined in: [packages/devp2p/src/dpt/kbucket.ts:42](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/kbucket.ts#L42)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 

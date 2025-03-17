@@ -6,6 +6,7 @@
 
 # Class: Server
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/server.ts:22](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L22)
 
 ## Constructors
@@ -15,6 +16,17 @@ Defined in: [packages/devp2p/src/dpt/server.ts:22](https://github.com/ethereumjs
 > **new Server**(`dpt`, `privateKey`, `options`): `Server`
 
 Defined in: [packages/devp2p/src/dpt/server.ts:37](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L37)
+=======
+Defined in: [packages/devp2p/src/dpt/server.ts:22](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L22)
+
+## Constructors
+
+### new Server()
+
+> **new Server**(`dpt`, `privateKey`, `options`): `Server`
+
+Defined in: [packages/devp2p/src/dpt/server.ts:37](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L37)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -40,7 +52,11 @@ Defined in: [packages/devp2p/src/dpt/server.ts:37](https://github.com/ethereumjs
 
 > **events**: `EventEmitter`\<[`ServerEvent`](../interfaces/ServerEvent.md)\>
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/server.ts:23](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L23)
+=======
+Defined in: [packages/devp2p/src/dpt/server.ts:23](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L23)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Methods
 
@@ -48,7 +64,11 @@ Defined in: [packages/devp2p/src/dpt/server.ts:23](https://github.com/ethereumjs
 
 > **\_handler**(`msg`, `rinfo`): `void`
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/server.ts:156](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L156)
+=======
+Defined in: [packages/devp2p/src/dpt/server.ts:154](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L154)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -70,7 +90,11 @@ Defined in: [packages/devp2p/src/dpt/server.ts:156](https://github.com/ethereumj
 
 > **\_isAliveCheck**(): `void`
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/server.ts:135](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L135)
+=======
+Defined in: [packages/devp2p/src/dpt/server.ts:133](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L133)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -82,7 +106,11 @@ Defined in: [packages/devp2p/src/dpt/server.ts:135](https://github.com/ethereumj
 
 > **\_send**(`peer`, `typename`, `data`): `Uint8Array`\<`ArrayBufferLike`\>
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/server.ts:139](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L139)
+=======
+Defined in: [packages/devp2p/src/dpt/server.ts:137](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L137)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -108,7 +136,11 @@ Defined in: [packages/devp2p/src/dpt/server.ts:139](https://github.com/ethereumj
 
 > **bind**(...`args`): `void`
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/server.ts:69](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L69)
+=======
+Defined in: [packages/devp2p/src/dpt/server.ts:69](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L69)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -126,7 +158,11 @@ Defined in: [packages/devp2p/src/dpt/server.ts:69](https://github.com/ethereumjs
 
 > **destroy**(...`args`): `void`
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/server.ts:78](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L78)
+=======
+Defined in: [packages/devp2p/src/dpt/server.ts:78](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L78)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -144,7 +180,11 @@ Defined in: [packages/devp2p/src/dpt/server.ts:78](https://github.com/ethereumjs
 
 > **findneighbours**(`peer`, `id`): `void`
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/server.ts:130](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L130)
+=======
+Defined in: [packages/devp2p/src/dpt/server.ts:128](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L128)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -166,7 +206,11 @@ Defined in: [packages/devp2p/src/dpt/server.ts:130](https://github.com/ethereumj
 
 > **ping**(`peer`): `Promise`\<`any`\>
 
+<<<<<<< HEAD
 Defined in: [packages/devp2p/src/dpt/server.ts:90](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L90)
+=======
+Defined in: [packages/devp2p/src/dpt/server.ts:90](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/dpt/server.ts#L90)
+>>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
