@@ -348,7 +348,7 @@ jobs:
           # GitHub API token to make a commit comment
           github-token: ${{ secrets.GITHUB_TOKEN }}
           # Push and deploy to GitHub pages branch automatically (if on master)
-          auto-push: 'false'
+          auto-push: 'true'
 
       # Re-apply git stash to prepare for saving back to cache.
       # Avoids exit code 1 by checking if there are changes to be stashed first
