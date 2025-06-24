@@ -78,7 +78,7 @@ describe(method, () => {
     account!.balance = 0xfffffffffffffffn
     await service.execution.vm.stateManager.putAccount(address, account!)
     res = await rpc.request('engine_forkchoiceUpdatedV3', validPayload)
-    const payloadId = res.result.payloadId
+    const {payloadId} = res.result
     assert.exists(payloadId, 'valid payloadId should be received')
 
     const txBlobs = getBlobs('hello world')
