@@ -856,7 +856,7 @@ export class TxPool {
       const oldFormatBlobTxs = []
       for (const [_address, poolObjects] of this.pool) {
         for (const txObj of poolObjects) {
-          const tx = txObj.tx
+          const {tx} = txObj
           if (isBlob4844Tx(tx) && tx.networkWrapperVersion === NetworkWrapperType.EIP4844) {
             oldFormatBlobTxs.push(tx)
           }
