@@ -234,7 +234,7 @@ Common development dependencies (e.g. `eslint`, `biome`) are defined in the root
 
 ## Additional Docs
 
-There are selected additional developer docs available to get more deep on certain topics. The following is an overview.
+There are selected additional developer docs available to go more in-depth on certain topics. The following is an overview.
 
 ### VM
 
