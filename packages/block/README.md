@@ -9,6 +9,15 @@
 | Implements schema and functions related to Ethereum blocks. |
 | ----------------------------------------------------------- |
 
+- 🦄 All block features till **Pectra**
+- 🌴 Tree-shakeable API
+- 👷🏼 Controlled dependency set (4 external + `@Noble` crypto)
+- 🔮 `EIP-4844` Shard Blob Txs
+- 💸 `EIP-4895` Beacon Chain Withdrawals
+- 📨 `EIP-7685` Consensus Layer Requests
+- 🛵 324KB bundle size (81KB gzipped)
+- 🏄🏾‍♂️ WASM-free default + Fully browser ready
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -206,9 +215,9 @@ import { createBlock } from '@ethereumjs/block'
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
 import { createBlob4844Tx } from '@ethereumjs/tx'
 import { createAddressFromPrivateKey } from '@ethereumjs/util'
-import { trustedSetup } from '@paulmillr/trusted-setups/fast.js'
+import { trustedSetup } from '@paulmillr/trusted-setups/fast-peerdas.js'
 import { randomBytes } from 'crypto'
-import { KZG as microEthKZG } from 'micro-eth-signer/kzg'
+import { KZG as microEthKZG } from 'micro-eth-signer/kzg.js'
 
 const main = async () => {
   const kzg = new microEthKZG(trustedSetup)
@@ -402,7 +411,7 @@ To avoid bloating this repository with [ethereum/tests](https://github.com/ether
 
 ## EthereumJS
 
-See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
+The `EthereumJS` GitHub organization and its repositories are managed by the Ethereum Foundation JavaScript team, see our [website](https://ethereumjs.github.io/) for a team introduction. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
 
 ## License
 
