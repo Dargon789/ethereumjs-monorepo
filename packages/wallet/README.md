@@ -5,6 +5,8 @@
 [![Coverage Status][coverage-badge]][coverage-link]
 [![Discord][discord-badge]][discord-link]
 
+> **\[DEPRECATED\]** This library has been deprecated (insufficient maintenance + alternatives available (Ethers).
+
 A lightweight wallet implementation. At the moment it supports key creation and conversion between various formats.
 
 It is complemented by the following packages:
@@ -171,7 +173,7 @@ MIT License
 
 Copyright (C) 2016 Alex Beregszaszi
 
-[actions-badge]: https://github.com/ethereumjs/ethereumjs-monorepo/workflows/Build/badge.svg
+[actions-badge]: https://github.com/ethereumjs/ethereumjs-monorepo/actions/workflows/static-build.yml/badge.svg
 [actions-link]: https://github.com/ethereumjs/ethereumjs-monorepo/actions
 [coverage-badge]: https://img.shields.io/coveralls/ethereumjs/ethereumjs-wallet.svg
 [coverage-link]: https://coveralls.io/r/ethereumjs/ethereumjs-wallet

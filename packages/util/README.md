@@ -15,6 +15,7 @@
 - [Getting Started](#getting-started)
 - [Module: [account]](#module-account)
 - [Module: [address]](#module-address)
+- [Module: [authorization]](#module-authorization)
 - [Module: [blobs]](#module-blobs)
 - [Module: [bytes]](#module-bytes)
 - [Module: [constants]](#module-constants)
@@ -95,6 +96,10 @@ import { createAddressFromString } from '@ethereumjs/util'
 const address = createAddressFromString('0x2f015c60e0be116b1f0cd534704db9c92118fb6a')
 console.log(`Ethereum address ${address.toString()} created`)
 ```
+
+## Module: [authorization](src/authorization.ts)
+
+Module with `EIP-7702` authorization list signing utilities.
 
 ## Module: [blobs](src/blobs.ts)
 
@@ -310,7 +315,7 @@ import { stripHexPrefix } from '@ethereumjs/util'
 
 ## EthereumJS
 
-See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
+The `EthereumJS` GitHub organization and its repositories are managed by the Ethereum Foundation JavaScript team, see our [website](https://ethereumjs.github.io/) for a team introduction. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
 
 ## License
 
