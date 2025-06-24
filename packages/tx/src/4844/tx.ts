@@ -371,18 +371,29 @@ export class Blob4844Tx implements TransactionInterface<typeof TransactionType.B
       )
     }
 
-    const networkSerialized =
-      this.networkWrapperVersion === NetworkWrapperType.EIP4844
-        ? EIP2718.serialize(this, [this.raw(), this.blobs, this.kzgCommitments, this.kzgProofs])
-        : EIP2718.serialize(this, [
-            this.raw(),
-            intToUnpaddedBytes(this.networkWrapperVersion),
-            this.blobs,
-            this.kzgCommitments,
-            this.kzgProofs,
-          ])
+    // Versioned serialization mapping
+    const versionedSerializers: Record<number, () => Uint8Array> = {
+      [NetworkWrapperType.EIP4844]: () =>
+        EIP2718.serialize(this, [this.raw(), this.blobs, this.kzgCommitments, this.kzgProofs]),
+      [NetworkWrapperType.EIP7594]: () =>
+        EIP2718.serialize(this, [
+          this.raw(),
+          intToUnpaddedBytes(this.networkWrapperVersion),
+          this.blobs,
+          this.kzgCommitments,
+          this.kzgProofs,
+        ]),
+      // Add new versions here as needed
+    }
 
-    return networkSerialized
+    const serializer = versionedSerializers[this.networkWrapperVersion]
+    if (!serializer) {
+      throw EthereumJSErrorWithoutCode(
+        `Unsupported networkWrapperVersion for serialization: ${this.networkWrapperVersion}`,
+      )
+    }
+
+    return serializer()
   }
 
   /**
