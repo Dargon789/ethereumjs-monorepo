@@ -126,8 +126,8 @@ The KZG library used for EIP-4844 Blob Transactions is initialized by `common` u
 // ./examples/initKzg.ts
 
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
-import { trustedSetup } from '@paulmillr/trusted-setups/fast.js'
-import { KZG as microEthKZG } from 'micro-eth-signer/kzg'
+import { trustedSetup } from '@paulmillr/trusted-setups/fast-peerdas.js'
+import { KZG as microEthKZG } from 'micro-eth-signer/kzg.js'
 
 const main = async () => {
   const kzg = new microEthKZG(trustedSetup)
@@ -371,7 +371,7 @@ The following EIPs are currently supported:
 
 ## EthereumJS
 
-See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
+The `EthereumJS` GitHub organization and its repositories are managed by the Ethereum Foundation JavaScript team, see our [website](https://ethereumjs.github.io/) for a team introduction. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
 
 ## License
 
