@@ -101,12 +101,13 @@ This is the recommended tx type starting with the activation of the `london` HF,
 // ./examples/londonTx.ts
 
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
+import type { FeeMarketEIP1559TxData } from '@ethereumjs/tx'
 import { createFeeMarket1559Tx } from '@ethereumjs/tx'
 import { bytesToHex } from '@ethereumjs/util'
 
 const common = new Common({ chain: Mainnet, hardfork: Hardfork.London })
 
-const txData = {
+const txData: FeeMarketEIP1559TxData = {
   data: '0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
   gasLimit: '0x02625a00',
   maxPriorityFeePerGas: '0x01',
@@ -124,6 +125,7 @@ const txData = {
 
 const tx = createFeeMarket1559Tx(txData, { common })
 console.log(bytesToHex(tx.hash())) // 0x6f9ef69ccb1de1aea64e511efd6542541008ced321887937c95b03779358ec8a
+
 ```
 
 ### Access List Transactions (EIP-2930)
@@ -139,12 +141,13 @@ This transaction type has been introduced along the `berlin` HF. See the followi
 // ./examples/accessListTx.ts
 
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
+import type { AccessList2930TxData } from '@ethereumjs/tx'
 import { createAccessList2930Tx } from '@ethereumjs/tx'
 import { bytesToHex } from '@ethereumjs/util'
 
 const common = new Common({ chain: Mainnet, hardfork: Hardfork.Berlin })
 
-const txData = {
+const txData: AccessList2930TxData = {
   data: '0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
   gasLimit: '0x02625a00',
   gasPrice: '0x01',
@@ -169,6 +172,7 @@ const txData = {
 
 const tx = createAccessList2930Tx(txData, { common })
 console.log(bytesToHex(tx.hash())) // 0x9150cdebad74e88b038e6c6b964d99af705f9c0883d7f0bbc0f3e072358f5b1d
+
 ```
 
 For generating access lists from tx data based on a certain network state there is a `reportAccessList` option
@@ -191,26 +195,26 @@ See the following code snipped for an example on how to instantiate:
 // ./examples/blobTx.ts
 
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
+import type { BlobEIP4844TxData } from '@ethereumjs/tx'
 import { createBlob4844Tx } from '@ethereumjs/tx'
-import { bytesToHex } from '@ethereumjs/util'
-import { trustedSetup } from '@paulmillr/trusted-setups/fast.js'
-import { KZG as microEthKZG } from 'micro-eth-signer/kzg'
+import { bytesToHex, randomBytes } from '@ethereumjs/util'
+import { trustedSetup } from '@paulmillr/trusted-setups/fast-peerdas.js'
+import { KZG as microEthKZG } from 'micro-eth-signer/kzg.js'
 
 const main = async () => {
   const kzg = new microEthKZG(trustedSetup)
   const common = new Common({
     chain: Mainnet,
-    hardfork: Hardfork.Shanghai,
-    eips: [4844],
+    hardfork: Hardfork.Cancun,
     customCrypto: { kzg },
   })
 
-  const txData = {
+  const txData: BlobEIP4844TxData = {
     data: '0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
     gasLimit: '0x02625a00',
     maxPriorityFeePerGas: '0x01',
     maxFeePerGas: '0xff',
-    maxFeePerDataGas: '0xfff',
+    maxFeePerBlobGas: '0xfff',
     nonce: '0x00',
     to: '0xcccccccccccccccccccccccccccccccccccccccc',
     value: '0x0186a0',
@@ -226,16 +230,27 @@ const main = async () => {
   const tx = createBlob4844Tx(txData, { common })
 
   console.log(bytesToHex(tx.hash())) //0x3c3e7c5e09c250d2200bcc3530f4a9088d7e3fb4ea3f4fccfd09f535a3539e84
+
+  // To send a transaction via RPC, you can something like this:
+  // const rawTx = tx.sign(privateKeyBytes).serializeNetworkWrapper()
+  // myRPCClient.request('eth_sendRawTransaction', [rawTx]) // submits a transaction via RPC
 }
 
 void main()
+
 ```
 
 Note that `versionedHashes` and `kzgCommitments` have a real length of 32 bytes, `blobs` have a real length of `4096` bytes and values are trimmed here for brevity.
 
 Alternatively, you can pass a `blobsData` property with an array of strings corresponding to a set of blobs and the `fromTxData` constructor will derive the corresponding `blobs`, `versionedHashes`, `kzgCommitments`, and `kzgProofs` for you.
 
-See the [Blob Transaction Tests](./test/eip4844.spec.ts) for examples of usage in instantiating, serializing, and deserializing these transactions.
+#### Serialization
+
+Blob transactions can be serialized in two ways.
+1) `tx.serialize()` - the standard serialization returns an RLP-encoded `uint8Array` that conforms to the transaction as represented after it is included in a block 
+2) `tx.serializeNetworkWrapper()` - this serialization format includes the `blobs` in the encoded data and is the format specified for transactions that are being submitted to/gossipped around the mempool.  If you are constructing a transaction to submit via JSON-RPC, use this format.
+
+See the [Blob Transaction Tests](./test/eip4844.spec.ts) for additional examples of usage in instantiating, serializing, and deserializing these transactions.
 
 ### EOA Code Transaction (EIP-7702)
 
@@ -293,10 +308,11 @@ See this [example script](./examples/transactions.ts) or the following code exam
 // ./examples/legacyTx.ts
 
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
+import type { LegacyTxData } from '@ethereumjs/tx'
 import { createLegacyTx } from '@ethereumjs/tx'
 import { bytesToHex, hexToBytes } from '@ethereumjs/util'
 
-const txParams = {
+const txData: LegacyTxData = {
   nonce: '0x0',
   gasPrice: '0x09184e72a000',
   gasLimit: '0x2710',
@@ -306,7 +322,7 @@ const txParams = {
 }
 
 const common = new Common({ chain: Mainnet, hardfork: Hardfork.Istanbul })
-const tx = createLegacyTx(txParams, { common })
+const tx = createLegacyTx(txData, { common })
 
 const privateKey = hexToBytes('0xe331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109')
 
@@ -360,8 +376,8 @@ As a first step add the [micro-eth-signer](https://github.com/paulmillr/micro-et
 // ./examples/initKzg.ts
 
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
-import { trustedSetup } from '@paulmillr/trusted-setups/fast.js'
-import { KZG as microEthKZG } from 'micro-eth-signer/kzg'
+import { trustedSetup } from '@paulmillr/trusted-setups/fast-peerdas.js'
+import { KZG as microEthKZG } from 'micro-eth-signer/kzg.js'
 
 const main = async () => {
   const kzg = new microEthKZG(trustedSetup)
@@ -425,42 +441,64 @@ To sign a tx with a hardware or external wallet use `tx.getMessageToSign()` to r
 
 A legacy transaction will return a Buffer list of the values, and a Typed Transaction ([EIP-2718](https://eips.ethereum.org/EIPS/eip-2718)) will return the serialized output.
 
-Here is an example of signing txs with `@ledgerhq/hw-app-eth` as of `v6.5.0`:
-
+Here is an example of signing txs with `@ledgerhq/hw-app-eth` with `v6.45.4` and `@ledgerhq/hw-transport-node-hid` with `v6.29.5`:
 ```ts
-import { Chain, Common } from '@ethereumjs/common'
-import { LegacyTransaction, FeeMarketEIP1559Transaction } from '@ethereumjs/tx'
+// examples/ledgerSigner.mts
+
+import { Chain, Common, Sepolia } from '@ethereumjs/common'
+import { createLegacyTx, createFeeMarket1559Tx, type LegacyTx, type FeeMarket1559Tx, type LegacyTxData, type FeeMarketEIP1559TxData } from '@ethereumjs/tx'
 import { bytesToHex } from '@ethereumjs/util'
 import { RLP } from '@ethereumjs/rlp'
 import Eth from '@ledgerhq/hw-app-eth'
+import TransportNodeHid from '@ledgerhq/hw-transport-node-hid'
 
-const eth = new Eth(transport)
-const common = new Common({ chain: Chain.Sepolia })
+const transport = await TransportNodeHid.default.open()
+const eth = new Eth.default(transport)
+const common = new Common({ chain: Sepolia })
 
-let txData: any = { value: 1 }
-let tx: LegacyTransaction | FeeMarketEIP1559Transaction
-let unsignedTx: Uint8Array[] | Uint8Array
-let signedTx: typeof tx
+// Signing with the first key of the derivation path
 const bip32Path = "44'/60'/0'/0/0"
 
-const run = async () => {
-  // Signing a legacy tx
-  tx = LegacyTransaction.fromTxData(txData, { common })
-  tx = tx.getMessageToSign()
-  // ledger signTransaction API expects it to be serialized
-  let { v, r, s } = await eth.signTransaction(bip32Path, RLP.encode(tx))
-  tx.addSignature(v, r, s, true)
-  let from = tx.getSenderAddress().toString()
-  console.log(`signedTx: ${bytesToHex(tx.serialize())}\nfrom: ${from}`)
+const legacyTxData: LegacyTxData = {
+    nonce: '0x0',
+    gasPrice: '0x09184e72a000',
+    gasLimit: '0x2710',
+    to: '0x0000000000000000000000000000000000000000',
+    value: '0x00',
+    data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
+}
 
-  // Signing a 1559 tx
-  txData = { value: 1 }
-  tx = FeeMarketEIP1559Transaction.fromTxData(txData, { common })
-  tx = tx.getMessageToSign()
-  ;({ v, r, s } = await eth.signTransaction(bip32Path, unsignedTx)) // this syntax is: object destructuring - assignment without declaration
-  tx.addSignature(v, r, s)
-  from = tx.getSenderAddress().toString()
-  console.log(`signedTx: ${bytesToHex(tx.serialize())}\nfrom: ${from}`)
+const eip1559TxData: FeeMarketEIP1559TxData = {
+    data: '0x1a8451e600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+    gasLimit: '0x02625a00',
+    maxPriorityFeePerGas: '0x01',
+    maxFeePerGas: '0xff',
+    nonce: '0x00',
+    to: '0xcccccccccccccccccccccccccccccccccccccccc',
+    value: '0x0186a0',
+    accessList: [],
+    type: '0x02',
+}
+
+const run = async () => {
+    // Signing a legacy tx
+    const tx1 = createLegacyTx(legacyTxData, { common })
+    const unsignedTx1 = tx1.getMessageToSign()
+    // Ledger signTransaction API expects it to be serialized
+    // Ledger returns unprefixed hex strings without 0x for v, r, s values
+    const { v, r, s } = await eth.signTransaction(bip32Path, bytesToHex(RLP.encode(unsignedTx1)).slice(2), null)
+    const signedTx1 = tx1.addSignature(BigInt(`0x${v}`), BigInt(`0x${r}`), BigInt(`0x${s}`))
+    const from = signedTx1.getSenderAddress().toString()
+    console.log(`signedTx: ${bytesToHex(tx1.serialize())}\nfrom: ${from}`)
+
+    // Signing a 1559 tx
+    const tx2 = createFeeMarket1559Tx(eip1559TxData, { common })
+    // Ledger returns unprefixed hex strings without 0x for v, r, s values
+    const unsignedTx2 = tx2.getMessageToSign()
+    const { v2, r2, s2 } = await eth.signTransaction(bip32Path, bytesToHex(unsignedTx2).slice(2), null)
+    const signedTx2 = tx2.addSignature(BigInt(`0x${v2}`), BigInt(`0x${r2}`), BigInt(`0x${s2}`))
+    const from2 = signedTx2.getSenderAddress().toString()
+    console.log(`signedTx: ${bytesToHex(tx2.serialize())}\nfrom: ${from2}`)
 }
 
 run()
@@ -492,7 +530,7 @@ Using ESM will give you additional advantages over CJS beyond browser usage like
 
 ## EthereumJS
 
-See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
+The `EthereumJS` GitHub organization and its repositories are managed by the Ethereum Foundation JavaScript team, see our [website](https://ethereumjs.github.io/) for a team introduction. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
 
 ## License
 
