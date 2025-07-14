@@ -3,25 +3,5 @@
     "source.fixAll.eslint": "explicit"
   },
   "eslint.format.enable": true,
-  "eslint.workingDirectories": [
-    {
-      "pattern": "./packages/*"
-    }
-  ],
-  "nxConsole.nxWorkspacePath": "",
-  "github-actions.workflows.pinned.workflows": [
-    "dynamic/github-code-scanning/codeql"
-  ],
-  "spellright.language": [],
-  "spellright.documentTypes": [
-    "markdown",
-    "latex",
-    "plaintext",
-    "splunk"
-  ],
-  "spellright.parserByClass": {
-    "splunk": {
-      "parser": "markdown"
-    }
-  }
+  "eslint.workingDirectories": [{ "pattern": "./packages/*" }]
 }

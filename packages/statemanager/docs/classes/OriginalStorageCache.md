@@ -6,11 +6,7 @@
 
 # Class: OriginalStorageCache
 
-<<<<<<< HEAD
 Defined in: [cache/originalStorageCache.ts:16](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L16)
-=======
-Defined in: [cache/originalStorageCache.ts:16](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L16)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Helper class to cache original storage values (so values already being present in
 the pre-state of a call), mainly for correct gas cost calculation in EVM/VM.
@@ -21,19 +17,11 @@ designs being more transparent and direct along the next breaking release round.
 
 ## Constructors
 
-<<<<<<< HEAD
 ### Constructor
 
 > **new OriginalStorageCache**(`getStorage`): `OriginalStorageCache`
 
 Defined in: [cache/originalStorageCache.ts:19](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L19)
-=======
-### new OriginalStorageCache()
-
-> **new OriginalStorageCache**(`getStorage`): `OriginalStorageCache`
-
-Defined in: [cache/originalStorageCache.ts:19](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L19)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -51,11 +39,7 @@ Defined in: [cache/originalStorageCache.ts:19](https://github.com/Dargon789/ethe
 
 > **clear**(): `void`
 
-<<<<<<< HEAD
 Defined in: [cache/originalStorageCache.ts:52](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L52)
-=======
-Defined in: [cache/originalStorageCache.ts:52](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L52)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -67,11 +51,7 @@ Defined in: [cache/originalStorageCache.ts:52](https://github.com/Dargon789/ethe
 
 > **get**(`address`, `key`): `Promise`\<`Uint8Array`\<`ArrayBufferLike`\>\>
 
-<<<<<<< HEAD
 Defined in: [cache/originalStorageCache.ts:24](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L24)
-=======
-Defined in: [cache/originalStorageCache.ts:24](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L24)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -93,11 +73,7 @@ Defined in: [cache/originalStorageCache.ts:24](https://github.com/Dargon789/ethe
 
 > **put**(`address`, `key`, `value`): `void`
 
-<<<<<<< HEAD
 Defined in: [cache/originalStorageCache.ts:39](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L39)
-=======
-Defined in: [cache/originalStorageCache.ts:39](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/cache/originalStorageCache.ts#L39)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 

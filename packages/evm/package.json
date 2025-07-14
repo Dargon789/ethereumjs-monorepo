@@ -14,8 +14,10 @@
   "license": "MPL-2.0",
   "author": "EthereumJS",
   "contributors": ["Alex Beregszaszi <alex@rtfs.hu>"],
-  "sideEffects": false,
   "type": "module",
+  "sideEffects": false,
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "exports": {
     ".": {
       "import": {
@@ -25,8 +27,6 @@
       "require": "./dist/cjs/index.js"
     }
   },
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
   "files": ["dist", "src"],
   "scripts": {
     "biome": "npx @biomejs/biome check",

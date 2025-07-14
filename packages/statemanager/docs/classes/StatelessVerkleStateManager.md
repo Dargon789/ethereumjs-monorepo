@@ -6,11 +6,7 @@
 
 # Class: StatelessVerkleStateManager
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:69](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L69)
-=======
-Defined in: [statelessVerkleStateManager.ts:69](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L69)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Stateless Verkle StateManager implementation for the VM.
 
@@ -27,19 +23,11 @@ to fetch data requested by the the VM.
 
 ## Constructors
 
-<<<<<<< HEAD
 ### Constructor
 
 > **new StatelessVerkleStateManager**(`opts`): `StatelessVerkleStateManager`
 
 Defined in: [statelessVerkleStateManager.ts:113](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L113)
-=======
-### new StatelessVerkleStateManager()
-
-> **new StatelessVerkleStateManager**(`opts`): `StatelessVerkleStateManager`
-
-Defined in: [statelessVerkleStateManager.ts:113](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L113)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Instantiate the StateManager interface.
 
@@ -59,11 +47,7 @@ Instantiate the StateManager interface.
 
 > `optional` **\_cachedStateRoot**: `Uint8Array`\<`ArrayBufferLike`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:70](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L70)
-=======
-Defined in: [statelessVerkleStateManager.ts:70](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L70)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -71,11 +55,7 @@ Defined in: [statelessVerkleStateManager.ts:70](https://github.com/Dargon789/eth
 
 > `readonly` **common**: `Common`
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:80](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L80)
-=======
-Defined in: [statelessVerkleStateManager.ts:80](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L80)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -83,11 +63,7 @@ Defined in: [statelessVerkleStateManager.ts:80](https://github.com/Dargon789/eth
 
 > **originalStorageCache**: [`OriginalStorageCache`](OriginalStorageCache.md)
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:72](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L72)
-=======
-Defined in: [statelessVerkleStateManager.ts:72](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L72)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Implementation of
 
@@ -99,11 +75,7 @@ Defined in: [statelessVerkleStateManager.ts:72](https://github.com/Dargon789/eth
 
 > **verkleCrypto**: `VerkleCrypto`
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:74](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L74)
-=======
-Defined in: [statelessVerkleStateManager.ts:74](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L74)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Methods
 
@@ -111,11 +83,7 @@ Defined in: [statelessVerkleStateManager.ts:74](https://github.com/Dargon789/eth
 
 > **checkChunkWitnessPresent**(`address`, `codeOffset`): `Promise`\<`boolean`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:206](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L206)
-=======
-Defined in: [statelessVerkleStateManager.ts:206](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L206)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -141,11 +109,7 @@ Defined in: [statelessVerkleStateManager.ts:206](https://github.com/Dargon789/et
 
 > **checkpoint**(): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:639](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L639)
-=======
-Defined in: [statelessVerkleStateManager.ts:637](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L637)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Checkpoints the current state of the StateManager instance.
 State changes that follow can then be committed by calling
@@ -165,11 +129,7 @@ State changes that follow can then be committed by calling
 
 > **clearCaches**(): `void`
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:698](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L698)
-=======
-Defined in: [statelessVerkleStateManager.ts:696](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L696)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Clears all underlying caches
 
@@ -187,11 +147,7 @@ Clears all underlying caches
 
 > **clearStorage**(`address`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:388](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L388)
-=======
-Defined in: [statelessVerkleStateManager.ts:387](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L387)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Clears all storage entries for the account corresponding to `address`.
 
@@ -217,11 +173,7 @@ Address to clear the storage of
 
 > **commit**(): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:648](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L648)
-=======
-Defined in: [statelessVerkleStateManager.ts:646](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L646)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Commits the current change-set to the instance since the
 last call to checkpoint.
@@ -240,11 +192,7 @@ last call to checkpoint.
 
 > **deleteAccount**(`address`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:489](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L489)
-=======
-Defined in: [statelessVerkleStateManager.ts:488](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L488)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Deletes an account from state under the provided `address`.
 
@@ -270,11 +218,7 @@ Address of the account which should be deleted
 
 > **flush**(): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:671](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L671)
-=======
-Defined in: [statelessVerkleStateManager.ts:669](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L669)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Writes all cache items to the trie
 
@@ -288,11 +232,7 @@ Writes all cache items to the trie
 
 > **generateCanonicalGenesis**(`_initState`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:706](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L706)
-=======
-Defined in: [statelessVerkleStateManager.ts:704](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L704)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -314,11 +254,7 @@ Defined in: [statelessVerkleStateManager.ts:704](https://github.com/Dargon789/et
 
 > **getAccount**(`address`): `Promise`\<`undefined` \| `Account`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:396](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L396)
-=======
-Defined in: [statelessVerkleStateManager.ts:395](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L395)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -340,11 +276,7 @@ Defined in: [statelessVerkleStateManager.ts:395](https://github.com/Dargon789/et
 
 > **getCode**(`address`): `Promise`\<`Uint8Array`\<`ArrayBufferLike`\>\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:257](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L257)
-=======
-Defined in: [statelessVerkleStateManager.ts:257](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L257)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Gets the code corresponding to the provided `address`.
 
@@ -373,11 +305,7 @@ Returns an empty `Uint8Array` if the account has no associated code.
 
 > **getCodeSize**(`address`): `Promise`\<`number`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:312](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L312)
-=======
-Defined in: [statelessVerkleStateManager.ts:312](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L312)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -399,11 +327,7 @@ Defined in: [statelessVerkleStateManager.ts:312](https://github.com/Dargon789/et
 
 > **getComputedValue**(`accessedState`): `null` \| `` `0x${string}` ``
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:581](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L581)
-=======
-Defined in: [statelessVerkleStateManager.ts:579](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L579)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -421,11 +345,7 @@ Defined in: [statelessVerkleStateManager.ts:579](https://github.com/Dargon789/et
 
 > **getStateRoot**(): `Promise`\<`Uint8Array`\<`ArrayBufferLike`\>\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:679](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L679)
-=======
-Defined in: [statelessVerkleStateManager.ts:677](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L677)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Gets the cache state root.
 This is used to persist the stateRoot between blocks, so that blocks can retrieve the stateRoot of the parent block.
@@ -447,11 +367,7 @@ This is required to verify and prove verkle execution witnesses.
 
 > **getStorage**(`address`, `key`): `Promise`\<`Uint8Array`\<`ArrayBufferLike`\>\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:342](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L342)
-=======
-Defined in: [statelessVerkleStateManager.ts:342](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L342)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Gets the storage value associated with the provided `address` and `key`. This method returns
 the shortest representation of the stored value.
@@ -488,11 +404,7 @@ If this does not exist an empty `Uint8Array` is returned.
 
 > **getTransitionStateRoot**(`_`, `__`): `Promise`\<`Uint8Array`\<`ArrayBufferLike`\>\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:138](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L138)
-=======
-Defined in: [statelessVerkleStateManager.ts:138](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L138)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -514,11 +426,7 @@ Defined in: [statelessVerkleStateManager.ts:138](https://github.com/Dargon789/et
 
 > **hasStateRoot**(`_`): `Promise`\<`boolean`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:654](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L654)
-=======
-Defined in: [statelessVerkleStateManager.ts:652](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L652)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -538,15 +446,9 @@ Defined in: [statelessVerkleStateManager.ts:652](https://github.com/Dargon789/et
 
 ### initVerkleExecutionWitness()
 
-<<<<<<< HEAD
 > **initVerkleExecutionWitness**(`blockNum`, `executionWitness?`): `void`
 
 Defined in: [statelessVerkleStateManager.ts:142](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L142)
-=======
-> **initVerkleExecutionWitness**(`blockNum`, `executionWitness`?): `void`
-
-Defined in: [statelessVerkleStateManager.ts:142](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L142)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -572,11 +474,7 @@ Defined in: [statelessVerkleStateManager.ts:142](https://github.com/Dargon789/et
 
 > **modifyAccountFields**(`address`, `accountFields`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:497](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L497)
-=======
-Defined in: [statelessVerkleStateManager.ts:496](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L496)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -602,11 +500,7 @@ Defined in: [statelessVerkleStateManager.ts:496](https://github.com/Dargon789/et
 
 > **putAccount**(`address`, `account`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:465](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L465)
-=======
-Defined in: [statelessVerkleStateManager.ts:464](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L464)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -632,11 +526,7 @@ Defined in: [statelessVerkleStateManager.ts:464](https://github.com/Dargon789/et
 
 > **putCode**(`address`, `value`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:233](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L233)
-=======
-Defined in: [statelessVerkleStateManager.ts:233](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L233)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Adds `value` to the state trie as code, and sets `codeHash` on the account
 corresponding to `address` to reference this.
@@ -669,11 +559,7 @@ The value of the `code`
 
 > **putStorage**(`address`, `key`, `value`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:368](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L368)
-=======
-Defined in: [statelessVerkleStateManager.ts:367](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L367)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Adds value to the state for the `account`
 corresponding to `address` at the provided `key`.
@@ -712,11 +598,7 @@ Value to set at `key` for account corresponding to `address`. Cannot be more tha
 
 > **revert**(): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:662](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L662)
-=======
-Defined in: [statelessVerkleStateManager.ts:660](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L660)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Reverts the current change-set to the instance since the
 last call to checkpoint.
@@ -735,11 +617,7 @@ last call to checkpoint.
 
 > **setStateRoot**(`stateRoot`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:691](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L691)
-=======
-Defined in: [statelessVerkleStateManager.ts:689](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L689)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Sets the cache state root.
 This is used to persist the stateRoot between blocks, so that blocks can retrieve the stateRoot of the parent block.
@@ -766,11 +644,7 @@ The stateRoot to set
 
 > **shallowCopy**(`downlevelCaches`): `StatelessVerkleStateManager`
 
-<<<<<<< HEAD
 Defined in: [statelessVerkleStateManager.ts:219](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L219)
-=======
-Defined in: [statelessVerkleStateManager.ts:219](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L219)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Copies the current instance of the `StateManager`
 at the last fully committed point, i.e. as if all current
@@ -792,19 +666,11 @@ checkpoints were reverted.
 
 ***
 
-<<<<<<< HEAD
 ### verifyVerklePostState()
 
 > **verifyVerklePostState**(`accessWitness`): `Promise`\<`boolean`\>
 
 Defined in: [statelessVerkleStateManager.ts:503](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L503)
-=======
-### verifyPostState()
-
-> **verifyPostState**(`accessWitness`): `Promise`\<`boolean`\>
-
-Defined in: [statelessVerkleStateManager.ts:501](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/statelessVerkleStateManager.ts#L501)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -818,8 +684,4 @@ Defined in: [statelessVerkleStateManager.ts:501](https://github.com/Dargon789/et
 
 #### Implementation of
 
-<<<<<<< HEAD
 `StateManagerInterface.verifyVerklePostState`
-=======
-`StateManagerInterface.verifyPostState`
->>>>>>> b7777441e (ethereumjs-monoepo)

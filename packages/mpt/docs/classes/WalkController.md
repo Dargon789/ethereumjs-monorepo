@@ -6,11 +6,7 @@
 
 # Class: WalkController
 
-<<<<<<< HEAD
 Defined in: [packages/mpt/src/util/walkController.ts:11](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L11)
-=======
-Defined in: [packages/mpt/src/util/walkController.ts:11](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L11)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 WalkController is an interface to control how the trie is being traversed.
 
@@ -20,11 +16,7 @@ WalkController is an interface to control how the trie is being traversed.
 
 > `readonly` **onNode**: [`FoundNodeFunction`](../type-aliases/FoundNodeFunction.md)
 
-<<<<<<< HEAD
 Defined in: [packages/mpt/src/util/walkController.ts:12](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L12)
-=======
-Defined in: [packages/mpt/src/util/walkController.ts:12](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L12)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -32,11 +24,7 @@ Defined in: [packages/mpt/src/util/walkController.ts:12](https://github.com/Darg
 
 > `readonly` **taskExecutor**: `PrioritizedTaskExecutor`
 
-<<<<<<< HEAD
 Defined in: [packages/mpt/src/util/walkController.ts:13](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L13)
-=======
-Defined in: [packages/mpt/src/util/walkController.ts:13](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L13)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -44,11 +32,7 @@ Defined in: [packages/mpt/src/util/walkController.ts:13](https://github.com/Darg
 
 > `readonly` **trie**: [`MerklePatriciaTrie`](MerklePatriciaTrie.md)
 
-<<<<<<< HEAD
 Defined in: [packages/mpt/src/util/walkController.ts:14](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L14)
-=======
-Defined in: [packages/mpt/src/util/walkController.ts:14](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L14)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Methods
 
@@ -56,11 +40,7 @@ Defined in: [packages/mpt/src/util/walkController.ts:14](https://github.com/Darg
 
 > **allChildren**(`node`, `key`): `void`
 
-<<<<<<< HEAD
 Defined in: [packages/mpt/src/util/walkController.ts:69](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L69)
-=======
-Defined in: [packages/mpt/src/util/walkController.ts:69](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L69)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Run all children of a node. Priority of these nodes are the key length of the children.
 
@@ -86,15 +66,9 @@ The current `key` which would yield the `node` when trying to get this node with
 
 ### onlyBranchIndex()
 
-<<<<<<< HEAD
 > **onlyBranchIndex**(`node`, `key`, `childIndex`, `priority?`): `void`
 
 Defined in: [packages/mpt/src/util/walkController.ts:120](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L120)
-=======
-> **onlyBranchIndex**(`node`, `key`, `childIndex`, `priority`?): `void`
-
-Defined in: [packages/mpt/src/util/walkController.ts:120](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L120)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Push a branch of a certain BranchMPTNode to the event queue.
 
@@ -132,15 +106,9 @@ Optional priority of the event, defaults to the total key length.
 
 ### pushNodeToQueue()
 
-<<<<<<< HEAD
 > **pushNodeToQueue**(`nodeRef`, `key`, `priority?`): `void`
 
 Defined in: [packages/mpt/src/util/walkController.ts:97](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L97)
-=======
-> **pushNodeToQueue**(`nodeRef`, `key`, `priority`?): `void`
-
-Defined in: [packages/mpt/src/util/walkController.ts:97](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L97)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Push a node to the queue. If the queue has places left for tasks, the node is executed immediately, otherwise it is queued.
 
@@ -172,15 +140,9 @@ Optional priority, defaults to key length
 
 ### newWalk()
 
-<<<<<<< HEAD
 > `static` **newWalk**(`onNode`, `trie`, `root`, `poolSize?`): `Promise`\<`void`\>
 
 Defined in: [packages/mpt/src/util/walkController.ts:39](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L39)
-=======
-> `static` **newWalk**(`onNode`, `trie`, `root`, `poolSize`?): `Promise`\<`void`\>
-
-Defined in: [packages/mpt/src/util/walkController.ts:39](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/mpt/src/util/walkController.ts#L39)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Async function to create and start a new walk over a trie.
 

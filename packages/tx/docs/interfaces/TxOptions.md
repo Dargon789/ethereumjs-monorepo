@@ -6,11 +6,7 @@
 
 # Interface: TxOptions
 
-<<<<<<< HEAD
 Defined in: [types.ts:57](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L57)
-=======
-Defined in: [types.ts:55](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L55)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 The options for initializing a [Transaction](Transaction.md).
 
@@ -20,11 +16,7 @@ The options for initializing a [Transaction](Transaction.md).
 
 > `optional` **allowUnlimitedInitCodeSize**: `boolean`
 
-<<<<<<< HEAD
 Defined in: [types.ts:103](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L103)
-=======
-Defined in: [types.ts:101](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L101)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Allows unlimited contract code-size init while debugging. This (partially) disables EIP-3860.
 Gas cost for initcode size analysis will still be charged. Use with caution.
@@ -35,11 +27,7 @@ Gas cost for initcode size analysis will still be charged. Use with caution.
 
 > `optional` **common**: `Common`
 
-<<<<<<< HEAD
 Defined in: [types.ts:68](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L68)
-=======
-Defined in: [types.ts:66](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L66)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 A Common object defining the chain and hardfork for the transaction.
 
@@ -56,11 +44,7 @@ Current default hardfork: `istanbul`
 
 > `optional` **freeze**: `boolean`
 
-<<<<<<< HEAD
 Defined in: [types.ts:97](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L97)
-=======
-Defined in: [types.ts:95](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L95)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 A transaction object by default gets frozen along initialization. This gives you
 strong additional security guarantees on the consistency of the tx parameters.
@@ -78,11 +62,7 @@ Default: true
 
 > `optional` **params**: `ParamsDict`
 
-<<<<<<< HEAD
 Defined in: [types.ts:85](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L85)
-=======
-Defined in: [types.ts:83](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L83)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Tx parameters sorted by EIP can be found in the exported `paramsTx` dictionary,
 which is internally passed to the associated `@ethereumjs/common` instance which

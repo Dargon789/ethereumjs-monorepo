@@ -6,7 +6,6 @@
 
 # Class: MAC
 
-<<<<<<< HEAD
 Defined in: [packages/devp2p/src/rlpx/mac.ts:8](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L8)
 
 ## Constructors
@@ -16,17 +15,6 @@ Defined in: [packages/devp2p/src/rlpx/mac.ts:8](https://github.com/ethereumjs/et
 > **new MAC**(`secret`): `MAC`
 
 Defined in: [packages/devp2p/src/rlpx/mac.ts:11](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L11)
-=======
-Defined in: [packages/devp2p/src/rlpx/mac.ts:8](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L8)
-
-## Constructors
-
-### new MAC()
-
-> **new MAC**(`secret`): `MAC`
-
-Defined in: [packages/devp2p/src/rlpx/mac.ts:11](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L11)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -44,11 +32,7 @@ Defined in: [packages/devp2p/src/rlpx/mac.ts:11](https://github.com/Dargon789/et
 
 > **digest**(): `Uint8Array`\<`ArrayBuffer`\>
 
-<<<<<<< HEAD
 Defined in: [packages/devp2p/src/rlpx/mac.ts:34](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L34)
-=======
-Defined in: [packages/devp2p/src/rlpx/mac.ts:34](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L34)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -60,11 +44,7 @@ Defined in: [packages/devp2p/src/rlpx/mac.ts:34](https://github.com/Dargon789/et
 
 > **update**(`data`): `void`
 
-<<<<<<< HEAD
 Defined in: [packages/devp2p/src/rlpx/mac.ts:16](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L16)
-=======
-Defined in: [packages/devp2p/src/rlpx/mac.ts:16](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L16)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -82,11 +62,7 @@ Defined in: [packages/devp2p/src/rlpx/mac.ts:16](https://github.com/Dargon789/et
 
 > **updateBody**(`data`): `void`
 
-<<<<<<< HEAD
 Defined in: [packages/devp2p/src/rlpx/mac.ts:26](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L26)
-=======
-Defined in: [packages/devp2p/src/rlpx/mac.ts:26](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L26)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -104,11 +80,7 @@ Defined in: [packages/devp2p/src/rlpx/mac.ts:26](https://github.com/Dargon789/et
 
 > **updateHeader**(`data`): `void`
 
-<<<<<<< HEAD
 Defined in: [packages/devp2p/src/rlpx/mac.ts:20](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L20)
-=======
-Defined in: [packages/devp2p/src/rlpx/mac.ts:20](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/devp2p/src/rlpx/mac.ts#L20)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 

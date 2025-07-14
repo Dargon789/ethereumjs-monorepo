@@ -6,11 +6,7 @@
 
 # Interface: RPCStateManagerOpts
 
-<<<<<<< HEAD
 Defined in: [types.ts:25](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/types.ts#L25)
-=======
-Defined in: [types.ts:24](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/types.ts#L24)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Extends
 
@@ -22,11 +18,7 @@ Defined in: [types.ts:24](https://github.com/Dargon789/ethereumjs-monorepo/blob/
 
 > **blockTag**: `bigint` \| `"earliest"`
 
-<<<<<<< HEAD
 Defined in: [types.ts:27](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/types.ts#L27)
-=======
-Defined in: [types.ts:26](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/types.ts#L26)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -34,11 +26,7 @@ Defined in: [types.ts:26](https://github.com/Dargon789/ethereumjs-monorepo/blob/
 
 > `optional` **common**: `Common`
 
-<<<<<<< HEAD
 Defined in: [types.ts:15](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/types.ts#L15)
-=======
-Defined in: [types.ts:14](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/types.ts#L14)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 The common to use
 
@@ -52,8 +40,4 @@ The common to use
 
 > **provider**: `string`
 
-<<<<<<< HEAD
 Defined in: [types.ts:26](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/statemanager/src/types.ts#L26)
-=======
-Defined in: [types.ts:25](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/statemanager/src/types.ts#L25)
->>>>>>> b7777441e (ethereumjs-monoepo)

@@ -6,11 +6,7 @@
 
 # Class: EthashConsensus
 
-<<<<<<< HEAD
 Defined in: [consensus/ethash.ts:18](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L18)
-=======
-Defined in: [consensus/ethash.ts:18](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L18)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 This class encapsulates Ethash-related consensus functionality when used with the Blockchain class.
 
@@ -20,19 +16,11 @@ This class encapsulates Ethash-related consensus functionality when used with th
 
 ## Constructors
 
-<<<<<<< HEAD
 ### Constructor
 
 > **new EthashConsensus**(`ethash`): `EthashConsensus`
 
 Defined in: [consensus/ethash.ts:26](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L26)
-=======
-### new EthashConsensus()
-
-> **new EthashConsensus**(`ethash`): `EthashConsensus`
-
-Defined in: [consensus/ethash.ts:26](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L26)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -50,11 +38,7 @@ Defined in: [consensus/ethash.ts:26](https://github.com/Dargon789/ethereumjs-mon
 
 > **\_ethash**: `MinimalEthashInterface`
 
-<<<<<<< HEAD
 Defined in: [consensus/ethash.ts:21](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L21)
-=======
-Defined in: [consensus/ethash.ts:21](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L21)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -62,11 +46,7 @@ Defined in: [consensus/ethash.ts:21](https://github.com/Dargon789/ethereumjs-mon
 
 > **algorithm**: `ConsensusAlgorithm`
 
-<<<<<<< HEAD
 Defined in: [consensus/ethash.ts:20](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L20)
-=======
-Defined in: [consensus/ethash.ts:20](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L20)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Implementation of
 
@@ -78,11 +58,7 @@ Defined in: [consensus/ethash.ts:20](https://github.com/Dargon789/ethereumjs-mon
 
 > **blockchain**: `undefined` \| [`Blockchain`](Blockchain.md)
 
-<<<<<<< HEAD
 Defined in: [consensus/ethash.ts:19](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L19)
-=======
-Defined in: [consensus/ethash.ts:19](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L19)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Methods
 
@@ -90,11 +66,7 @@ Defined in: [consensus/ethash.ts:19](https://github.com/Dargon789/ethereumjs-mon
 
 > **genesisInit**(): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [consensus/ethash.ts:64](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L64)
-=======
-Defined in: [consensus/ethash.ts:64](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L64)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Initialize genesis for consensus mechanism
 
@@ -112,11 +84,7 @@ Initialize genesis for consensus mechanism
 
 > **newBlock**(): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [consensus/ethash.ts:69](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L69)
-=======
-Defined in: [consensus/ethash.ts:69](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L69)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Update consensus on new block
 
@@ -134,11 +102,7 @@ Update consensus on new block
 
 > **setup**(`__namedParameters`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [consensus/ethash.ts:65](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L65)
-=======
-Defined in: [consensus/ethash.ts:65](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L65)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Set up consensus mechanism
 
@@ -162,11 +126,7 @@ Set up consensus mechanism
 
 > **validateConsensus**(`block`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [consensus/ethash.ts:35](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L35)
-=======
-Defined in: [consensus/ethash.ts:35](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L35)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Validate block consensus parameters
 
@@ -192,11 +152,7 @@ block to be validated
 
 > **validateDifficulty**(`header`): `Promise`\<`void`\>
 
-<<<<<<< HEAD
 Defined in: [consensus/ethash.ts:50](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L50)
-=======
-Defined in: [consensus/ethash.ts:50](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/blockchain/src/consensus/ethash.ts#L50)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 Checks that the block's `difficulty` matches the canonical difficulty of the parent header.
 

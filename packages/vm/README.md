@@ -207,46 +207,7 @@ With `VM` v6 the previously included `StateManager` has been extracted to its ow
 ### Chains
 Beside the default Proof-of-Stake setup coming with the `Common` library default, the VM also support the execution of  both `Ethash/PoW` and `Clique/PoA` blocks and transactions to allow to re-execute blocks from older hardforks or testnets.
 
-<<<<<<< HEAD
 ### Hardforks
-=======
-Starting with `v5.1.0` the VM supports running both `Ethash/PoW` and `Clique/PoA` blocks and transactions. Clique support has been added along the work on PR [#1032](https://github.com/ethereumjs/ethereumjs-monorepo/pull/1032) and follow-up PRs and (block) validation checks and the switch of the execution context now happens correctly.
-
-### Ethash/PoW Chains
-
-`@ethereumjs/blockchain` validates the PoW algorithm with `@ethereumjs/ethash` and validates blocks' difficulty to match their canonical difficulty.
-
-### Clique/PoA Chains
-
-The following is a simple example for a block run on `Goerli`:
-
-```ts
-// ./examples/runGoerliBlock.ts
-
-import { createBlockFromRPC } from '@ethereumjs/block'
-import { Common } from '@ethereumjs/common'
-import { bytesToHex } from '@ethereumjs/util'
-
-import { createVM, runBlock } from '../src/index.js'
-import { Goerli } from '../test/api/testdata/goerliCommon.js'
-
-import goerliBlock2 from './testData/goerliBlock2.json'
-
-const main = async () => {
-  const common = new Common({ chain: Goerli, hardfork: 'london' })
-  const vm = await createVM({ common, setHardfork: true })
-
-  const block = createBlockFromRPC(goerliBlock2, undefined, { common })
-  const result = await runBlock(vm, { block, generate: true, skipHeaderValidation: true }) // we skip header validation since we are running a block without the full Ethereum history available
-  console.log(`The state root for Goerli block 2 is ${bytesToHex(result.stateRoot)}`)
-}
-
-void main()
-
-```
-
-### Hardfork Support
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 For hardfork support see the [Hardfork Support](../evm#hardfork-support) section from the underlying `@ethereumjs/evm` instance.
 

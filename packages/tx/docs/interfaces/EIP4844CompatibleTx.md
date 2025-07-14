@@ -6,11 +6,7 @@
 
 # Interface: EIP4844CompatibleTx\<T\>
 
-<<<<<<< HEAD
 Defined in: [types.ts:255](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L255)
-=======
-Defined in: [types.ts:251](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L251)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Extends
 
@@ -20,11 +16,7 @@ Defined in: [types.ts:251](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 ### T
 
-<<<<<<< HEAD
 `T` *extends* [`TransactionType`](../type-aliases/TransactionType.md) = [`TransactionType`](../type-aliases/TransactionType.md)
-=======
-`T` *extends* [`TransactionType`](../enumerations/TransactionType.md) = [`TransactionType`](../enumerations/TransactionType.md)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Properties
 
@@ -32,11 +24,7 @@ Defined in: [types.ts:251](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **accessList**: [`AccessListBytes`](../type-aliases/AccessListBytes.md)
 
-<<<<<<< HEAD
 Defined in: [types.ts:246](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L246)
-=======
-Defined in: [types.ts:241](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L241)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -44,31 +32,11 @@ Defined in: [types.ts:241](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 ***
 
-<<<<<<< HEAD
 ### blobs?
 
 > `optional` **blobs**: `Uint8Array`\<`ArrayBufferLike`\>[]
 
 Defined in: [types.ts:259](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L259)
-=======
-### AccessListJSON
-
-> `readonly` **AccessListJSON**: [`AccessList`](../type-aliases/AccessList.md)
-
-Defined in: [types.ts:242](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L242)
-
-#### Inherited from
-
-[`EIP1559CompatibleTx`](EIP1559CompatibleTx.md).[`AccessListJSON`](EIP1559CompatibleTx.md#accesslistjson)
-
-***
-
-### blobs?
-
-> `optional` **blobs**: `Uint8Array`\<`ArrayBufferLike`\>[]
-
-Defined in: [types.ts:255](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L255)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -76,11 +44,7 @@ Defined in: [types.ts:255](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **blobVersionedHashes**: `Uint8Array`\<`ArrayBufferLike`\>[]
 
-<<<<<<< HEAD
 Defined in: [types.ts:258](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L258)
-=======
-Defined in: [types.ts:254](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L254)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -88,11 +52,7 @@ Defined in: [types.ts:254](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **cache**: [`TransactionCache`](TransactionCache.md)
 
-<<<<<<< HEAD
 Defined in: [types.ts:203](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L203)
-=======
-Defined in: [types.ts:198](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L198)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -104,11 +64,7 @@ Defined in: [types.ts:198](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **chainId**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:240](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L240)
-=======
-Defined in: [types.ts:235](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L235)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -120,11 +76,7 @@ Defined in: [types.ts:235](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **common**: `Common`
 
-<<<<<<< HEAD
 Defined in: [types.ts:194](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L194)
-=======
-Defined in: [types.ts:189](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L189)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -136,11 +88,7 @@ Defined in: [types.ts:189](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **data**: `Uint8Array`
 
-<<<<<<< HEAD
 Defined in: [types.ts:199](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L199)
-=======
-Defined in: [types.ts:194](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L194)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -152,11 +100,7 @@ Defined in: [types.ts:194](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **gasLimit**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:196](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L196)
-=======
-Defined in: [types.ts:191](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L191)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -168,11 +112,7 @@ Defined in: [types.ts:191](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `optional` **kzgCommitments**: `Uint8Array`\<`ArrayBufferLike`\>[]
 
-<<<<<<< HEAD
 Defined in: [types.ts:260](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L260)
-=======
-Defined in: [types.ts:256](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L256)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -180,11 +120,7 @@ Defined in: [types.ts:256](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `optional` **kzgProofs**: `Uint8Array`\<`ArrayBufferLike`\>[]
 
-<<<<<<< HEAD
 Defined in: [types.ts:261](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L261)
-=======
-Defined in: [types.ts:257](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L257)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -192,11 +128,7 @@ Defined in: [types.ts:257](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **maxFeePerBlobGas**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:257](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L257)
-=======
-Defined in: [types.ts:253](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L253)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -204,11 +136,7 @@ Defined in: [types.ts:253](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **maxFeePerGas**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:252](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L252)
-=======
-Defined in: [types.ts:248](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L248)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -220,11 +148,7 @@ Defined in: [types.ts:248](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **maxPriorityFeePerGas**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:251](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L251)
-=======
-Defined in: [types.ts:247](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L247)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -236,11 +160,7 @@ Defined in: [types.ts:247](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **nonce**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:195](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L195)
-=======
-Defined in: [types.ts:190](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L190)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -252,11 +172,7 @@ Defined in: [types.ts:190](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` `optional` **r**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:201](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L201)
-=======
-Defined in: [types.ts:196](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L196)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -268,11 +184,7 @@ Defined in: [types.ts:196](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` `optional` **s**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:202](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L202)
-=======
-Defined in: [types.ts:197](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L197)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -284,11 +196,7 @@ Defined in: [types.ts:197](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` `optional` **to**: `Address`
 
-<<<<<<< HEAD
 Defined in: [types.ts:197](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L197)
-=======
-Defined in: [types.ts:192](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L192)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -300,11 +208,7 @@ Defined in: [types.ts:192](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **txOptions**: [`TxOptions`](TxOptions.md)
 
-<<<<<<< HEAD
 Defined in: [types.ts:206](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L206)
-=======
-Defined in: [types.ts:201](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L201)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -314,15 +218,9 @@ Defined in: [types.ts:201](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 ### type
 
-<<<<<<< HEAD
 > **type**: [`TransactionType`](../type-aliases/TransactionType.md)
 
 Defined in: [types.ts:205](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L205)
-=======
-> **type**: [`TransactionType`](../enumerations/TransactionType.md)
-
-Defined in: [types.ts:200](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L200)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -334,11 +232,7 @@ Defined in: [types.ts:200](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` `optional` **v**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:200](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L200)
-=======
-Defined in: [types.ts:195](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L195)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -350,11 +244,7 @@ Defined in: [types.ts:195](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > `readonly` **value**: `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:198](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L198)
-=======
-Defined in: [types.ts:193](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L193)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Inherited from
 
@@ -364,15 +254,9 @@ Defined in: [types.ts:193](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 ### addSignature()
 
-<<<<<<< HEAD
 > **addSignature**(`v`, `r`, `s`, `convertV?`): [`Transaction`](Transaction.md)\[`T`\]
 
 Defined in: [types.ts:227](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L227)
-=======
-> **addSignature**(`v`, `r`, `s`, `convertV`?): [`Transaction`](Transaction.md)\[`T`\]
-
-Defined in: [types.ts:222](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L222)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
@@ -406,11 +290,7 @@ Defined in: [types.ts:222](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **errorStr**(): `string`
 
-<<<<<<< HEAD
 Defined in: [types.ts:225](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L225)
-=======
-Defined in: [types.ts:220](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L220)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -426,11 +306,7 @@ Defined in: [types.ts:220](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **getDataGas**(): `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:208](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L208)
-=======
-Defined in: [types.ts:203](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L203)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -446,11 +322,7 @@ Defined in: [types.ts:203](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **getHashedMessageToSign**(): `Uint8Array`
 
-<<<<<<< HEAD
 Defined in: [types.ts:214](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L214)
-=======
-Defined in: [types.ts:209](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L209)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -466,11 +338,7 @@ Defined in: [types.ts:209](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **getIntrinsicGas**(): `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:207](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L207)
-=======
-Defined in: [types.ts:202](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L202)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -486,11 +354,7 @@ Defined in: [types.ts:202](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **getMessageToSign**(): `Uint8Array`
 
-<<<<<<< HEAD
 Defined in: [types.ts:241](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L241)
-=======
-Defined in: [types.ts:236](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L236)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -506,11 +370,7 @@ Defined in: [types.ts:236](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **getMessageToVerifySignature**(): `Uint8Array`
 
-<<<<<<< HEAD
 Defined in: [types.ts:216](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L216)
-=======
-Defined in: [types.ts:211](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L211)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -526,11 +386,7 @@ Defined in: [types.ts:211](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **getSenderAddress**(): `Address`
 
-<<<<<<< HEAD
 Defined in: [types.ts:221](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L221)
-=======
-Defined in: [types.ts:216](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L216)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -546,11 +402,7 @@ Defined in: [types.ts:216](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **getSenderPublicKey**(): `Uint8Array`
 
-<<<<<<< HEAD
 Defined in: [types.ts:222](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L222)
-=======
-Defined in: [types.ts:217](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L217)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -566,11 +418,7 @@ Defined in: [types.ts:217](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **getUpfrontCost**(): `bigint`
 
-<<<<<<< HEAD
 Defined in: [types.ts:209](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L209)
-=======
-Defined in: [types.ts:204](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L204)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -586,11 +434,7 @@ Defined in: [types.ts:204](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **getValidationErrors**(): `string`[]
 
-<<<<<<< HEAD
 Defined in: [types.ts:217](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L217)
-=======
-Defined in: [types.ts:212](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L212)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -606,11 +450,7 @@ Defined in: [types.ts:212](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **hash**(): `Uint8Array`
 
-<<<<<<< HEAD
 Defined in: [types.ts:215](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L215)
-=======
-Defined in: [types.ts:210](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L210)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -626,11 +466,7 @@ Defined in: [types.ts:210](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **isSigned**(): `boolean`
 
-<<<<<<< HEAD
 Defined in: [types.ts:218](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L218)
-=======
-Defined in: [types.ts:213](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L213)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -646,11 +482,7 @@ Defined in: [types.ts:213](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **isValid**(): `boolean`
 
-<<<<<<< HEAD
 Defined in: [types.ts:219](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L219)
-=======
-Defined in: [types.ts:214](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L214)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -666,11 +498,7 @@ Defined in: [types.ts:214](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **numBlobs**(): `number`
 
-<<<<<<< HEAD
 Defined in: [types.ts:263](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L263)
-=======
-Defined in: [types.ts:259](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L259)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -682,11 +510,7 @@ Defined in: [types.ts:259](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **raw**(): [`TxValuesArray`](TxValuesArray.md)\[`T`\]
 
-<<<<<<< HEAD
 Defined in: [types.ts:211](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L211)
-=======
-Defined in: [types.ts:206](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L206)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -702,11 +526,7 @@ Defined in: [types.ts:206](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **serialize**(): `Uint8Array`
 
-<<<<<<< HEAD
 Defined in: [types.ts:212](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L212)
-=======
-Defined in: [types.ts:207](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L207)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -722,11 +542,7 @@ Defined in: [types.ts:207](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **serializeNetworkWrapper**(): `Uint8Array`
 
-<<<<<<< HEAD
 Defined in: [types.ts:262](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L262)
-=======
-Defined in: [types.ts:258](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L258)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -736,28 +552,19 @@ Defined in: [types.ts:258](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 ### sign()
 
-<<<<<<< HEAD
 > **sign**(`privateKey`, `extraEntropy?`): [`Transaction`](Transaction.md)\[`T`\]
 
 Defined in: [types.ts:223](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L223)
-=======
-> **sign**(`privateKey`): [`Transaction`](Transaction.md)\[`T`\]
-
-Defined in: [types.ts:218](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L218)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
 ##### privateKey
 
 `Uint8Array`
-<<<<<<< HEAD
 
 ##### extraEntropy?
 
 `boolean` | `Uint8Array`\<`ArrayBufferLike`\>
-=======
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -773,21 +580,13 @@ Defined in: [types.ts:218](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **supports**(`capability`): `boolean`
 
-<<<<<<< HEAD
 Defined in: [types.ts:204](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L204)
-=======
-Defined in: [types.ts:199](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L199)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Parameters
 
 ##### capability
 
-<<<<<<< HEAD
 `number`
-=======
-[`Capability`](../enumerations/Capability.md)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -803,11 +602,7 @@ Defined in: [types.ts:199](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **toCreationAddress**(): `boolean`
 
-<<<<<<< HEAD
 Defined in: [types.ts:210](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L210)
-=======
-Defined in: [types.ts:205](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L205)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -823,11 +618,7 @@ Defined in: [types.ts:205](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **toJSON**(): [`JSONTx`](JSONTx.md)
 
-<<<<<<< HEAD
 Defined in: [types.ts:224](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L224)
-=======
-Defined in: [types.ts:219](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L219)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 
@@ -843,11 +634,7 @@ Defined in: [types.ts:219](https://github.com/Dargon789/ethereumjs-monorepo/blob
 
 > **verifySignature**(): `boolean`
 
-<<<<<<< HEAD
 Defined in: [types.ts:220](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L220)
-=======
-Defined in: [types.ts:215](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/tx/src/types.ts#L215)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 #### Returns
 

@@ -6,11 +6,7 @@
 
 # Interface: BootstrapNodeConfig
 
-<<<<<<< HEAD
 Defined in: [types.ts:66](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L66)
-=======
-Defined in: [types.ts:71](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L71)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Properties
 
@@ -18,11 +14,7 @@ Defined in: [types.ts:71](https://github.com/Dargon789/ethereumjs-monorepo/blob/
 
 > `optional` **chainId**: `number`
 
-<<<<<<< HEAD
 Defined in: [types.ts:70](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L70)
-=======
-Defined in: [types.ts:75](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L75)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -30,11 +22,7 @@ Defined in: [types.ts:75](https://github.com/Dargon789/ethereumjs-monorepo/blob/
 
 > **comment**: `string`
 
-<<<<<<< HEAD
 Defined in: [types.ts:73](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L73)
-=======
-Defined in: [types.ts:78](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L78)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -42,11 +30,7 @@ Defined in: [types.ts:78](https://github.com/Dargon789/ethereumjs-monorepo/blob/
 
 > **id**: `string`
 
-<<<<<<< HEAD
 Defined in: [types.ts:71](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L71)
-=======
-Defined in: [types.ts:76](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L76)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -54,11 +38,7 @@ Defined in: [types.ts:76](https://github.com/Dargon789/ethereumjs-monorepo/blob/
 
 > **ip**: `string`
 
-<<<<<<< HEAD
 Defined in: [types.ts:67](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L67)
-=======
-Defined in: [types.ts:72](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L72)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -66,11 +46,7 @@ Defined in: [types.ts:72](https://github.com/Dargon789/ethereumjs-monorepo/blob/
 
 > **location**: `string`
 
-<<<<<<< HEAD
 Defined in: [types.ts:72](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L72)
-=======
-Defined in: [types.ts:77](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L77)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -78,11 +54,7 @@ Defined in: [types.ts:77](https://github.com/Dargon789/ethereumjs-monorepo/blob/
 
 > `optional` **network**: `string`
 
-<<<<<<< HEAD
 Defined in: [types.ts:69](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L69)
-=======
-Defined in: [types.ts:74](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L74)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -90,8 +62,4 @@ Defined in: [types.ts:74](https://github.com/Dargon789/ethereumjs-monorepo/blob/
 
 > **port**: `string` \| `number`
 
-<<<<<<< HEAD
 Defined in: [types.ts:68](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L68)
-=======
-Defined in: [types.ts:73](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/common/src/types.ts#L73)
->>>>>>> b7777441e (ethereumjs-monoepo)

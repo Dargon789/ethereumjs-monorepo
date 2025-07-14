@@ -4,7 +4,6 @@
 
 # @ethereumjs/tx
 
-<<<<<<< HEAD
 ## Classes
 
 - [AccessList2930Tx](classes/AccessList2930Tx.md)
@@ -15,23 +14,6 @@
 
 ## Interfaces
 
-=======
-## Enumerations
-
-- [Capability](enumerations/Capability.md)
-- [TransactionType](enumerations/TransactionType.md)
-
-## Classes
-
-- [AccessList2930Tx](classes/AccessList2930Tx.md)
-- [Blob4844Tx](classes/Blob4844Tx.md)
-- [EOACode7702Tx](classes/EOACode7702Tx.md)
-- [FeeMarket1559Tx](classes/FeeMarket1559Tx.md)
-- [LegacyTx](classes/LegacyTx.md)
-
-## Interfaces
-
->>>>>>> b7777441e (ethereumjs-monoepo)
 - [AccessList2930TxData](interfaces/AccessList2930TxData.md)
 - [BlobEIP4844TxData](interfaces/BlobEIP4844TxData.md)
 - [EIP1559CompatibleTx](interfaces/EIP1559CompatibleTx.md)
@@ -60,7 +42,6 @@
 - [AuthorizationList](type-aliases/AuthorizationList.md)
 - [AuthorizationListBytes](type-aliases/AuthorizationListBytes.md)
 - [AuthorizationListBytesItem](type-aliases/AuthorizationListBytesItem.md)
-<<<<<<< HEAD
 - [AuthorizationListBytesItemUnsigned](type-aliases/AuthorizationListBytesItemUnsigned.md)
 - [AuthorizationListItem](type-aliases/AuthorizationListItem.md)
 - [AuthorizationListItemUnsigned](type-aliases/AuthorizationListItemUnsigned.md)
@@ -69,18 +50,11 @@
 - [JSONBlobTxNetworkWrapper](type-aliases/JSONBlobTxNetworkWrapper.md)
 - [LegacyTxData](type-aliases/LegacyTxData.md)
 - [TransactionType](type-aliases/TransactionType.md)
-=======
-- [AuthorizationListItem](type-aliases/AuthorizationListItem.md)
-- [BlobEIP4844NetworkValuesArray](type-aliases/BlobEIP4844NetworkValuesArray.md)
-- [JSONBlobTxNetworkWrapper](type-aliases/JSONBlobTxNetworkWrapper.md)
-- [LegacyTxData](type-aliases/LegacyTxData.md)
->>>>>>> b7777441e (ethereumjs-monoepo)
 - [TypedTransaction](type-aliases/TypedTransaction.md)
 - [TypedTxData](type-aliases/TypedTxData.md)
 
 ## Variables
 
-<<<<<<< HEAD
 - [Capability](variables/Capability.md)
 - [paramsTx](variables/paramsTx.md)
 - [TransactionType](variables/TransactionType.md)
@@ -93,12 +67,6 @@
 - [authorizationListBytesItemToJSON](functions/authorizationListBytesItemToJSON.md)
 - [authorizationListJSONItemToBytes](functions/authorizationListJSONItemToBytes.md)
 - [authorizationMessageToSign](functions/authorizationMessageToSign.md)
-=======
-- [paramsTx](variables/paramsTx.md)
-
-## Functions
-
->>>>>>> b7777441e (ethereumjs-monoepo)
 - [blobTxNetworkWrapperToJSON](functions/blobTxNetworkWrapperToJSON.md)
 - [create1559FeeMarketTxFromBytesArray](functions/create1559FeeMarketTxFromBytesArray.md)
 - [createAccessList2930Tx](functions/createAccessList2930Tx.md)
@@ -136,9 +104,6 @@
 - [isFeeMarket1559TxData](functions/isFeeMarket1559TxData.md)
 - [isLegacyTx](functions/isLegacyTx.md)
 - [isLegacyTxData](functions/isLegacyTxData.md)
-<<<<<<< HEAD
 - [normalizeTxParams](functions/normalizeTxParams.md)
 - [recoverAuthority](functions/recoverAuthority.md)
 - [signAuthorization](functions/signAuthorization.md)
-=======
->>>>>>> b7777441e (ethereumjs-monoepo)

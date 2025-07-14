@@ -6,11 +6,7 @@
 
 # Interface: PutBatch\<TKey, TValue\>
 
-<<<<<<< HEAD
 Defined in: [packages/util/src/db.ts:29](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L29)
-=======
-Defined in: [packages/util/src/db.ts:25](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L25)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ## Type Parameters
 
@@ -28,11 +24,7 @@ Defined in: [packages/util/src/db.ts:25](https://github.com/Dargon789/ethereumjs
 
 > **key**: `TKey`
 
-<<<<<<< HEAD
 Defined in: [packages/util/src/db.ts:34](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L34)
-=======
-Defined in: [packages/util/src/db.ts:30](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L30)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -40,11 +32,7 @@ Defined in: [packages/util/src/db.ts:30](https://github.com/Dargon789/ethereumjs
 
 > `optional` **opts**: [`EncodingOpts`](../type-aliases/EncodingOpts.md)
 
-<<<<<<< HEAD
 Defined in: [packages/util/src/db.ts:36](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L36)
-=======
-Defined in: [packages/util/src/db.ts:32](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L32)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -52,11 +40,7 @@ Defined in: [packages/util/src/db.ts:32](https://github.com/Dargon789/ethereumjs
 
 > **type**: `"put"`
 
-<<<<<<< HEAD
 Defined in: [packages/util/src/db.ts:33](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L33)
-=======
-Defined in: [packages/util/src/db.ts:29](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L29)
->>>>>>> b7777441e (ethereumjs-monoepo)
 
 ***
 
@@ -64,8 +48,4 @@ Defined in: [packages/util/src/db.ts:29](https://github.com/Dargon789/ethereumjs
 
 > **value**: `TValue`
 
-<<<<<<< HEAD
 Defined in: [packages/util/src/db.ts:35](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L35)
-=======
-Defined in: [packages/util/src/db.ts:31](https://github.com/Dargon789/ethereumjs-monorepo/blob/master/packages/util/src/db.ts#L31)
->>>>>>> b7777441e (ethereumjs-monoepo)
