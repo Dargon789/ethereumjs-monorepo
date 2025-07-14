@@ -11,8 +11,8 @@ import {
   hexToBytes,
   randomBytes,
 } from '@ethereumjs/util'
-import { trustedSetup } from '@paulmillr/trusted-setups/fast-peerdas.js'
-import { KZG as microEthKZG } from 'micro-eth-signer/kzg.js'
+import { trustedSetup } from '@paulmillr/trusted-setups/fast.js'
+import { KZG as microEthKZG } from 'micro-eth-signer/kzg'
 import { assert, describe, it } from 'vitest'
 
 import {
@@ -281,7 +281,6 @@ describe('Network wrapper tests', () => {
     const proofs = blobsToProofs(kzg, blobs, commitments)
     const unsignedTx = createBlob4844Tx(
       {
-        networkWrapperVersion: 0,
         blobVersionedHashes,
         blobs,
         kzgCommitments: commitments,
@@ -457,7 +456,6 @@ describe('Network wrapper tests', () => {
 
     const txWithMissingBlob = createBlob4844Tx(
       {
-        networkWrapperVersion: 0,
         blobVersionedHashes,
         blobs: blobs.slice(1),
         kzgCommitments: commitments,
@@ -486,7 +484,6 @@ describe('Network wrapper tests', () => {
 
     const txWithInvalidCommitment = createBlob4844Tx(
       {
-        networkWrapperVersion: 0,
         blobVersionedHashes,
         blobs,
         kzgCommitments: commitments,
@@ -515,7 +512,6 @@ describe('Network wrapper tests', () => {
 
     const txWithInvalidVersionedHashes = createBlob4844Tx(
       {
-        networkWrapperVersion: 0,
         blobVersionedHashes,
         blobs,
         kzgCommitments: commitments,

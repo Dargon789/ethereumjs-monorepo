@@ -209,7 +209,6 @@ export function createRPCServerListener(opts: CreateRPCServerListenerOpts): jays
   }
   app.use(server.middleware())
   const httpServer = createServer(app)
-  httpServer.keepAliveTimeout = 20_000
   return httpServer
 }
 

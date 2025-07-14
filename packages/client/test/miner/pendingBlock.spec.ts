@@ -3,12 +3,7 @@ import { createBlockchain } from '@ethereumjs/blockchain'
 import { Common, Hardfork, Mainnet, createCommonFromGethGenesis } from '@ethereumjs/common'
 import { MerkleStateManager } from '@ethereumjs/statemanager'
 import { eip4844GethGenesis, goerliChainConfig } from '@ethereumjs/testdata'
-import {
-  NetworkWrapperType,
-  createBlob4844Tx,
-  createFeeMarket1559Tx,
-  createLegacyTx,
-} from '@ethereumjs/tx'
+import { createBlob4844Tx, createFeeMarket1559Tx, createLegacyTx } from '@ethereumjs/tx'
 import {
   Account,
   Address,
@@ -23,8 +18,8 @@ import {
   randomBytes,
 } from '@ethereumjs/util'
 import { createVM } from '@ethereumjs/vm'
-import { trustedSetup } from '@paulmillr/trusted-setups/fast-peerdas.js'
-import { KZG as microEthKZG } from 'micro-eth-signer/kzg.js'
+import { trustedSetup } from '@paulmillr/trusted-setups/fast.js'
+import { KZG as microEthKZG } from 'micro-eth-signer/kzg'
 import { assert, describe, it, vi } from 'vitest'
 
 import { Config } from '../../src/config.ts'
@@ -362,7 +357,7 @@ describe('[PendingBlock]', async () => {
     const { txPool } = setup()
     txPool['config'].chainCommon.setHardfork(Hardfork.Cancun)
 
-    // fill up the blobAndProofByHash and proofs cache before adding a blob tx
+    // fill up the blobsAndProofsByHash and proofs cache before adding a blob tx
     // for cache pruning check
     const fillBlobs = getBlobs('hello world')
     const fillCommitments = blobsToCommitments(kzg, fillBlobs)
@@ -376,9 +371,13 @@ describe('[PendingBlock]', async () => {
 
     for (let i = 0; i < allowedLength; i++) {
       // this is space efficient as same object is inserted in dummy positions
-      txPool.blobAndProofByHash.set(intToHex(i), fillBlobAndProof)
+      txPool.blobsAndProofsByHash.set(intToHex(i), fillBlobAndProof)
     }
-    assert.strictEqual(txPool.blobAndProofByHash.size, allowedLength, 'fill the cache to capacity')
+    assert.strictEqual(
+      txPool.blobsAndProofsByHash.size,
+      allowedLength,
+      'fill the cache to capacity',
+    )
 
     // Create 2 txs with 3 blobs each so that only 2 of them can be included in a build
     let blobs: PrefixedHexString[] = [],
@@ -398,7 +397,6 @@ describe('[PendingBlock]', async () => {
 
       const txA01 = createBlob4844Tx(
         {
-          networkWrapperVersion: NetworkWrapperType.EIP4844,
           blobVersionedHashes: txBlobVersionedHashes,
           blobs: txBlobs,
           kzgCommitments: txCommitments,
@@ -421,7 +419,7 @@ describe('[PendingBlock]', async () => {
     }
 
     assert.strictEqual(
-      txPool.blobAndProofByHash.size,
+      txPool.blobsAndProofsByHash.size,
       allowedLength,
       'cache should be prune and stay at same size',
     )
@@ -431,7 +429,7 @@ describe('[PendingBlock]', async () => {
       const blob = blobs[i]
       const proof = proofs[i]
 
-      const blobAndProof = txPool.blobAndProofByHash.get(versionedHash) ?? {
+      const blobAndProof = txPool.blobsAndProofsByHash.get(versionedHash) ?? {
         blob: '0x0',
         proof: '0x0',
       }
@@ -499,7 +497,6 @@ describe('[PendingBlock]', async () => {
     // create a tx with missing blob data which should be excluded from the build
     const missingBlobTx = createBlob4844Tx(
       {
-        networkWrapperVersion: NetworkWrapperType.EIP4844,
         blobVersionedHashes,
         kzgCommitments: commitments,
         kzgProofs: proofs,

@@ -1,4 +1,4 @@
-import { bytelist, container } from 'micro-eth-signer/ssz.js'
+import { bytelist, container } from 'micro-eth-signer/ssz'
 import { readEntry } from '../e2store.ts'
 import { decompressData } from '../snappy.ts'
 
