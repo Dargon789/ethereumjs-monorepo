@@ -299,7 +299,7 @@ Logs/shell can be directly accessed through the docker UI for containers, also a
 
 ### Manual Testnet Setup (Verkle Example)
 
-This is an example how to using the EthereumJS client to manually join a research network.
+This is an example of how to use the EthereumJS client to manually join a research network.
 
 We currently support the Kaustinen7 testnet, both with stateless and stateful execution. We will be proactively supporting upcoming testnets as they launch. 
 
