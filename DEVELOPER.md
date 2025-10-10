@@ -141,7 +141,7 @@ Each package includes:
 
 #### Commands
 
-Commands area available on both root and package levels.
+Commands are available on both root and package levels.
 
 Run `npm run lint` to find lint issues and `npm run lint:fix` to fix fixable lint issues.
 
