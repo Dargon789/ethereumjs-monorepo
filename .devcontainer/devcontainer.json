@@ -43,7 +43,7 @@
   "workspaceFolder": "/workspace",
 
   "mounts": [
-    "source=${localEnv:HOME}/.cargo/registry,target=/home/foundry/.cargo/registry,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.cargo/git,target=/home/foundry/.cargo/git,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/.cargo/registry,target=${containerUserHome}/.cargo/registry,type=bind,consistency=cached",
+    "source=${localEnv:HOME}/.cargo/git,target=${containerUserHome}/.cargo/git,type=bind,consistency=cached"
   ]
 }
