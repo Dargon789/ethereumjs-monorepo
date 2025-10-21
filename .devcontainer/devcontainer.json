@@ -1,49 +1,22 @@
-// For format details, see https://aka.ms/devcontainer.json.
 {
-  "name": "Foundry Development",
-  "build": {
-    "context": "..",
-    "dockerfile": "Dockerfile.dev"
-  },
-
+  "name": "Hardhat + EDR",
+  "image": "mcr.microsoft.com/devcontainers/base:bullseye",
   "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": true,
-      "configureZshAsDefaultShell": true,
-      "installOhMyZsh": true,
-      "upgradePackages": true
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
     }
   },
-
-  "forwardPorts": [],
-
-  "postCreateCommand": "rustup default stable && rustup update",
-
+  "postCreateCommand": "scripts/setup.sh",
+  "containerEnv": {
+    "ALCHEMY_URL": "${localEnv:ALCHEMY_URL}",
+    "INFURA_URL": "${localEnv:INFURA_URL}"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
-        "rust-lang.rust-analyzer",
-        "serayuzgur.crates",
-        "tamasfe.even-better-toml",
-        "ms-python.python",
-        "dbaeumer.vscode-eslint",
-        "oven.bun-vscode"
-      ],
-      "settings": {
-        "rust-analyzer.checkOnSave": true,
-        "rust-analyzer.cargo.features": "all"
-      }
+        "esbenp.prettier-vscode",
+        "NomicFoundation.hardhat-solidity"
+      ]
     }
-  },
-
-  "remoteUser": "foundry",
-
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
-
-  "workspaceFolder": "/workspace",
-
-  "mounts": [
-    "source=${localEnv:HOME}/.cargo/registry,target=${containerUserHome}/.cargo/registry,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.cargo/git,target=${containerUserHome}/.cargo/git,type=bind,consistency=cached"
-  ]
+  }
 }
