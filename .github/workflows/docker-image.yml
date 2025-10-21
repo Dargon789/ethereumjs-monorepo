@@ -1,5 +1,4 @@
 name: Docker Build Job
-
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -13,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22]
+        node-version: [20]
     steps:
       -
         name: Set up QEMU
@@ -36,13 +35,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - run: npm install --force
+      - run: npm i
         working-directory: ${{ github.workspace }}
 
       - name: Build & Push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           tags: ghcr.io/dargon789/ethereumjs-monorepo:latest
           provenance: false
+          
