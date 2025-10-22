@@ -1,4 +1,7 @@
 name: Docker Build Job
+permissions:
+  contents: read
+  packages: write
 on:
   pull_request:
     types: [opened, reopened, synchronize]
