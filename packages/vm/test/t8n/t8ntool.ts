@@ -374,14 +374,21 @@ export class TransitionTool {
   }
 
   private writeOutput(args: T8NOptions, output: T8NOutput, outputAlloc: T8NAlloc) {
-    const outputResultFilePath = join(args.output.basedir, args.output.result)
-    const outputAllocFilePath = join(args.output.basedir, args.output.alloc)
-    writeFileSync(outputResultFilePath, JSON.stringify(output))
-    writeFileSync(outputAllocFilePath, JSON.stringify(outputAlloc))
+    const baseDir = require('fs').realpathSync(require('path').resolve(args.output.basedir));
+    const outputResultFilePath = require('path').resolve(baseDir, args.output.result);
+    const outputAllocFilePath = require('path').resolve(baseDir, args.output.alloc);
+    if (!outputResultFilePath.startsWith(baseDir) || !outputAllocFilePath.startsWith(baseDir)) {
+      throw new Error('Output file path escapes output.basedir');
+    }
+    require('fs').writeFileSync(outputResultFilePath, JSON.stringify(output));
+    require('fs').writeFileSync(outputAllocFilePath, JSON.stringify(outputAlloc));
     if (args.trace === true) {
       for (let i = 0; i < this.traces.length; i++) {
-        const tracePath = join(args.output.basedir, `trace-${i}-${this.traces[i][0]}.jsonl`)
-        writeFileSync(tracePath, `${this.traces[i][1].join('\n')}`)
+        const tracePath = require('path').resolve(baseDir, `trace-${i}-${this.traces[i][0]}.jsonl`);
+        if (!tracePath.startsWith(baseDir)) {
+          throw new Error('Trace file path escapes output.basedir');
+        }
+        require('fs').writeFileSync(tracePath, `${this.traces[i][1].join('\n')}`);
       }
     }
   }
