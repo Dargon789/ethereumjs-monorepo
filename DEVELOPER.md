@@ -14,7 +14,7 @@ It is intended to be both an entrypoint for external contributors as well as a r
   - [Linting](#linting)
   - [Spellcheck](#spellcheck)
   - [Testing](#testing)
-  - [Documentation](#documentation)V
+  - [Documentation](#documentation)
 - [Advanced Topics](#advanced-topics)
   - [E2E Testing](#e2e-testing)
   - [Cross-Package Development](#cross-package-development)
