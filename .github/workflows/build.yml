@@ -19,12 +19,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - id: create-cache-key
-        run: echo "submodule-cache-key=$(git submodule)" >> $GITHUB_OUTPUT
+        run: echo "submodule-cache-key=$(git submodule | head -n 1)" >> $GITHUB_OUTPUT
         shell: bash
 
       - uses: actions/cache/restore@v4
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/cache/restore@v4
         id: dep-cache
@@ -56,7 +56,7 @@ jobs:
           key: npm-${{ hashFiles('package-lock.json') }}
 
       - name: Use Node.js 20
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 20
           cache: 'npm'
@@ -78,6 +78,13 @@ jobs:
 
     outputs:
       dep-cache-key: ${{ steps.dep-cache.outputs.cache-primary-key }}-${{ github.run_id }}
+
+  binarytree:
+    needs: [build, checkout-submodules]
+    uses: ./.github/workflows/binarytree-build.yml
+    secrets: inherit
+    with:
+      dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
 
   block:
     needs: [build, checkout-submodules]
@@ -122,13 +129,6 @@ jobs:
     with:
       dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
 
-  ethash:
-    needs: build
-    uses: ./.github/workflows/ethash-build.yml
-    secrets: inherit
-    with:
-      dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
-
   evm:
     needs: [build, checkout-submodules]
     uses: ./.github/workflows/evm-build.yml
@@ -143,13 +143,6 @@ jobs:
     with:
       dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
 
-  genesis:
-    needs: build
-    uses: ./.github/workflows/genesis-build.yml
-    secrets: inherit
-    with:
-      dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
-
   mpt:
     needs: build
     uses: ./.github/workflows/mpt-build.yml
@@ -157,9 +150,9 @@ jobs:
     with:
       dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
 
-  rlp:
+  static:
     needs: build
-    uses: ./.github/workflows/rlp-build.yml
+    uses: ./.github/workflows/rlp-ethash-genesis-wallet-build.yml
     secrets: inherit
     with:
       dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
@@ -186,12 +179,6 @@ jobs:
     with:
       dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
 
-  verkle:
-    needs: build
-    uses: ./.github/workflows/verkle-build.yml
-    with:
-      dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
-
   vm-pr:
     needs: [build, checkout-submodules]
     uses: ./.github/workflows/vm-pr.yml
@@ -200,16 +187,15 @@ jobs:
       dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
       submodule-cache-key: ${{ needs.checkout-submodules.outputs.submodule-cache-key }}
 
-  wallet:
-    needs: build
-    uses: ./.github/workflows/wallet-build.yml
-    secrets: inherit
-    with:
-      dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
-
   lint:
     needs: build
     uses: ./.github/workflows/lint.yml
+    with:
+      dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
+
+  noCompile:
+    needs: build
+    uses: ./.github/workflows/noCompile.yml
     with:
       dep-cache-key: ${{ needs.build.outputs.dep-cache-key }}
 
