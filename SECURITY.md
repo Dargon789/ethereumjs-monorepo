@@ -14,8 +14,8 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+We take all security bugs in EthereumJS seriously. We appreciate your efforts and responsible disclosure and will make every effort to acknowledge your contributions.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Please report security vulnerabilities using GitHub's [private vulnerability reporting feature](https://github.com/ethereumjs/ethereumjs-monorepo/security/advisories/new).
+
+You can expect a response within 48 hours. If you do not receive a response, please follow up to ensure we have received your message.
