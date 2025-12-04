@@ -1,4 +1,4 @@
-import { sha256 } from 'ethereum-cryptography/sha256.js'
+import { sha256 } from '@noble/hashes/sha2.js'
 
 import { bytesToHex, hexToBytes, utf8ToBytes } from './bytes.ts'
 
@@ -36,7 +36,7 @@ function getPadded(data: Uint8Array, blobs_len: number): Uint8Array {
  * @param data Input data (must be exactly BLOB_SIZE bytes)
  * @returns Hex-prefixed blob string
  */
-function getBlob(data: Uint8Array): PrefixedHexString {
+export function getBlob(data: Uint8Array): PrefixedHexString {
   const blob = new Uint8Array(BLOB_SIZE)
   for (let i = 0; i < FIELD_ELEMENTS_PER_BLOB; i++) {
     const chunk = new Uint8Array(32)
@@ -196,4 +196,14 @@ export const blobsToCellsAndProofs = (
 
   const indices = Array.from({ length: CELLS_PER_EXT_BLOB }, (_, i) => i)
   return [...blobsAndCells, indices] as [PrefixedHexString[], PrefixedHexString[], number[]]
+}
+
+/**
+ * EIP-7594: Computes cell proofs for the given blobs.
+ * @param kzg KZG implementation capable of computing cell proofs
+ * @param blobs Array of blob data as hex-prefixed strings
+ * @returns Array of lowercase hex-prefixed cell proofs (aligned with input order)
+ */
+export const blobsToCellProofs = (kzg: KZG, blobs: PrefixedHexString[]): PrefixedHexString[] => {
+  return blobsToCellsAndProofs(kzg, blobs)[1] as PrefixedHexString[]
 }

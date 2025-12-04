@@ -8,7 +8,7 @@ import { createBlockchain } from '@ethereumjs/blockchain'
 import { Common, Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common'
 import { RLP } from '@ethereumjs/rlp'
 import { type MerkleStateManager } from '@ethereumjs/statemanager'
-import { customChainConfig, goerliChainConfig } from '@ethereumjs/testdata'
+import { SIGNER_A, SIGNER_B, customChainConfig, goerliChainConfig } from '@ethereumjs/testdata'
 import {
   Capability,
   LegacyTx,
@@ -32,8 +32,8 @@ import {
   unpadBytes,
   utf8ToBytes,
 } from '@ethereumjs/util'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
-import { secp256k1 } from 'ethereum-cryptography/secp256k1'
+import { secp256k1 } from '@noble/curves/secp256k1.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 import { assert, describe, it } from 'vitest'
 
 import { createVM, runBlock } from '../../src/index.ts'
@@ -174,10 +174,6 @@ describe('runBlock() -> successful API parameter usage', async () => {
       hardfork: Hardfork.Chainstart,
     })
 
-    const privateKey = hexToBytes(
-      '0xe331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109',
-    )
-
     function getBlock(common: Common): Block {
       return createBlock(
         {
@@ -191,7 +187,7 @@ describe('runBlock() -> successful API parameter usage', async () => {
                 gasLimit: BigInt(100000),
               },
               { common },
-            ).sign(privateKey),
+            ).sign(SIGNER_A.privateKey),
           ],
         },
         { common },
@@ -370,33 +366,17 @@ describe('runBlock() -> runtime behavior', async () => {
     const common = new Common({ chain: goerliChainConfig, hardfork: Hardfork.Istanbul })
     const vm = await setupVM({ common })
 
-    const signer = {
-      address: new Address(hexToBytes('0x0b90087d864e82a284dca15923f3776de6bb016f')),
-      privateKey: hexToBytes('0x64bf9cc30328b0e42387b3c82c614e6386259136235e20c1357bd11cdee86993'),
-      publicKey: hexToBytes(
-        '0x40b2ebdf4b53206d2d3d3d59e7e2f13b1ea68305aec71d5d24cefe7f24ecae886d241f9267f04702d7f693655eb7b4aa23f30dcd0c3c5f2b970aad7c8a828195',
-      ),
-    }
-
-    const otherUser = {
-      address: new Address(hexToBytes('0x6f62d8382bf2587361db73ceca28be91b2acb6df')),
-      privateKey: hexToBytes('0x2a6e9ad5a6a8e4f17149b8bc7128bf090566a11dbd63c30e5a0ee9f161309cd6'),
-      publicKey: hexToBytes(
-        '0xca0a55f6e81cb897aee6a1c390aa83435c41048faa0564b226cfc9f3df48b73e846377fb0fd606df073addc7bd851f22547afbbdd5c3b028c91399df802083a2',
-      ),
-    }
-
-    // add balance to otherUser to send two txs to zero address
-    await vm.stateManager.putAccount(otherUser.address, new Account(BigInt(0), BigInt(42000)))
+    // add balance to SIGNER_B to send two txs to zero address
+    await vm.stateManager.putAccount(SIGNER_B.address, new Account(BigInt(0), BigInt(42000)))
     const tx = createLegacyTx(
       { to: createZeroAddress(), gasLimit: 21000, gasPrice: 1 },
       { common },
-    ).sign(otherUser.privateKey)
+    ).sign(SIGNER_B.privateKey)
 
-    // create block with the signer and txs
+    // create block with SIGNER_A and txs
     const block = createSealedCliqueBlock(
       { header: { extraData: new Uint8Array(97) }, transactions: [tx, tx] },
-      signer.privateKey,
+      SIGNER_A.privateKey,
       { common },
     )
 
@@ -406,7 +386,7 @@ describe('runBlock() -> runtime behavior', async () => {
       skipBlockValidation: true,
       generate: true,
     })
-    const account = await vm.stateManager.getAccount(signer.address)
+    const account = await vm.stateManager.getAccount(SIGNER_A.address)
     assert.strictEqual(
       account!.balance,
       BigInt(42000),
@@ -628,18 +608,23 @@ describe('runBlock() -> tx types', async () => {
       const addressBytes = address.toBytes()
 
       const rlpdMsg = RLP.encode([chainIdBytes, addressBytes, nonceBytes])
-      const msgToSign = keccak256(concatBytes(new Uint8Array([5]), rlpdMsg))
-      const signed = secp256k1.sign(msgToSign, pkey)
+      const msgToSign = keccak_256(concatBytes(new Uint8Array([5]), rlpdMsg))
+      const signed = secp256k1.sign(msgToSign, pkey, { format: 'recovered', prehash: false })
 
-      const yParity = signed.recovery === 0 ? new Uint8Array() : new Uint8Array([1])
+      const { recovery, r, s } = secp256k1.Signature.fromBytes(signed, 'recovered')
+      if (recovery === undefined) {
+        throw new Error('Recovery is undefined')
+      }
+
+      const yParity = recovery === 0 ? new Uint8Array() : new Uint8Array([1])
 
       return [
         chainIdBytes,
         addressBytes,
         nonceBytes,
         yParity,
-        bigIntToUnpaddedBytes(signed.r),
-        bigIntToUnpaddedBytes(signed.s),
+        bigIntToUnpaddedBytes(r),
+        bigIntToUnpaddedBytes(s),
       ]
     }
 
