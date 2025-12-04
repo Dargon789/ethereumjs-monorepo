@@ -25,8 +25,8 @@ import {
   short,
   unprefixedHexToBytes,
 } from '@ethereumjs/util'
+import { sha256 } from '@noble/hashes/sha2.js'
 import debugDefault from 'debug'
-import { sha256 } from 'ethereum-cryptography/sha256.js'
 
 import { Bloom } from './bloom/index.ts'
 import { emitEVMProfile } from './emitEVMProfile.ts'
@@ -385,7 +385,7 @@ async function applyBlock(vm: VM, block: Block, opts: RunBlockOpts): Promise<App
           )
         }
       }
-      await block.validateData()
+      await block.validateData(false, true, opts.validateBlockSize ?? false)
     }
   }
   if (vm.common.isActivatedEIP(4788)) {

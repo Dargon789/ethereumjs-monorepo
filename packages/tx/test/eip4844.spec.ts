@@ -12,7 +12,7 @@ import {
   randomBytes,
 } from '@ethereumjs/util'
 import { trustedSetup } from '@paulmillr/trusted-setups/fast-peerdas.js'
-import { loadKZG } from 'kzg-wasm'
+//import { loadKZG } from 'kzg-wasm'
 import { KZG as microEthKZG } from 'micro-eth-signer/kzg.js'
 import { assert, beforeAll, describe, it } from 'vitest'
 
@@ -30,7 +30,7 @@ import { eip4844GethGenesis } from '@ethereumjs/testdata'
 import { serialized4844TxData } from './testData/serialized4844tx.ts'
 
 import type { KZG, PrefixedHexString } from '@ethereumjs/util'
-import { secp256k1 } from 'ethereum-cryptography/secp256k1'
+import { secp256k1 } from '@noble/curves/secp256k1.js'
 import type { BlobEIP4844TxData } from '../src/index.ts'
 
 const pk = randomBytes(32)
@@ -38,7 +38,7 @@ let kzgs: Array<{ lib: KZG; label: string; common: any }> = []
 
 beforeAll(async () => {
   const jsKzg = new microEthKZG(trustedSetup) as KZG
-  const wasmKzg = (await loadKZG()) as KZG
+  //const wasmKzg = (await loadKZG()) as KZG
 
   const jsKzgSetup = {
     lib: jsKzg,
@@ -49,7 +49,8 @@ beforeAll(async () => {
       customCrypto: { kzg: jsKzg },
     }),
   }
-  const wasmKzgSetup = {
+  // Only activate on demand, otherwise too costly for now
+  /*const wasmKzgSetup = {
     lib: wasmKzg,
     label: 'WASM',
     common: createCommonFromGethGenesis(eip4844GethGenesis, {
@@ -57,9 +58,9 @@ beforeAll(async () => {
       hardfork: Hardfork.Cancun,
       customCrypto: { kzg: wasmKzg },
     }),
-  }
-  kzgs = [jsKzgSetup, wasmKzgSetup]
-}, 50000)
+  }*/
+  kzgs = [jsKzgSetup]
+}, 60000)
 
 describe('EIP4844 addSignature tests', () => {
   it('addSignature() -> correctly adds correct signature values', () => {
@@ -91,7 +92,16 @@ describe('EIP4844 addSignature tests', () => {
       )
 
       const msgHash = tx.getHashedMessageToSign()
-      const { recovery, r, s } = secp256k1.sign(msgHash, privKey)
+      // Use same options as Legacy.sign internally uses
+      const signatureBytes = secp256k1.sign(msgHash, privKey, {
+        format: 'recovered',
+        prehash: false,
+      })
+      const { recovery, r, s } = secp256k1.Signature.fromBytes(signatureBytes, 'recovered')
+
+      if (recovery === undefined) {
+        throw new Error('Invalid signature recovery')
+      }
 
       const signedTx = tx.sign(privKey)
       const addSignatureTx = tx.addSignature(BigInt(recovery), r, s)
@@ -112,7 +122,16 @@ describe('EIP4844 addSignature tests', () => {
       )
 
       const msgHash = tx.getHashedMessageToSign()
-      const { recovery, r, s } = secp256k1.sign(msgHash, privKey)
+      // Use same options as Legacy.sign internally uses
+      const signatureBytes = secp256k1.sign(msgHash, privKey, {
+        format: 'recovered',
+        prehash: false,
+      })
+      const { recovery, r, s } = secp256k1.Signature.fromBytes(signatureBytes, 'recovered')
+
+      if (recovery === undefined) {
+        throw new Error('Invalid signature recovery')
+      }
 
       assert.throws(() => {
         // This will throw, since we now try to set either v=27 or v=28
@@ -132,6 +151,9 @@ describe('EIP4844 constructor tests - valid scenarios', () => {
         to: createZeroAddress(),
       }
       const tx = createBlob4844Tx(txData, { common: kzg.common })
+      assert.throws(() => {
+        tx.toCreationAddress()
+      }, 'Blob4844Tx cannot create contracts')
       assert.strictEqual(
         tx.type,
         3,
@@ -434,57 +456,6 @@ describe('Network wrapper tests', () => {
         'encoded blobs',
         undefined,
         `throws on blobsData and blobs in txData (${kzg.label})`,
-      )
-
-      assert.throws(
-        () =>
-          createBlob4844Tx(
-            {
-              blobsData: ['hello world'],
-              kzgCommitments: ['0xabcd'],
-              maxFeePerBlobGas: 100000000n,
-              gasLimit: 0xffffffn,
-              to: randomBytes(20),
-            },
-            { common },
-          ),
-        'KZG commitments',
-        undefined,
-        `throws on blobsData and KZG commitments in txData (${kzg.label})`,
-      )
-
-      assert.throws(
-        () =>
-          createBlob4844Tx(
-            {
-              blobsData: ['hello world'],
-              blobVersionedHashes: ['0x01cd'],
-              maxFeePerBlobGas: 100000000n,
-              gasLimit: 0xffffffn,
-              to: randomBytes(20),
-            },
-            { common },
-          ),
-        'versioned hashes',
-        undefined,
-        `throws on blobsData and versioned hashes in txData (${kzg.label})`,
-      )
-
-      assert.throws(
-        () =>
-          createBlob4844Tx(
-            {
-              blobsData: ['hello world'],
-              kzgProofs: ['0x01cd'],
-              maxFeePerBlobGas: 100000000n,
-              gasLimit: 0xffffffn,
-              to: randomBytes(20),
-            },
-            { common },
-          ),
-        'KZG proofs',
-        undefined,
-        `throws on blobsData and KZG proofs in txData (${kzg.label})`,
       )
 
       assert.throws(

@@ -24,6 +24,8 @@
     }
   ],
   "words": [
+    "prehash",
+    "viem",
     "immediates",
     "unerasable",
     "bytelist",
@@ -640,6 +642,7 @@
     "peerdas",
     "getpayload",
     "ckzg",
-    "Damgård"
+    "Damgård",
+    "viem"
   ]
 }

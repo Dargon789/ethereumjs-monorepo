@@ -1,6 +1,10 @@
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
 import pluginJs from '@eslint/js'
 import importPlugin from 'eslint-plugin-import'
 import tseslint from 'typescript-eslint'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -35,6 +39,7 @@ export default [
         extraFileExtensions: ['.json'],
         sourceType: 'module',
         project: './tsconfig.lint.json',
+        tsconfigRootDir: __dirname,
       },
     },
   },
@@ -43,7 +48,7 @@ export default [
   importPlugin.flatConfigs.recommended,
   {
     rules: {
-      'no-restricted-imports': ['error', 'ethereum-cryptography/utils'],
+      'no-restricted-imports': ['error'],
       'no-restricted-syntax': [
         'error',
         {
