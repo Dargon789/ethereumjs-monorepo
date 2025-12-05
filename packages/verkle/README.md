@@ -9,7 +9,7 @@
 | Implementation of [Verkle Trees](https://ethereum.org/en/roadmap/verkle-trees/) as specified in [EIP-6800](https://eips.ethereum.org/EIPS/eip-6800) |
 | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 
-> **\[DEPRECATED\]** Development of this library is discontinued (new direction in stateless research).
+> Verkle trees are a cryptographic data structure proposed for use in Ethereum to optimize storage and transaction verification. They combine features of Merkle Patricia Tries and Vector Commitment Trees to offer efficient data verification with smaller proof sizes. The goal is to improve scalability and efficiency in Ethereum's network operations.
 
 **Note:** This library is in an **experimental** stage and should not be used in production!
 
@@ -54,7 +54,7 @@ If you prefer to instantiate the verkle tree class directly, you can do so by pa
 
 import { MapDB, bytesToHex } from '@ethereumjs/util'
 import { VerkleTree } from '@ethereumjs/verkle'
-import * as verkle from 'micro-eth-signer/verkle.js'
+import * as verkle from 'micro-eth-signer/verkle'
 
 const main = async () => {
   const tree = new VerkleTree({
@@ -197,7 +197,7 @@ Additional log selections can be added with a comma separated list (no spaces). 
 
 ## EthereumJS
 
-The `EthereumJS` GitHub organization and its repositories are managed by the Ethereum Foundation JavaScript team, see our [website](https://ethereumjs.github.io/) for a team introduction. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
+See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
 
 ## License
 

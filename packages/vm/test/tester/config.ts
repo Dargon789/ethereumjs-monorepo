@@ -1,6 +1,6 @@
 import * as path from 'path'
 import { Common, Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common'
-import * as verkle from 'micro-eth-signer/verkle.js'
+import * as verkle from 'micro-eth-signer/verkle'
 
 import type { HardforkTransitionConfig } from '@ethereumjs/common'
 import type { KZG } from '@ethereumjs/util'
@@ -507,9 +507,9 @@ export function getExpectedTests(
  * @param defaultChoice if to use `NONE` or `ALL` as default choice
  * @returns array with test names
  */
-export function getSkipTests(choices: string, defaultChoice: string): string[] {
+export function getSkipTests(choices: string | undefined, defaultChoice: string): string[] {
   let skipTests: string[] = []
-  if (!choices) {
+  if (choices === undefined) {
     choices = defaultChoice
   }
   choices = choices.toLowerCase()

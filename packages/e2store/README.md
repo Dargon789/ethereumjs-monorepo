@@ -9,8 +9,6 @@
 | A collection of utility functions for Ethereum data storage formats. |
 | ------------------------------------------------------------------- |
 
-> **\[CONSIDERED FOR DEPRECATION\]** This library is being considered for deprecation. If you find it useful, please let us know!
-
 `@ethereumjs/e2store` provides utilities for working with Ethereum data storage formats, including E2HS, Era1, and Era files. These formats are commonly used for storing historical blockchain data, beacon states, and block data in an efficient, provable, and standardized way.
 
 ## Table of Contents
@@ -155,6 +153,7 @@ console.log('tupleEntry', tupleEntry.value!)
 ```ts
 // ./examples/era1.ts#L57-L59
 
+
 const valid = await validateERA1(era1File)
 console.log('valid', valid)
 ```
@@ -279,7 +278,7 @@ console.log('slotIndex', {
 
 ## EthereumJS
 
-The `EthereumJS` GitHub organization and its repositories are managed by the Ethereum Foundation JavaScript team, see our [website](https://ethereumjs.github.io/) for a team introduction. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
+See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
 
 ## License
 

@@ -6,7 +6,7 @@
 [![Code Coverage][mpt-coverage-badge]][mpt-coverage-link]
 [![Discord][discord-badge]][discord-link]
 
-| Implementation of the [Modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) as specified in the [Ethereum Yellow Paper](http://gavwood.com/Paper.pdf) |
+| Implementation of the [Modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-mpt/) as specified in the [Ethereum Yellow Paper](http://gavwood.com/Paper.pdf) |
 | ---------------------------------------------------------------------------- |
 
 - 🔭 Highly scalable
@@ -44,7 +44,7 @@ npm install @ethereumjs/mpt
 
 ## Getting Started
 
-This class implements the basic [Modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) in the `Trie` base class, which you can use with the `useKeyHashing` option set to `true` to create a Merkle Patricia Trie which stores values under the `keccak256` hash of its keys (this is the Trie flavor which is used in Ethereum production systems).
+This class implements the basic [Modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-mpt/) in the `Trie` base class, which you can use with the `useKeyHashing` option set to `true` to create a Merkle Patricia Trie which stores values under the `keccak256` hash of its keys (this is the Trie flavor which is used in Ethereum production systems).
 
 Checkpointing functionality to `Trie` through the methods `checkpoint`, `commit` and `revert`.
 
@@ -185,7 +185,7 @@ void main()
 
 ### Database Options
 
-The `DB` opt in the `MPTOpts` allows you to use any database that conforms to the `DB` interface to store the trie data in. We provide several [examples](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/trie/examples) for database implementations. The [level.js](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/trie/examples/level.js) example is used in the `ethereumjs client` while [lmdb.js](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/trie/examples/lmdb.js) is an alternative implementation that uses the popular [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) as its underlying database.
+The `DB` opt in the `MPTOpts` allows you to use any database that conforms to the `DB` interface to store the trie data in. We provide several [examples](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/mpt/examples) for database implementations. The [level.js](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/mpt/examples/level.js) example is used in the `ethereumjs client` while [lmdb.js](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/mpt/examples/lmdb.js) is an alternative implementation that uses the popular [LMDB](https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database) as its underlying database.
 
 If no `db` option is provided, an in-memory database powered by [a Javascript Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) will fulfill this role (imported from `@ethereumjs/util`, see [mapDB](https://github.com/ethereumjs/ethereumjs-monorepo/blob/master/packages/util/src/mapDB.ts) module).
 
@@ -430,7 +430,7 @@ Additional log selections can be added with a comma separated list (no spaces). 
 
 ## EthereumJS
 
-The `EthereumJS` GitHub organization and its repositories are managed by the Ethereum Foundation JavaScript team, see our [website](https://ethereumjs.github.io/) for a team introduction. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
+See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
 
 ## License
 

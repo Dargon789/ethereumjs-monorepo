@@ -5,17 +5,17 @@
 Use this section to tell people about which versions of your project are
 currently being supported with security updates.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| Version     | Supported          |
+| ----------- | ------------------ |
+| >=10.x.x    | :white_check_mark: |
+| 7.x.x/8.x.x | :white_check_mark: |
+| 6.x.x       | :white_check_mark: |
+| < 6.0.0     | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+We take all security bugs in EthereumJS seriously. We appreciate your efforts and responsible disclosure and will make every effort to acknowledge your contributions.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Please report security vulnerabilities using GitHub's [private vulnerability reporting feature](https://github.com/ethereumjs/ethereumjs-monorepo/security/advisories/new).
+
+You can expect a response within 48 hours. If you do not receive a response, please follow up to ensure we have received your message.

@@ -1,0 +1,22 @@
+{
+  "name": "Hardhat",
+  "image": "mcr.microsoft.com/devcontainers/base:bullseye",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    }
+  },
+  "postCreateCommand": "scripts/setup.sh",
+  "containerEnv": {
+    "ALCHEMY_URL": "${localEnv:ALCHEMY_URL}",
+    "INFURA_URL": "${localEnv:INFURA_URL}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "NomicFoundation.hardhat-solidity"
+      ]
+    }
+  }
+}
