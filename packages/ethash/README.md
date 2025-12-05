@@ -6,10 +6,8 @@
 [![Code Coverage][ethash-coverage-badge]][ethash-coverage-link]
 [![Discord][discord-badge]][discord-link]
 
-| [Ethash](https://ethereum.org/en/developers/docs/consensus-mechanisms/pow/mining/mining-algorithms/ethash/) implementation in TypeScript. |
+| [Ethash](https://github.com/ethereum/wiki/wiki/Ethash) implementation in TypeScript. |
 | ------------------------------------------------------------------------------------ |
-
-> **\[DEPRECATED\]** This library has been deprecated (deprecation of EthereumJS Client + what is Ethash anyway? 😂).
 
 ## Table of Contents
 
@@ -114,7 +112,7 @@ Using ESM will give you additional advantages over CJS beyond browser usage like
 
 ## EthereumJS
 
-The `EthereumJS` GitHub organization and its repositories are managed by members of the former Ethereum Foundation JavaScript team and the broader Ethereum community. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
+See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
 
 ## License
 

@@ -1,20 +1,43 @@
-import { trustedSetup } from '@paulmillr/trusted-setups/fast-peerdas.js'
+import { trustedSetup as slow } from '@paulmillr/trusted-setups'
+import { trustedSetup } from '@paulmillr/trusted-setups/fast.js'
 import { loadKZG } from 'kzg-wasm'
-import { KZG as microEthKZG } from 'micro-eth-signer/kzg.js'
+import { KZG as microEthKZG } from 'micro-eth-signer/kzg'
 import { assert, beforeAll, describe, it } from 'vitest'
 
 import { getBlobs } from '../src/blobs.ts'
 
 import type { KZG } from '../src/kzg.ts'
 
-const jsKZG = new microEthKZG(trustedSetup)
+export const jsKZG = new microEthKZG(trustedSetup)
 
 describe('KZG API tests', () => {
-  let wasmKZG: KZG
+  let wasm: Awaited<ReturnType<typeof loadKZG>>
   beforeAll(async () => {
-    wasmKZG = await loadKZG()
-  }, 50000)
-
+    wasm = await loadKZG({
+      n1: 4096,
+      n2: 65,
+      g1: ''.concat(...slow.g1_lagrange.map((el) => el.slice(2))),
+      g2: ''.concat(...slow.g2_monomial.map((el) => el.slice(2))),
+    })
+  })
+  const wasmKZG: KZG = {
+    blobToKzgCommitment(blob: string): string {
+      return wasm.blobToKZGCommitment(blob)
+    },
+    computeBlobProof(blob: string, commitment: string): string {
+      return wasm.computeBlobKZGProof(blob, commitment)
+    },
+    verifyProof(polynomialKZG: string, z: string, y: string, kzgProof: string): boolean {
+      return wasm.verifyKZGProof(polynomialKZG, z, y, kzgProof)
+    },
+    verifyBlobProofBatch(
+      blobs: string[],
+      expectedKZGCommitments: string[],
+      kzgProofs: string[],
+    ): boolean {
+      return wasm.verifyBlobKZGProofBatch(blobs, expectedKZGCommitments, kzgProofs)
+    },
+  }
   it('should produce the same outputs', () => {
     const blob = getBlobs('hello')[0]
     const commit = wasmKZG.blobToKzgCommitment(blob)

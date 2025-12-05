@@ -103,7 +103,7 @@ Module with `EIP-7702` authorization list signing utilities.
 
 ## Module: [blobs](src/blobs.ts)
 
-Module providing helpers around EIP-4844 blobs for creating blobs, associated KZG commitments and proofs as well as versioned hashes. It also provides helpers for EIP-7594 conformant blobs for creating extended cells and corresponding proofs.
+Module providing helpers for 4844 blobs and versioned hashes.
 
 ```ts
 // ./examples/blobs.ts
@@ -279,7 +279,7 @@ import { stripHexPrefix } from '@ethereumjs/util'
 
 ## EthereumJS
 
-The `EthereumJS` GitHub organization and its repositories are managed by members of the former Ethereum Foundation JavaScript team and the broader Ethereum community. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
+See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
 
 ## License
 

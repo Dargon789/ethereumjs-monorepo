@@ -309,8 +309,9 @@ export class Common {
    * Internal helper for _buildParamsCache()
    */
   protected _mergeWithParamsCache(params: ParamsConfig) {
-    for (const [key, value] of Object.entries(params)) {
-      this._paramsCache[key] = value
+    this._paramsCache = {
+      ...this._paramsCache,
+      ...params,
     }
   }
 
@@ -319,7 +320,6 @@ export class Common {
    */
   protected _buildParamsCache() {
     this._paramsCache = {}
-
     // Iterate through all hardforks up to hardfork set
     const hardfork = this.hardfork()
     for (const hfChanges of this.HARDFORK_CHANGES) {
@@ -327,9 +327,7 @@ export class Common {
       if ('eips' in hfChanges[1]) {
         const hfEIPs = hfChanges[1].eips ?? []
         for (const eip of hfEIPs) {
-          if (this._params[eip] !== undefined && this._params[eip] !== null) {
-            this._mergeWithParamsCache(this._params[eip])
-          }
+          this._mergeWithParamsCache(this._params[eip] ?? {})
         }
       }
       // Hardfork-scoped params (e.g. for bpo1, bpo2)
@@ -339,17 +337,12 @@ export class Common {
         this._mergeWithParamsCache(hfScopedParams)
       }
       // Parameter-inlining HF config (e.g. for istanbul or custom blobSchedule)
-      if (hfChanges[1].params !== undefined && hfChanges[1].params !== null) {
-        this._mergeWithParamsCache(hfChanges[1].params)
-      }
+      this._mergeWithParamsCache(hfChanges[1].params ?? {})
       if (hfChanges[0] === hardfork) break
     }
-
     // Iterate through all additionally activated EIPs
     for (const eip of this._eips) {
-      if (this._params[eip] !== undefined && this._params[eip] !== null) {
-        this._mergeWithParamsCache(this._params[eip])
-      }
+      this._mergeWithParamsCache(this._params[eip] ?? {})
     }
   }
 
@@ -607,46 +600,39 @@ export class Common {
   }
 
   /**
-   * Returns the block number or timestamp at which the next hardfork will occur.
-   * For pre-merge hardforks, returns the block number.
-   * For post-merge hardforks, returns the timestamp.
-   * Returns null if there is no next hardfork.
+   * Returns the change block for the next hardfork after the hardfork provided or set
    * @param hardfork Hardfork name, optional if HF set
-   * @returns Block number or timestamp, or null if not available
+   * @returns Block timestamp, number or null if not available
    */
   nextHardforkBlockOrTimestamp(hardfork?: string | Hardfork): bigint | null {
-    const targetHardfork = hardfork ?? this._hardfork
+    hardfork = hardfork ?? this._hardfork
     const hfs = this.hardforks()
-
-    // Find the index of the target hardfork
-    let targetHfIndex = hfs.findIndex((hf) => hf.name === targetHardfork)
-
-    // Special handling for The Merge (Paris) hardfork
-    if (targetHardfork === Hardfork.Paris) {
-      // The Merge is determined by total difficulty, not block number
-      // So we look at the previous hardfork's parameters instead
-      targetHfIndex -= 1
+    let hfIndex = hfs.findIndex((hf) => hf.name === hardfork)
+    // If the current hardfork is merge, go one behind as merge hf is not part of these
+    // calcs even if the merge hf block is set
+    if (hardfork === Hardfork.Paris) {
+      hfIndex -= 1
     }
-
-    // If we couldn't find a valid hardfork index, return null
-    if (targetHfIndex < 0) {
+    // Hardfork not found
+    if (hfIndex < 0) {
       return null
     }
 
-    // Get the current hardfork's block/timestamp
-    const currentHf = hfs[targetHfIndex]
-    const currentBlockOrTimestamp = currentHf.timestamp ?? currentHf.block
-    if (currentBlockOrTimestamp === null || currentBlockOrTimestamp === undefined) {
-      return null
-    }
+    let currHfTimeOrBlock = hfs[hfIndex].timestamp ?? hfs[hfIndex].block
+    currHfTimeOrBlock =
+      currHfTimeOrBlock !== null && currHfTimeOrBlock !== undefined
+        ? Number(currHfTimeOrBlock)
+        : null
 
-    // Find the next hardfork that has a different block/timestamp
-    const nextHf = hfs.slice(targetHfIndex + 1).find((hf) => {
-      const nextBlockOrTimestamp = hf.timestamp ?? hf.block
+    const nextHf = hfs.slice(hfIndex + 1).find((hf) => {
+      let hfTimeOrBlock = hf.timestamp ?? hf.block
+      hfTimeOrBlock =
+        hfTimeOrBlock !== null && hfTimeOrBlock !== undefined ? Number(hfTimeOrBlock) : null
       return (
-        nextBlockOrTimestamp !== null &&
-        nextBlockOrTimestamp !== undefined &&
-        nextBlockOrTimestamp !== currentBlockOrTimestamp
+        hf.name !== Hardfork.Paris &&
+        hfTimeOrBlock !== null &&
+        hfTimeOrBlock !== undefined &&
+        hfTimeOrBlock !== currHfTimeOrBlock
       )
     })
     // If no next hf found with valid block or timestamp return null
@@ -654,13 +640,12 @@ export class Common {
       return null
     }
 
-    // Get the block/timestamp for the next hardfork
-    const nextBlockOrTimestamp = nextHf.timestamp ?? nextHf.block
-    if (nextBlockOrTimestamp === null || nextBlockOrTimestamp === undefined) {
+    const nextHfBlock = nextHf.timestamp ?? nextHf.block
+    if (nextHfBlock === null || nextHfBlock === undefined) {
       return null
     }
 
-    return BigInt(nextBlockOrTimestamp)
+    return BigInt(nextHfBlock)
   }
 
   /**
