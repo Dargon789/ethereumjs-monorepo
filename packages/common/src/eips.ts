@@ -403,7 +403,7 @@ export const eipsDict: EIPsDict = {
   },
   /**
    * Description : Peerdas blob transactions
-   * URL         : hhttps://eips.ethereum.org/EIPS/eip-7594
+   * URL         : https://eips.ethereum.org/EIPS/eip-7594
    * Status      : Review
    */
   7594: {
