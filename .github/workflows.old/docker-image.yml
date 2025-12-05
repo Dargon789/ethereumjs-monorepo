@@ -1,5 +1,7 @@
 name: Docker Build Job
-
+permissions:
+  contents: read
+  packages: write
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -10,7 +12,6 @@ on:
 
 jobs:
   docker:
-    if: false # Temporarily disabled, not sure if kept alive
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -32,7 +33,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -40,11 +41,11 @@ jobs:
       - run: npm i
         working-directory: ${{ github.workspace }}
 
-      -
-        name: Build & Push
+      - name: Build & Push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-          tags: ghcr.io/${{ github.repository_owner }}/ethereumjs-monorepo:latest
+          tags: ghcr.io/dargon789/ethereumjs-monorepo:latest
           provenance: false
+          

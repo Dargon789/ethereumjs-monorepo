@@ -1,4 +1,6 @@
 name: RLP/Ethash/Genesis/Wallet Build
+permissions:
+  contents: read
 on:
   workflow_call:
     inputs:
