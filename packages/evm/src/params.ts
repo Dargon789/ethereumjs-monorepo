@@ -357,14 +357,6 @@ export const paramsEVM: ParamsDict = {
     jumpfGas: 5, // Base fee of the JUMPF opcode
   },
   /**
-   * Ethereum state using a unified verkle tree (experimental)
-   */
-  6800: {
-    // gasPrices
-    createGas: 1000, // Base fee of the CREATE opcode
-    coldsloadGas: 0, // Gas cost of the first read of storage from a given location (per transaction)
-  },
-  /**
 .  * Revamped CALL instructions
 .  */
   7069: {
@@ -392,6 +384,13 @@ export const paramsEVM: ParamsDict = {
     datacopyGas: 3, // Base fee of the DATACOPY opcode
   },
   /**
+   * Precompile for secp256r1 Curve Support
+   */
+  7212: {
+    // gasPrices
+    p256verifyGas: 3450, // Base fee of the P256VERIFY precompile
+  },
+  /**
 .  * BLOBBASEFEE opcode
 .  */
   7516: {
@@ -408,5 +407,12 @@ export const paramsEVM: ParamsDict = {
     // gasPrices
     eofcreateGas: 32000, // Base fee of the EOFCREATE opcode (Same as CREATE/CREATE2)
     returncontractGas: 0, // Base fee of the RETURNCONTRACT opcode
+  },
+  /**
+.  * Count leading zeros (CLZ) opcode
+.  */
+  7939: {
+    // gasPrices
+    clzGas: 5, // Base fee of the CLZ opcode (matching MUL as per EIP-7939)
   },
 }

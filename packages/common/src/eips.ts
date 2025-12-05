@@ -366,6 +366,14 @@ export const eipsDict: EIPsDict = {
     */
     requiredEIPs: [2929],
   },
+  /***
+   * Description: Precompile for secp256r1 Curve Support
+   * URL: https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md
+   * Status: Final
+   */
+  7212: {
+    minimumHardfork: Hardfork.Prague,
+  },
   /**
    * Description : Increase the MAX_EFFECTIVE_BALANCE -> Execution layer triggered consolidations (experimental)
    * URL         : https://eips.ethereum.org/EIPS/eip-7251
@@ -390,6 +398,15 @@ export const eipsDict: EIPsDict = {
    * Status      : Final
    */
   7516: {
+    minimumHardfork: Hardfork.Paris,
+    requiredEIPs: [4844],
+  },
+  /**
+   * Description : Peerdas blob transactions
+   * URL         : https://eips.ethereum.org/EIPS/eip-7594
+   * Status      : Review
+   */
+  7594: {
     minimumHardfork: Hardfork.Paris,
     requiredEIPs: [4844],
   },
@@ -462,6 +479,14 @@ export const eipsDict: EIPsDict = {
     requiredEIPs: [2718, 2929, 2930],
   },
   /**
+   * Description : Set upper bounds for MODEXP
+   * URL         : https://eips.ethereum.org/EIPS/eip-7823
+   * Status      : Review
+   */
+  7823: {
+    minimumHardfork: Hardfork.Byzantium,
+  },
+  /**
    * Description : Use historical block hashes saved in state for BLOCKHASH
    * URL         : https://eips.ethereum.org/EIPS/eip-7709
    * Status      : Final
@@ -471,11 +496,37 @@ export const eipsDict: EIPsDict = {
     requiredEIPs: [2935],
   },
   /**
+   * Description : Transaction Gas Limit Cap
+   * URL         : https://eips.ethereum.org/EIPS/eip-7825
+   * Status      : Draft
+   */
+  7825: {
+    minimumHardfork: Hardfork.Chainstart,
+    requiredEIPs: [],
+  },
+  /**
    * Description : Ethereum state using a unified binary tree (experimental)
    * URL         : hhttps://eips.ethereum.org/EIPS/eip-7864
    * Status      : Draft
    */
   7864: {
     minimumHardfork: Hardfork.London,
+  },
+  /**
+   * Description : EIP-7883: ModExp Gas Cost Increase
+   * URL         : hhttps://eips.ethereum.org/EIPS/eip-7883
+   * Status      : Draft
+   */
+  7883: {
+    minimumHardfork: Hardfork.Chainstart,
+  },
+  /**
+   * Description : Count leading zeros (CLZ) opcode
+   * URL         : https://eips.ethereum.org/EIPS/eip-7939
+   * Status      : Draft
+   */
+  7939: {
+    minimumHardfork: Hardfork.Chainstart,
+    requiredEIPs: [],
   },
 }

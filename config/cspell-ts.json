@@ -24,6 +24,8 @@
     }
   ],
   "words": [
+    "prehash",
+    "viem",
     "immediates",
     "unerasable",
     "bytelist",
@@ -42,8 +44,6 @@
     "ethash",
     "KECCAK",
     "keccak",
-    "Verkle",
-    "verkle",
     "maxblob",
     "Randao",
     "hardforks",
@@ -640,6 +640,9 @@
     "blobschedule",
     "hoodi",
     "peerdas",
-    "getpayload"
+    "getpayload",
+    "ckzg",
+    "Damgård",
+    "viem"
   ]
 }

@@ -1,65 +1,70 @@
 {
   "name": "root",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "biome": "npx @biomejs/biome check",
-    "biome:fix": "npx @biomejs/biome check --write",
     "checkNpmVersion": "./scripts/check-npm-version.sh",
     "clean": "./config/cli/clean-root.sh",
-    "docs:build": "npm run docs:build --workspaces --if-present",
     "e2e:inject": "node ./scripts/e2e-inject-resolutions.js",
     "e2e:publish": "./scripts/e2e-publish.sh",
     "e2e:resolutions": "node ./scripts/e2e-resolutions.js",
     "examples": "npm run examples --workspaces --if-present",
-    "examples:build": "npm run examples:build --workspaces --if-present",
-    "lint": "npm run biome && eslint  --config ./config/eslint.config.mjs .",
-    "lint:fix": "npm run biome:fix && eslint --fix --config ./config/eslint.config.mjs .",
-    "lint:diff": "./config/cli/lint-diff.sh",
-    "test": "npm run test --workspaces --if-present",
-    "test:node": "npm run test:node --workspaces --if-present",
-    "test:browser": "npm run test:browser --workspaces --if-present",
     "preinstall": "npm run checkNpmVersion",
-    "postinstall": "npm run build --workspaces --if-present",
+    "postinstall": "npm run build --workspaces",
     "prepare": "git config --local core.hooksPath .githooks",
-    "sc": "npm run spellcheck",
-    "sort-package-json": "sort-package-json \"package.json\" \"packages/*/package.json\"",
-    "spellcheck": "npm run spellcheck:ts && npm run spellcheck:md",
-    "spellcheck:ts": "npx cspell --gitignore -e \"./packages/ethereum-tests\" -e \"./packages/wallet/test\" -e \"./packages/client/archive\" -c ./config/cspell-ts.json \"./packages/**/*.ts\" --cache --show-suggestions --show-context",
-    "spellcheck:md": "npx cspell --gitignore -e \"./packages/ethereum-tests\" -e \"./packages/client/withdrawals-testnet/**\" -e \"./packages/**/docs\" -c ./config/cspell-md.json \"**.md\" --cache --show-suggestions --show-context",
-    "install-browser-deps": "npm install playwright@1.15.1 @vitest/browser@3.0.8"
+    "prettier": "prettier --write \"./**/*.{js,json,md,ts,yml}\"",
+    "sort-package-json": "sort-package-json \"package.json\" \"packages/*/package.json\""
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@eslint/js": "^9.22.0",
     "@types/estree": "^1.0.1",
-    "@types/node": "22.15.12",
-    "@types/tape": "5.8.1",
-    "@typescript-eslint/eslint-plugin": "^8.30.1",
-    "@typescript-eslint/parser": "^8.26.1",
-    "@vitest/browser": "3.1.1",
-    "@vitest/coverage-istanbul": "3.1.2",
-    "@vitest/coverage-v8": "3.1.3",
-    "@vitest/ui": "3.1.2",
-    "cspell": "^8.17.5",
-    "embedme": "1.22.1",
-    "eslint": "^9.22.0",
-    "eslint-plugin-import": "^2.31.0",
-    "lint-staged": "15.5.0",
-    "lockfile-lint-api": "^5.9.2",
-    "sort-package-json": "3.0.0",
-    "tape": "5.9.0",
-    "tsx": "^4.19.3",
-    "typedoc": "^0.28.3",
-    "typedoc-plugin-markdown": "^4.6.3",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.30.1",
-    "vite-plugin-top-level-await": "^1.5.0",
-    "vite-plugin-wasm": "^3.4.1",
-    "vitest": "3.1.2"
+    "@types/node": "18.11.9",
+    "@types/tape": "4.13.2",
+    "@typescript-eslint/eslint-plugin": "5.33.1",
+    "@typescript-eslint/parser": "5.33.1",
+    "@vitest/coverage-v8": "0.32.2",
+    "@vitest/ui": "0.32.2",
+    "c8": "7.12.0",
+    "eslint": "8.45.0",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-config-typestrict": "1.0.5",
+    "eslint-formatter-codeframe": "7.32.1",
+    "eslint-plugin-ethereumjs": "file:./eslint",
+    "eslint-plugin-github": "4.9.2",
+    "eslint-plugin-implicit-dependencies": "1.1.1",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-simple-import-sort": "7.0.0",
+    "eslint-plugin-sonarjs": "0.19.0",
+    "lint-staged": "13.0.3",
+    "lockfile-lint-api": "^5.5.1",
+    "prettier": "2.7.1",
+    "sort-package-json": "1.57.0",
+    "tape": "5.6.0",
+    "ts-node": "10.9.1",
+    "typedoc": "0.23.10",
+    "typedoc-plugin-markdown": "3.13.4",
+    "typescript": "4.7.4",
+    "vite-plugin-top-level-await": "^1.3.1",
+    "vite-plugin-wasm": "^3.2.2",
+    "vitest": "0.32.2"
   },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "*"
+  "peerDependencies": {
+    "@vitest/browser": "0.32.2",
+    "playwright": "^1.35.1",
+    "webdriverio": "^8.10.7"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    },
+    "webdriverio": {
+      "optional": true
+    },
+    "@vitest/browser": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=18",

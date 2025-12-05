@@ -1,11 +1,6 @@
 import { createBlock } from '@ethereumjs/block'
 import { Hardfork } from '@ethereumjs/common'
-import {
-  MerkleStateManager,
-  StatelessVerkleStateManager,
-  getMerkleStateProof,
-  getVerkleStateProof,
-} from '@ethereumjs/statemanager'
+import { MerkleStateManager, getMerkleStateProof } from '@ethereumjs/statemanager'
 import {
   Capability,
   createBlob4844TxFromSerializedNetworkWrapper,
@@ -1251,8 +1246,6 @@ export class Eth {
     let proof: Proof
     if (vm.stateManager instanceof MerkleStateManager) {
       proof = await getMerkleStateProof(vm.stateManager, address, slots)
-    } else if (vm.stateManager instanceof StatelessVerkleStateManager) {
-      proof = await getVerkleStateProof(vm.stateManager, address, slots)
     } else {
       throw EthereumJSErrorWithoutCode(
         'getProof RPC method not supported with the StateManager provided',
