@@ -7,16 +7,19 @@ import { Event } from '../../../src/types.ts'
 describe('[RlpxPeer]', async () => {
   vi.mock('@ethereumjs/devp2p', async () => {
     const devp2p = await vi.importActual<any>('@ethereumjs/devp2p')
-    const RLPx = vi.fn().mockImplementation(() => {
-      return {
-        events: new EventEmitter(),
-        connect: vi.fn(),
+
+    // Create a proper constructor mock for RLPx
+    class RLPxMock {
+      events = new EventEmitter()
+      connect = vi.fn()
+      constructor() {
+        // Constructor can be empty, properties are initialized above
       }
-    })
+    }
 
     return {
       ...devp2p,
-      RLPx,
+      RLPx: RLPxMock,
     }
   })
 
@@ -30,7 +33,7 @@ describe('[RlpxPeer]', async () => {
       host: '10.0.0.1',
       port: 1234,
     })
-    assert.equal(peer.address, '10.0.0.1:1234', 'address correct')
+    assert.strictEqual(peer.address, '10.0.0.1:1234', 'address correct')
     assert.isFalse(peer.connected, 'not connected')
   })
 
@@ -93,10 +96,10 @@ describe('[RlpxPeer]', async () => {
     })
 
     peer.config.events.on(Event.PEER_CONNECTED, (peer) =>
-      assert.equal(peer.id, 'abcdef0123', 'got connected'),
+      assert.strictEqual(peer.id, 'abcdef0123', 'got connected'),
     )
     peer.config.events.on(Event.PEER_DISCONNECTED, (rlpxPeer) =>
-      assert.equal(rlpxPeer.pooled, false, 'got disconnected'),
+      assert.strictEqual(rlpxPeer.pooled, false, 'got disconnected'),
     )
     peer.rlpx!.events.emit('peer:error', rlpxPeer, new Error('err0'))
     peer.rlpx!.events.emit('peer:added', rlpxPeer)
@@ -130,7 +133,7 @@ describe('[RlpxPeer]', async () => {
     //@ts-expect-error -- Assigning a simple string as peer for testing
     await peer.accept('rlpxpeer', 'server')
     //@ts-expect-error -- Testing that same string
-    assert.equal(peer.server, 'server', 'server set')
+    assert.strictEqual(peer.server, 'server', 'server set')
   })
 
   it('should bind protocols', async () => {

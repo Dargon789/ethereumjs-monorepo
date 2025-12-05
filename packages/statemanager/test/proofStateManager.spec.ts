@@ -11,7 +11,7 @@ import {
   hexToBytes,
   randomBytes,
 } from '@ethereumjs/util'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 import { assert, describe, it } from 'vitest'
 
 import { MerkleStateManager } from '../src/index.ts'
@@ -30,8 +30,8 @@ describe('ProofStateManager', () => {
     const stateManager = new MerkleStateManager()
 
     const proof = await getMerkleStateProof(stateManager, address, [key])
-    assert.equal(proof.balance, '0x0', 'Balance is in quantity-encoded RPC representation')
-    assert.equal(proof.nonce, '0x0', 'Nonce is in quantity-encoded RPC representation')
+    assert.strictEqual(proof.balance, '0x0', 'Balance is in quantity-encoded RPC representation')
+    assert.strictEqual(proof.nonce, '0x0', 'Nonce is in quantity-encoded RPC representation')
   })
 
   it(`should correctly return the right storage root / account root`, async () => {
@@ -57,23 +57,23 @@ describe('ProofStateManager', () => {
     await stateManager.putAccount(address, account)
 
     const proof = await getMerkleStateProof(stateManager, address, [key])
-    assert.equal(proof.balance, '0x0', 'Balance is in quantity-encoded RPC representation')
-    assert.equal(proof.nonce, '0x0', 'Nonce is in quantity-encoded RPC representation')
+    assert.strictEqual(proof.balance, '0x0', 'Balance is in quantity-encoded RPC representation')
+    assert.strictEqual(proof.nonce, '0x0', 'Nonce is in quantity-encoded RPC representation')
 
     account.balance = BigInt(1)
     await stateManager.putAccount(address, account)
 
     const proof2 = await getMerkleStateProof(stateManager, address, [key])
-    assert.equal(proof2.balance, '0x1', 'Balance correctly encoded')
-    assert.equal(proof2.nonce, '0x0', 'Nonce is in quantity-encoded RPC representation')
+    assert.strictEqual(proof2.balance, '0x1', 'Balance correctly encoded')
+    assert.strictEqual(proof2.nonce, '0x0', 'Nonce is in quantity-encoded RPC representation')
 
     account.balance = BigInt(0)
     account.nonce = BigInt(1)
     await stateManager.putAccount(address, account)
 
     const proof3 = await getMerkleStateProof(stateManager, address, [key])
-    assert.equal(proof3.balance, '0x0', 'Balance is in quantity-encoded RPC representation')
-    assert.equal(proof3.nonce, '0x1', 'Nonce is correctly encoded')
+    assert.strictEqual(proof3.balance, '0x0', 'Balance is in quantity-encoded RPC representation')
+    assert.strictEqual(proof3.nonce, '0x1', 'Nonce is correctly encoded')
   })
 
   it(`should get and verify EIP 1178 proofs`, async () => {
@@ -103,7 +103,7 @@ describe('ProofStateManager', () => {
       stateManager,
       createAddressFromPrivateKey(randomBytes(32)),
     )
-    assert.equal(
+    assert.strictEqual(
       await verifyMerkleStateProof(stateManager, nonExistenceProof),
       true,
       'verified proof of non-existence of account',
@@ -122,7 +122,7 @@ describe('ProofStateManager', () => {
     let stateRoot: Uint8Array | undefined
     for (const proofData of ropstenValidAccountData.accountProof) {
       const bufferData = hexToBytes(proofData)
-      const key = keccak256(bufferData)
+      const key = keccak_256(bufferData)
       if (stateRoot === undefined) {
         stateRoot = key
       }
@@ -146,7 +146,7 @@ describe('ProofStateManager', () => {
     let stateRoot: Uint8Array | undefined
     for (const proofData of ropstenNonexistentAccountData.accountProof) {
       const bufferData = hexToBytes(proofData)
-      const key = keccak256(bufferData)
+      const key = keccak_256(bufferData)
       if (stateRoot === undefined) {
         stateRoot = key
       }
@@ -170,7 +170,7 @@ describe('ProofStateManager', () => {
     let stateRoot: Uint8Array | undefined
     for (const proofData of ropstenContractWithStorageData.accountProof) {
       const bufferData = hexToBytes(proofData)
-      const key = keccak256(bufferData)
+      const key = keccak_256(bufferData)
       if (stateRoot === undefined) {
         stateRoot = key
       }
@@ -182,12 +182,12 @@ describe('ProofStateManager', () => {
     for (const storageProofsData of ropstenContractWithStorageData.storageProof) {
       storageKeys.push(hexToBytes(storageProofsData.key))
       for (const storageProofData of storageProofsData.proof) {
-        const key = keccak256(hexToBytes(storageProofData))
+        const key = keccak_256(hexToBytes(storageProofData))
         await storageTrie['_db'].put(key, hexToBytes(storageProofData))
       }
     }
     storageTrie.root(hexToBytes(storageRoot))
-    const addressHex = bytesToUnprefixedHex(keccak256(address.bytes))
+    const addressHex = bytesToUnprefixedHex(keccak_256(address.bytes))
     stateManager['_storageTries'][addressHex] = storageTrie
     trie.root(stateRoot!)
 
@@ -208,7 +208,7 @@ describe('ProofStateManager', () => {
     let stateRoot: Uint8Array | undefined
     for (const proofData of ropstenContractWithStorageData.accountProof) {
       const bufferData = hexToBytes(proofData)
-      const key = keccak256(bufferData)
+      const key = keccak_256(bufferData)
       if (stateRoot === undefined) {
         stateRoot = key
       }
@@ -220,7 +220,7 @@ describe('ProofStateManager', () => {
     for (const storageProofsData of ropstenContractWithStorageData.storageProof) {
       storageKeys.push(hexToBytes(storageProofsData.key))
       for (const storageProofData of storageProofsData.proof) {
-        const key = keccak256(hexToBytes(storageProofData))
+        const key = keccak_256(hexToBytes(storageProofData))
         await storageTrie['_db'].put(key, hexToBytes(storageProofData))
       }
     }
@@ -274,7 +274,7 @@ describe('ProofStateManager', () => {
     let stateRoot: Uint8Array | undefined
     for (const proofData of ropstenNonexistentAccountData.accountProof) {
       const bufferData = hexToBytes(proofData)
-      const key = keccak256(bufferData)
+      const key = keccak_256(bufferData)
       if (stateRoot === undefined) {
         stateRoot = key
       }

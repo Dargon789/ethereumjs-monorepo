@@ -7,7 +7,7 @@ import {
   hexToBytes,
   unpadBytes,
 } from '@ethereumjs/util'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 import { assert, describe, it } from 'vitest'
 
 import { Caches, MerkleStateManager } from '../src/index.ts'
@@ -33,7 +33,7 @@ describe('StateManager -> Storage', () => {
         await stateManager.putStorage(address, key, value)
 
         const data = await stateManager.dumpStorage(address)
-        const expect = { [bytesToHex(keccak256(key))]: '0x0a' }
+        const expect = { [bytesToHex(keccak_256(key))]: '0x0a' }
         assert.deepEqual(data, expect, 'should dump storage value')
       })
 
@@ -49,7 +49,7 @@ describe('StateManager -> Storage', () => {
         try {
           await stateManager.putStorage(address, new Uint8Array(12), hexToBytes('0x1231'))
         } catch (e: any) {
-          assert.equal(e.message, 'Storage key must be 32 bytes long')
+          assert.strictEqual(e.message, 'Storage key must be 32 bytes long')
           return
         }
 
@@ -68,7 +68,7 @@ describe('StateManager -> Storage', () => {
         try {
           await stateManager.getStorage(address, new Uint8Array(12))
         } catch (e: any) {
-          assert.equal(e.message, 'Storage key must be 32 bytes long')
+          assert.strictEqual(e.message, 'Storage key must be 32 bytes long')
           return
         }
 

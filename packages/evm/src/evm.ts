@@ -124,10 +124,11 @@ export function defaultBlock(): Block {
 }
 
 /**
- * EVM is responsible for executing an EVM message fully
- * (including any nested calls and creates), processing the results
- * and storing them to state (or discarding changes in case of exceptions).
- * @ignore
+ * The EVM (Ethereum Virtual Machine) is responsible for executing EVM bytecode, processing transactions, and managing state changes. It handles both contract calls and contract creation operations.
+ *
+ * An EVM instance can be created with the constructor method:
+ *
+ * - {@link createEVM}
  */
 export class EVM implements EVMInterface {
   protected static supportedHardforks = [
@@ -467,7 +468,11 @@ export class EVM implements EVMInterface {
       if (this.DEBUG) {
         debug(`Start bytecode processing...`)
       }
-      result = await this.runInterpreter({ ...message, gasLimit } as Message)
+      result = await this.runInterpreter({
+        ...{ codeAddress: message.codeAddress },
+        ...message,
+        gasLimit,
+      } as Message)
     }
 
     if (message.depth === 0) {

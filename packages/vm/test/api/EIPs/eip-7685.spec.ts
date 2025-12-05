@@ -2,7 +2,7 @@ import { createBlock, genRequestsRoot } from '@ethereumjs/block'
 import { createBlockchain } from '@ethereumjs/blockchain'
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
 import { createCLRequest, equalsBytes, hexToBytes } from '@ethereumjs/util'
-import { sha256 } from 'ethereum-cryptography/sha256.js'
+import { sha256 } from '@noble/hashes/sha2.js'
 import { assert, describe, expect, it } from 'vitest'
 
 import { buildBlock, createVM, runBlock } from '../../../src/index.ts'
@@ -30,7 +30,7 @@ describe('EIP-7685 runBlock tests', () => {
       block: emptyBlock,
       generate: true,
     })
-    assert.equal(res.gasUsed, 0n)
+    assert.strictEqual(res.gasUsed, 0n)
     // Verify that if the requests are empty, the byte-types are not appended to the to-be-hashed flat array
     // I.e. the flat array to-be-hashed is not `0x 00 01 02`, but is now the empty bytes array, `0x`
     assert.isTrue(equalsBytes(res.requestsHash!, sha256(new Uint8Array())))

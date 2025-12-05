@@ -1,16 +1,9 @@
 import { createBlock, createBlockHeader } from '@ethereumjs/block'
 import { Hardfork } from '@ethereumjs/common'
 import { MerkleStateManager } from '@ethereumjs/statemanager'
-import { eip4844GethGenesis, postMergeGethGenesis } from '@ethereumjs/testdata'
+import { SIGNER_A, eip4844GethGenesis, postMergeGethGenesis } from '@ethereumjs/testdata'
 import { createTx } from '@ethereumjs/tx'
-import {
-  Account,
-  Units,
-  bytesToHex,
-  createAddressFromPrivateKey,
-  hexToBytes,
-  randomBytes,
-} from '@ethereumjs/util'
+import { Account, Units, bytesToHex, randomBytes } from '@ethereumjs/util'
 import { assert, describe, it } from 'vitest'
 
 import { TOO_LARGE_REQUEST } from '../../../src/rpc/error-code.ts'
@@ -26,7 +19,7 @@ describe(method, () => {
       tooManyHashes.push(bytesToHex(randomBytes(32)))
     }
     const res = await rpc.request(method, [tooManyHashes])
-    assert.equal(res.error.code, TOO_LARGE_REQUEST)
+    assert.strictEqual(res.error.code, TOO_LARGE_REQUEST)
     assert.isTrue(res.error.message.includes('More than 32 execution payload bodies requested'))
   })
 
@@ -44,13 +37,10 @@ describe(method, () => {
     })
     const rpc = getRPCClient(server)
     common.setHardfork(Hardfork.Cancun)
-    const pkey = hexToBytes('0x9c9996335451aab4fc4eac58e31a8c300e095cdbcee532d53d09280e83360355')
-    const address = createAddressFromPrivateKey(pkey)
-    await service.execution.vm.stateManager.putAccount(address, new Account())
-    const account = await service.execution.vm.stateManager.getAccount(address)
-
+    await service.execution.vm.stateManager.putAccount(SIGNER_A.address, new Account())
+    const account = await service.execution.vm.stateManager.getAccount(SIGNER_A.address)
     account!.balance = 0xfffffffffffffffn
-    await service.execution.vm.stateManager.putAccount(address, account!)
+    await service.execution.vm.stateManager.putAccount(SIGNER_A.address, account!)
     const tx = createTx(
       {
         type: 0x01,
@@ -60,7 +50,7 @@ describe(method, () => {
         gasLimit: 30000000n,
       },
       { common },
-    ).sign(pkey)
+    ).sign(SIGNER_A.privateKey)
     const tx2 = createTx(
       {
         type: 0x01,
@@ -71,7 +61,7 @@ describe(method, () => {
         nonce: 1n,
       },
       { common },
-    ).sign(pkey)
+    ).sign(SIGNER_A.privateKey)
     const block = createBlock(
       {
         transactions: [tx],
@@ -99,13 +89,17 @@ describe(method, () => {
       [bytesToHex(block.hash()), bytesToHex(randomBytes(32)), bytesToHex(block2.hash())],
     ])
 
-    assert.equal(
+    assert.strictEqual(
       res.result[0].transactions[0],
       bytesToHex(tx.serialize()),
       'got expected transaction from first payload',
     )
-    assert.equal(res.result[1], null, 'got null for block not found in chain')
-    assert.equal(res.result.length, 3, 'length of response matches number of block hashes sent')
+    assert.strictEqual(res.result[1], null, 'got null for block not found in chain')
+    assert.strictEqual(
+      res.result.length,
+      3,
+      'length of response matches number of block hashes sent',
+    )
 
     // Restore setStateRoot
     MerkleStateManager.prototype.setStateRoot = originalSetStateRoot
@@ -130,13 +124,11 @@ describe(method, () => {
     )
     const rpc = getRPCClient(server)
     common.setHardfork(Hardfork.London)
-    const pkey = hexToBytes('0x9c9996335451aab4fc4eac58e31a8c300e095cdbcee532d53d09280e83360355')
-    const address = createAddressFromPrivateKey(pkey)
-    await service.execution.vm.stateManager.putAccount(address, new Account())
-    const account = await service.execution.vm.stateManager.getAccount(address)
+    await service.execution.vm.stateManager.putAccount(SIGNER_A.address, new Account())
+    const account = await service.execution.vm.stateManager.getAccount(SIGNER_A.address)
 
     account!.balance = 0xfffffffffffffffn
-    await service.execution.vm.stateManager.putAccount(address, account!)
+    await service.execution.vm.stateManager.putAccount(SIGNER_A.address, account!)
     const tx = createTx(
       {
         type: 0x01,
@@ -146,7 +138,7 @@ describe(method, () => {
         gasLimit: 30000000n,
       },
       { common },
-    ).sign(pkey)
+    ).sign(SIGNER_A.privateKey)
     const tx2 = createTx(
       {
         type: 0x01,
@@ -157,7 +149,7 @@ describe(method, () => {
         nonce: 1n,
       },
       { common },
-    ).sign(pkey)
+    ).sign(SIGNER_A.privateKey)
     const block = createBlock(
       {
         transactions: [tx],
@@ -185,7 +177,7 @@ describe(method, () => {
       [bytesToHex(block.hash()), bytesToHex(randomBytes(32)), bytesToHex(block2.hash())],
     ])
 
-    assert.equal(
+    assert.strictEqual(
       res.result[0].withdrawals,
       null,
       'got null for withdrawals field on pre-Shanghai block',

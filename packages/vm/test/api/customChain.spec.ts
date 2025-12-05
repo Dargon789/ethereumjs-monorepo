@@ -1,7 +1,12 @@
 import { createBlock } from '@ethereumjs/block'
 import { createBlockchain } from '@ethereumjs/blockchain'
 import { Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common'
-import { customChainConfig, testnetMergeChainConfig } from '@ethereumjs/testdata'
+import {
+  SIGNER_A,
+  SIGNER_G,
+  customChainConfig,
+  testnetMergeChainConfig,
+} from '@ethereumjs/testdata'
 import { createTx } from '@ethereumjs/tx'
 import {
   bytesToHex,
@@ -9,7 +14,7 @@ import {
   createAddressFromString,
   hexToBytes,
 } from '@ethereumjs/util'
-import { Interface } from 'ethers'
+import { encodeFunctionData } from 'viem'
 import { assert, describe, it } from 'vitest'
 
 import { createVM, runTx } from '../../src/index.ts'
@@ -42,8 +47,8 @@ const accountState: AccountState = [
 
 const contractAddress = '0x3651539F2E119a27c606cF0cB615410eCDaAE62a'
 const genesisState: GenesisState = {
-  '0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b': '0x6d6172697573766477000000',
-  '0xbe862ad9abfe6f22bcb087716c7d89a26051f74c': '0x6d6172697573766477000000',
+  [SIGNER_A.address.toString()]: '0x6d6172697573766477000000',
+  [SIGNER_G.address.toString()]: '0x6d6172697573766477000000',
   [contractAddress]: accountState,
 }
 
@@ -60,7 +65,6 @@ const block = createBlock(
     common,
   },
 )
-const privateKey = hexToBytes('0xe331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109')
 
 describe('VM initialized with custom state', () => {
   it('should transfer eth from already existent account', async () => {
@@ -79,7 +83,7 @@ describe('VM initialized with custom state', () => {
       {
         common,
       },
-    ).sign(privateKey)
+    ).sign(SIGNER_A.privateKey)
     const result = await runTx(vm, {
       tx,
       block,
@@ -87,8 +91,8 @@ describe('VM initialized with custom state', () => {
     const toAddress = createAddressFromString(to)
     const receiverAddress = await vm.stateManager.getAccount(toAddress)
 
-    assert.equal(result.totalGasSpent.toString(), '21000')
-    assert.equal(receiverAddress!.balance.toString(), '1')
+    assert.strictEqual(result.totalGasSpent.toString(), '21000')
+    assert.strictEqual(receiverAddress!.balance.toString(), '1')
   })
 
   it('should retrieve value from storage', async () => {
@@ -96,18 +100,23 @@ describe('VM initialized with custom state', () => {
     common.setHardfork(Hardfork.London)
     const vm = await createVM({ blockchain, common })
     await vm.stateManager.generateCanonicalGenesis!(genesisState)
-    const calldata = new Interface(['function retrieve()']).getFunction('retrieve')!.selector
+    const calldata = encodeFunctionData({
+      abi: [
+        { type: 'function', name: 'retrieve', inputs: [], outputs: [], stateMutability: 'view' },
+      ],
+      functionName: 'retrieve',
+    })
 
     const callResult = await vm.evm.runCall({
       to: createAddressFromString(contractAddress),
       data: hexToBytes(calldata as PrefixedHexString),
-      caller: createAddressFromPrivateKey(privateKey),
+      caller: createAddressFromPrivateKey(SIGNER_A.privateKey),
     })
 
     const storage = genesisState[contractAddress][2]
     // Returned value should be 4, because we are trying to trigger the method `retrieve`
     // in the contract, which returns the variable stored in slot 0x00..00
-    assert.equal(bytesToHex(callResult.execResult.returnValue), storage?.[0][1])
+    assert.strictEqual(bytesToHex(callResult.execResult.returnValue), storage?.[0][1])
   })
 
   it('setHardfork', async () => {
@@ -116,9 +125,9 @@ describe('VM initialized with custom state', () => {
     })
 
     let vm = await createVM({ common, setHardfork: true })
-    assert.equal(vm['_setHardfork'], true, 'should set setHardfork option')
+    assert.strictEqual(vm['_setHardfork'], true, 'should set setHardfork option')
 
     vm = await createVM({ common, setHardfork: 5001 })
-    assert.equal(vm['_setHardfork'], BigInt(5001), 'should set setHardfork option')
+    assert.strictEqual(vm['_setHardfork'], 5001, 'should set setHardfork option')
   })
 })

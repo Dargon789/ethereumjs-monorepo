@@ -19,6 +19,7 @@ import type { BigIntLike, PrefixedHexString } from '@ethereumjs/util'
 import type { ConsensusAlgorithm, ConsensusType } from './enums.ts'
 import type {
   BootstrapNodeConfig,
+  BpoSchedule,
   CasperConfig,
   ChainConfig,
   CliqueConfig,
@@ -38,9 +39,12 @@ import type {
  * Common class to access chain and hardfork parameters and to provide
  * a unified and shared view on the network and hardfork state.
  *
- * Use the {@link Common.custom} static constructor for creating simple
+ * Use the {@link createCustomCommon} constructor for creating simple
  * custom chain {@link Common} objects (more complete custom chain setups
  * can be created via the main constructor).
+ *
+ * Use the {@link createCommonFromGethGenesis} constructor for creating
+ * a Common object from a Geth genesis file.
  */
 export class Common {
   readonly DEFAULT_HARDFORK: string | Hardfork
@@ -163,7 +167,7 @@ export class Common {
    * Returns the hardfork either based on block number (older HFs) or
    * timestamp (Shanghai upwards).
    *
-   * @param Opts Block number or timestamp
+   * @param opts Block number or timestamp
    * @returns The name of the HF
    */
   getHardforkBy(opts: HardforkByOpts): string {
@@ -246,7 +250,7 @@ export class Common {
    * Sets a new hardfork either based on block number (older HFs) or
    * timestamp (Shanghai upwards).
    *
-   * @param Opts Block number or timestamp
+   * @param opts Block number or timestamp
    * @returns The name of the HF set
    */
   setHardforkBy(opts: HardforkByOpts): string {
@@ -326,6 +330,12 @@ export class Common {
           this._mergeWithParamsCache(this._params[eip] ?? {})
         }
       }
+      // Hardfork-scoped params (e.g. for bpo1, bpo2)
+      // override the baseline EIP values when present
+      const hfScopedParams = this._params[hfChanges[0]]
+      if (hfScopedParams !== undefined && hfScopedParams !== null) {
+        this._mergeWithParamsCache(hfScopedParams)
+      }
       // Parameter-inlining HF config (e.g. for istanbul or custom blobSchedule)
       this._mergeWithParamsCache(hfChanges[1].params ?? {})
       if (hfChanges[0] === hardfork) break
@@ -336,6 +346,9 @@ export class Common {
     }
   }
 
+  /**
+   * Builds the cache of EIPs activated either via hardforks or constructor `eips`.
+   */
   protected _buildActivatedEIPsCache() {
     this._activatedEIPsCache = []
 
@@ -425,11 +438,30 @@ export class Common {
    * optional provided total difficulty (Merge HF)
    * @param name Parameter name
    * @param blockNumber Block number
-   *    * @returns The value requested or `BigInt(0)` if not found
+   * @returns The value requested or `BigInt(0)` if not found
    */
   paramByBlock(name: string, blockNumber: BigIntLike, timestamp?: BigIntLike): bigint {
     const hardfork = this.getHardforkBy({ blockNumber, timestamp })
     return this.paramByHardfork(name, hardfork)
+  }
+
+  /**
+   * Returns the blob gas schedule for the current hardfork
+   * @returns The blob gas schedule
+   */
+  getBlobGasSchedule(): BpoSchedule {
+    if (this.gteHardfork(Hardfork.Bpo1)) {
+      return {
+        targetBlobGasPerBlock: this.param('target') * this.param('blobGasPerBlob'),
+        maxBlobGasPerBlock: this.param('max') * this.param('blobGasPerBlob'),
+        blobGasPriceUpdateFraction: this.param('blobGasPriceUpdateFraction'),
+      }
+    }
+    return {
+      targetBlobGasPerBlock: this.param('targetBlobGasPerBlock'),
+      maxBlobGasPerBlock: this.param('maxBlobGasPerBlock'),
+      blobGasPriceUpdateFraction: this.param('blobGasPriceUpdateFraction'),
+    }
   }
 
   /**
@@ -477,7 +509,6 @@ export class Common {
    * Sequence based check if given or set HF1 is greater than or equal HF2
    * @param hardfork1 Hardfork name or null (if set)
    * @param hardfork2 Hardfork name
-   * @param opts Hardfork options
    * @returns True if HF1 gte HF2
    */
   hardforkGteHardfork(hardfork1: string | Hardfork | null, hardfork2: string | Hardfork): boolean {
@@ -518,6 +549,11 @@ export class Common {
     return BigInt(block)
   }
 
+  /**
+   * Returns the timestamp at which a given hardfork is scheduled (if any).
+   * @param hardfork Hardfork name, optional if HF set
+   * @returns Timestamp or null if the hardfork is not timestamp-based
+   */
   hardforkTimestamp(hardfork?: string | Hardfork): bigint | null {
     hardfork = hardfork ?? this._hardfork
     const timestamp = this._getHardfork(hardfork)?.['timestamp']
@@ -656,6 +692,7 @@ export class Common {
    * Returns an eth/64 compliant fork hash (EIP-2124)
    * @param hardfork Hardfork name, optional if HF set
    * @param genesisHash Genesis block hash of the network, optional if already defined and not needed to be calculated
+   * @returns Fork hash as a hex string
    */
   forkHash(hardfork?: string | Hardfork, genesisHash?: Uint8Array): PrefixedHexString {
     hardfork = hardfork ?? this._hardfork
@@ -685,8 +722,7 @@ export class Common {
   }
 
   /**
-   * Sets any missing forkHashes on the passed-in {@link Common} instance
-   * @param common The {@link Common} to set the forkHashes for
+   * Sets any missing forkHashes on this {@link Common} instance.
    * @param genesisHash The genesis block hash
    */
   setForkHashes(genesisHash: Uint8Array) {
@@ -711,8 +747,8 @@ export class Common {
   }
 
   /**
-   * Returns the hardforks for current chain
-   * @returns {Array} Array with arrays of hardforks
+   * Returns the hardfork definitions for the current chain.
+   * @returns Array of hardfork transition configs
    */
   hardforks(): HardforkTransitionConfig[] {
     const hfs = this._chainParams.hardforks
@@ -723,8 +759,8 @@ export class Common {
   }
 
   /**
-   * Returns bootstrap nodes for the current chain
-   * @returns {Dictionary} Dict with bootstrap nodes
+   * Returns bootstrap nodes for the current chain.
+   * @returns Array of bootstrap node configs
    */
   bootstrapNodes(): BootstrapNodeConfig[] {
     return this._chainParams.bootstrapNodes

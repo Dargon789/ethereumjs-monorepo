@@ -1,6 +1,6 @@
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
 import { CLRequestType, createCLRequest, equalsBytes, hexToBytes } from '@ethereumjs/util'
-import { sha256 } from 'ethereum-cryptography/sha256.js'
+import { sha256 } from '@noble/hashes/sha2.js'
 import { assert, describe, it } from 'vitest'
 
 import { createBlock, genRequestsRoot } from '../src/index.ts'
@@ -35,7 +35,7 @@ describe('[Block]: CLRequests tests', () => {
 
   it('should create a block with deposit request', () => {
     const depositRequest = createDepositRequest()
-    assert.equal(depositRequest.type, CLRequestType.Deposit, 'should be a deposit request')
+    assert.strictEqual(depositRequest.type, CLRequestType.Deposit, 'should be a deposit request')
 
     const requestsHash = genRequestsRoot([depositRequest], sha256)
     const block = createBlock(
@@ -54,7 +54,11 @@ describe('[Block]: CLRequests tests', () => {
 
   it('should create a block with withdrawal request', () => {
     const withdrawalRequest = createWithdrawalRequest()
-    assert.equal(withdrawalRequest.type, CLRequestType.Withdrawal, 'should be a withdrawal request')
+    assert.strictEqual(
+      withdrawalRequest.type,
+      CLRequestType.Withdrawal,
+      'should be a withdrawal request',
+    )
 
     const requestsHash = genRequestsRoot([withdrawalRequest], sha256)
     const block = createBlock(
@@ -73,7 +77,7 @@ describe('[Block]: CLRequests tests', () => {
 
   it('should create a block with consolidation request', () => {
     const consolidationRequest = createConsolidationRequest()
-    assert.equal(
+    assert.strictEqual(
       consolidationRequest.type,
       CLRequestType.Consolidation,
       'should be a consolidation request',

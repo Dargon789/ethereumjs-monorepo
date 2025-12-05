@@ -3,7 +3,7 @@ import { Common, ConsensusAlgorithm, Hardfork, Mainnet } from '@ethereumjs/commo
 import { Ethash } from '@ethereumjs/ethash'
 import { RLP } from '@ethereumjs/rlp'
 import { bytesToHex } from '@ethereumjs/util'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 import { assert, describe, expect, it } from 'vitest'
 
 import { EthashConsensus, createBlockchain } from '../src/index.ts'
@@ -294,7 +294,11 @@ describe('[Blockchain]: Block validation tests', () => {
     common.setHardfork(Hardfork.London)
     const forkBlock = generateBlock(preForkBlock, 'forkBlock', [], common)
     await blockchain.putBlock(forkBlock)
-    assert.equal(common.hardfork(), Hardfork.London, 'validation did not change common hardfork')
+    assert.strictEqual(
+      common.hardfork(),
+      Hardfork.London,
+      'validation did not change common hardfork',
+    )
 
     const forkBlockHeaderData = forkBlock.header.toJSON()
     const uncleHeaderData = unclePreFork.header.toJSON()
@@ -304,7 +308,7 @@ describe('[Blockchain]: Block validation tests', () => {
       common: new Common({ chain: Mainnet, hardfork: Hardfork.Berlin }),
     })
 
-    forkBlockHeaderData.uncleHash = bytesToHex(keccak256(RLP.encode([uncleHeader.raw()])))
+    forkBlockHeaderData.uncleHash = bytesToHex(keccak_256(RLP.encode([uncleHeader.raw()])))
 
     const forkBlock_ValidCommon = createBlock(
       {
@@ -322,7 +326,11 @@ describe('[Blockchain]: Block validation tests', () => {
       uncleHeader.hash(),
       'successfully validated a pre-london uncle on a london block',
     )
-    assert.equal(common.hardfork(), Hardfork.London, 'validation did not change common hardfork')
+    assert.strictEqual(
+      common.hardfork(),
+      Hardfork.London,
+      'validation did not change common hardfork',
+    )
 
     assert.doesNotThrow(
       () =>
@@ -338,6 +346,10 @@ describe('[Blockchain]: Block validation tests', () => {
         ),
       'should create block even with pre-London uncle and common evaluated with london since uncle is given default base fee',
     )
-    assert.equal(common.hardfork(), Hardfork.London, 'validation did not change common hardfork')
+    assert.strictEqual(
+      common.hardfork(),
+      Hardfork.London,
+      'validation did not change common hardfork',
+    )
   })
 })

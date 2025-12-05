@@ -7,8 +7,8 @@ import {
 import { createBlockchain } from '@ethereumjs/blockchain'
 import { Common, Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common'
 import { RLP } from '@ethereumjs/rlp'
-import { type MerkleStateManager, StatefulVerkleStateManager } from '@ethereumjs/statemanager'
-import { customChainConfig, goerliChainConfig } from '@ethereumjs/testdata'
+import { type MerkleStateManager } from '@ethereumjs/statemanager'
+import { SIGNER_A, SIGNER_B, customChainConfig, goerliChainConfig } from '@ethereumjs/testdata'
 import {
   Capability,
   LegacyTx,
@@ -23,7 +23,6 @@ import {
   BIGINT_1,
   KECCAK256_RLP,
   bigIntToUnpaddedBytes,
-  bytesToHex,
   concatBytes,
   createAddressFromString,
   createZeroAddress,
@@ -33,9 +32,8 @@ import {
   unpadBytes,
   utf8ToBytes,
 } from '@ethereumjs/util'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
-import { secp256k1 } from 'ethereum-cryptography/secp256k1'
-import * as verkle from 'micro-eth-signer/verkle'
+import { secp256k1 } from '@noble/curves/secp256k1.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 import { assert, describe, it } from 'vitest'
 
 import { createVM, runBlock } from '../../src/index.ts'
@@ -50,7 +48,6 @@ import type {
   EOACode7702AuthorizationListBytesItem,
   NestedUint8Array,
   PrefixedHexString,
-  VerkleExecutionWitness,
 } from '@ethereumjs/util'
 import type { VM } from '../../src/index.ts'
 import type {
@@ -85,7 +82,7 @@ describe('runBlock() -> successful API parameter usage', async () => {
       skipHardForkValidation: true,
     })
 
-    assert.equal(
+    assert.strictEqual(
       res.results[0].totalGasSpent.toString(16),
       '5208',
       'actual gas used should equal blockHeader gasUsed',
@@ -131,7 +128,7 @@ describe('runBlock() -> successful API parameter usage', async () => {
       createAddressFromString('0xb94f5374fce5ed0000000097c15331677e6ebf0b'),
     ))!.balance.toString(16)
 
-    assert.equal(
+    assert.strictEqual(
       `0x${uncleReward}`,
       uncleData.postState['0xb94f5374fce5ed0000000097c15331677e6ebf0b'].balance,
       'calculated balance should equal postState balance',
@@ -177,10 +174,6 @@ describe('runBlock() -> successful API parameter usage', async () => {
       hardfork: Hardfork.Chainstart,
     })
 
-    const privateKey = hexToBytes(
-      '0xe331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109',
-    )
-
     function getBlock(common: Common): Block {
       return createBlock(
         {
@@ -194,7 +187,7 @@ describe('runBlock() -> successful API parameter usage', async () => {
                 gasLimit: BigInt(100000),
               },
               { common },
-            ).sign(privateKey),
+            ).sign(SIGNER_A.privateKey),
           ],
         },
         { common },
@@ -214,12 +207,12 @@ describe('runBlock() -> successful API parameter usage', async () => {
       skipBlockValidation: true,
       generate: true,
     })
-    assert.equal(
+    assert.strictEqual(
       txResultChainstart.results[0].totalGasSpent,
       BigInt(21000) + BigInt(68) * BigInt(3) + BigInt(3) + BigInt(50),
       'tx charged right gas on chainstart hard fork',
     )
-    assert.equal(
+    assert.strictEqual(
       txResultMuirGlacier.results[0].totalGasSpent,
       BigInt(21000) + BigInt(32000) + BigInt(16) * BigInt(3) + BigInt(3) + BigInt(800),
       'tx charged right gas on muir glacier hard fork',
@@ -287,7 +280,7 @@ describe('runBlock() -> API parameter usage/data errors', async () => {
     try {
       await runBlock(vm, { block })
     } catch (err: any) {
-      assert.equal(
+      assert.strictEqual(
         err.message,
         'cannot validate header: blockchain has no `validateHeader` method',
         'should error',
@@ -357,49 +350,33 @@ describe('runBlock() -> runtime behavior', async () => {
 
     const DAOFundedContractAccount1 =
       (await vm.stateManager.getAccount(DAOFundedContractAddress1)) ?? new Account()
-    assert.equal(DAOFundedContractAccount1!.balance, BigInt(0)) // verify our funded account now has 0 balance
+    assert.strictEqual(DAOFundedContractAccount1!.balance, BigInt(0)) // verify our funded account now has 0 balance
     const DAOFundedContractAccount2 =
       (await vm.stateManager.getAccount(DAOFundedContractAddress2)) ?? new Account()
-    assert.equal(DAOFundedContractAccount2!.balance, BigInt(0)) // verify our funded account now has 0 balance
+    assert.strictEqual(DAOFundedContractAccount2!.balance, BigInt(0)) // verify our funded account now has 0 balance
 
     const DAORefundAccount = await vm.stateManager.getAccount(DAORefundAddress)
     // verify that the refund account gets the summed balance of the original refund account + two child DAO accounts
     const msg =
       'should transfer balance from DAO children to the Refund DAO account in the DAO fork'
-    assert.equal(DAORefundAccount!.balance, BigInt(0x7777), msg)
+    assert.strictEqual(DAORefundAccount!.balance, BigInt(0x7777), msg)
   })
 
   it('should allocate to correct clique beneficiary', async () => {
     const common = new Common({ chain: goerliChainConfig, hardfork: Hardfork.Istanbul })
     const vm = await setupVM({ common })
 
-    const signer = {
-      address: new Address(hexToBytes('0x0b90087d864e82a284dca15923f3776de6bb016f')),
-      privateKey: hexToBytes('0x64bf9cc30328b0e42387b3c82c614e6386259136235e20c1357bd11cdee86993'),
-      publicKey: hexToBytes(
-        '0x40b2ebdf4b53206d2d3d3d59e7e2f13b1ea68305aec71d5d24cefe7f24ecae886d241f9267f04702d7f693655eb7b4aa23f30dcd0c3c5f2b970aad7c8a828195',
-      ),
-    }
-
-    const otherUser = {
-      address: new Address(hexToBytes('0x6f62d8382bf2587361db73ceca28be91b2acb6df')),
-      privateKey: hexToBytes('0x2a6e9ad5a6a8e4f17149b8bc7128bf090566a11dbd63c30e5a0ee9f161309cd6'),
-      publicKey: hexToBytes(
-        '0xca0a55f6e81cb897aee6a1c390aa83435c41048faa0564b226cfc9f3df48b73e846377fb0fd606df073addc7bd851f22547afbbdd5c3b028c91399df802083a2',
-      ),
-    }
-
-    // add balance to otherUser to send two txs to zero address
-    await vm.stateManager.putAccount(otherUser.address, new Account(BigInt(0), BigInt(42000)))
+    // add balance to SIGNER_B to send two txs to zero address
+    await vm.stateManager.putAccount(SIGNER_B.address, new Account(BigInt(0), BigInt(42000)))
     const tx = createLegacyTx(
       { to: createZeroAddress(), gasLimit: 21000, gasPrice: 1 },
       { common },
-    ).sign(otherUser.privateKey)
+    ).sign(SIGNER_B.privateKey)
 
-    // create block with the signer and txs
+    // create block with SIGNER_A and txs
     const block = createSealedCliqueBlock(
       { header: { extraData: new Uint8Array(97) }, transactions: [tx, tx] },
-      signer.privateKey,
+      SIGNER_A.privateKey,
       { common },
     )
 
@@ -409,8 +386,8 @@ describe('runBlock() -> runtime behavior', async () => {
       skipBlockValidation: true,
       generate: true,
     })
-    const account = await vm.stateManager.getAccount(signer.address)
-    assert.equal(
+    const account = await vm.stateManager.getAccount(SIGNER_A.address)
+    assert.strictEqual(
       account!.balance,
       BigInt(42000),
       'beneficiary balance should equal the cost of the txs',
@@ -463,7 +440,7 @@ it('should correctly reflect generated fields', async () => {
 
   assert.deepEqual(results.block.header.receiptTrie, KECCAK256_RLP)
   assert.deepEqual(results.block.header.transactionsTrie, KECCAK256_RLP)
-  assert.equal(results.block.header.gasUsed, BigInt(0))
+  assert.strictEqual(results.block.header.gasUsed, BigInt(0))
 })
 
 async function runWithHf(hardfork: string) {
@@ -487,7 +464,7 @@ async function runWithHf(hardfork: string) {
 describe('runBlock() -> API return values', () => {
   it('should return correct HF receipts', async () => {
     let res = await runWithHf('byzantium')
-    assert.equal(
+    assert.strictEqual(
       (res.receipts[0] as PostByzantiumTxReceipt).status,
       1,
       'should return correct post-Byzantium receipt format',
@@ -525,7 +502,7 @@ describe('runBlock() -> tx types', async () => {
       generate: true,
     })
 
-    assert.equal(
+    assert.strictEqual(
       res.gasUsed,
       res.receipts
         .map((r) => r.cumulativeBlockGasUsed)
@@ -631,18 +608,23 @@ describe('runBlock() -> tx types', async () => {
       const addressBytes = address.toBytes()
 
       const rlpdMsg = RLP.encode([chainIdBytes, addressBytes, nonceBytes])
-      const msgToSign = keccak256(concatBytes(new Uint8Array([5]), rlpdMsg))
-      const signed = secp256k1.sign(msgToSign, pkey)
+      const msgToSign = keccak_256(concatBytes(new Uint8Array([5]), rlpdMsg))
+      const signed = secp256k1.sign(msgToSign, pkey, { format: 'recovered', prehash: false })
 
-      const yParity = signed.recovery === 0 ? new Uint8Array() : new Uint8Array([1])
+      const { recovery, r, s } = secp256k1.Signature.fromBytes(signed, 'recovered')
+      if (recovery === undefined) {
+        throw new Error('Recovery is undefined')
+      }
+
+      const yParity = recovery === 0 ? new Uint8Array() : new Uint8Array([1])
 
       return [
         chainIdBytes,
         addressBytes,
         nonceBytes,
         yParity,
-        bigIntToUnpaddedBytes(signed.r),
-        bigIntToUnpaddedBytes(signed.s),
+        bigIntToUnpaddedBytes(r),
+        bigIntToUnpaddedBytes(s),
       ]
     }
 
@@ -707,54 +689,5 @@ describe('runBlock() -> tx types', async () => {
     await runBlock(vm, { block, skipBlockValidation: true, generate: true })
     const storage = await vm.stateManager.getStorage(defaultAuthAddr, new Uint8Array(32))
     assert.isTrue(equalsBytes(storage, new Uint8Array([2])))
-  })
-})
-
-describe.skip('run a verkle block', () => {
-  it('should execute a verkle block and produce an executionWitness', async () => {
-    const verkleJSONWithoutValue = (await import('./testdata/verkleBlock.ts')).block
-    const verkleJSONWithValue = (await import('./testdata/verkleBlockWithValue.ts')).block
-    const verkleBlocks = [verkleJSONWithoutValue, verkleJSONWithValue]
-
-    const common = new Common({
-      chain: Mainnet,
-      customCrypto: { verkle },
-      hardfork: Hardfork.Shanghai,
-      eips: [2935, 3607, 6800],
-    })
-
-    for (const verkleJSON of verkleBlocks) {
-      const genesisRlp = hexToBytes(verkleJSON.genesisRLP as PrefixedHexString)
-      const genesisBlock = createBlockFromRLP(genesisRlp, { common })
-
-      const blockRlp = hexToBytes(verkleJSON.blocks[0].rlp as PrefixedHexString)
-      const block = createBlockFromRLP(blockRlp, { common })
-      const sm = new StatefulVerkleStateManager({ common })
-      await sm['_trie'].createRootNode()
-      const blockchain = await createBlockchain({ common })
-      const vm = await setupVM({
-        common,
-        stateManager: sm,
-        blockchain,
-        genesisBlock,
-      })
-      await setupPreConditions(vm.stateManager, verkleJSON)
-      const witness = {
-        ...verkleJSON.blocks[0].witness,
-        parentStateRoot: bytesToHex(genesisBlock.header.stateRoot),
-      } as VerkleExecutionWitness
-
-      vm.stateManager.initVerkleExecutionWitness?.(block.header.number, witness)
-      assert.equal(bytesToHex(genesisBlock.hash()), verkleJSON.genesisBlockHeader.hash)
-      assert.equal(
-        bytesToHex(await vm.stateManager.getStateRoot()),
-        verkleJSON.genesisBlockHeader.stateRoot,
-        'genesis state root matches',
-      )
-      await runBlock(vm, {
-        block,
-        skipBlockValidation: true,
-      })
-    }
   })
 })

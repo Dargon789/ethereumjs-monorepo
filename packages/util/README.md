@@ -15,6 +15,7 @@
 - [Getting Started](#getting-started)
 - [Module: [account]](#module-account)
 - [Module: [address]](#module-address)
+- [Module: [authorization]](#module-authorization)
 - [Module: [blobs]](#module-blobs)
 - [Module: [bytes]](#module-bytes)
 - [Module: [constants]](#module-constants)
@@ -95,6 +96,10 @@ import { createAddressFromString } from '@ethereumjs/util'
 const address = createAddressFromString('0x2f015c60e0be116b1f0cd534704db9c92118fb6a')
 console.log(`Ethereum address ${address.toString()} created`)
 ```
+
+## Module: [authorization](src/authorization.ts)
+
+Module with `EIP-7702` authorization list signing utilities.
 
 ## Module: [blobs](src/blobs.ts)
 
@@ -199,42 +204,6 @@ console.log(`Recovered public key ${bytesToHex(pubkey)} from valid signature val
 ## Module: [types](src/types.ts)
 
 Various TypeScript types. Direct usage is not recommended, type structure might change in the future.
-
-## Module: [verkle](src/verkle.ts)
-
-Various functions for accessing verkle state:
-
-```ts
-// ./examples/verkle.ts
-
-import {
-  VerkleLeafType,
-  bytesToHex,
-  decodeVerkleLeafBasicData,
-  getVerkleKey,
-  hexToBytes,
-} from '@ethereumjs/util'
-
-const state = {
-  '0xdf67dea9181141d6255ac05c7ada5a590fb30a375023f16c31223f067319e300':
-    '0x0100000001000000000000000000000001000000000000000000000000000000',
-  '0xdf67dea9181141d6255ac05c7ada5a590fb30a375023f16c31223f067319e301':
-    '0x923672e5275a0104000000000000000000000000000000000000000000000000',
-  '0xdf67dea9181141d6255ac05c7ada5a590fb30a375023f16c31223f067319e302':
-    '0x2c01000000000000000000000000000000000000000000000000000000000000',
-  '0xdf67dea9181141d6255ac05c7ada5a590fb30a375023f16c31223f067319e303':
-    '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470',
-  '0xdf67dea9181141d6255ac05c7ada5a590fb30a375023f16c31223f067319e304': null,
-}
-
-const stem = hexToBytes('0xdf67dea9181141d6255ac05c7ada5a590fb30a375023f16c31223f067319e3')
-
-const basicDataKey = getVerkleKey(stem, VerkleLeafType.BasicData)
-const basicDataRaw = state[bytesToHex(basicDataKey)]
-const basicData = decodeVerkleLeafBasicData(hexToBytes(basicDataRaw!))
-
-console.log(basicData) // { version: 1, nonce: 1n, codeSize: 0, balance: 1n }
-```
 
 ## Module: [withdrawal](src/withdrawal.ts)
 

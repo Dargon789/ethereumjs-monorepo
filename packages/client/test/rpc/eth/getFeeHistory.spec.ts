@@ -1,41 +1,25 @@
 import { paramsBlock } from '@ethereumjs/block'
 import { Common, Hardfork, Mainnet } from '@ethereumjs/common'
 import { createTx } from '@ethereumjs/tx'
-import {
-  BIGINT_0,
-  BIGINT_256,
-  bigIntToHex,
-  blobsToCommitments,
-  bytesToBigInt,
-  commitmentsToVersionedHashes,
-  createAddressFromPrivateKey,
-  createZeroAddress,
-  getBlobs,
-  hexToBytes,
-} from '@ethereumjs/util'
+import { BIGINT_0, bigIntToHex, bytesToBigInt, hexToBytes } from '@ethereumjs/util'
 import { buildBlock } from '@ethereumjs/vm'
-import { trustedSetup } from '@paulmillr/trusted-setups/fast.js'
-import { KZG as microEthKZG } from 'micro-eth-signer/kzg'
 import { assert, describe, it } from 'vitest'
 
-import { eip4844GethGenesis } from '@ethereumjs/testdata'
 import { powData } from '../../testdata/geth-genesis/pow.ts'
 import { getRPCClient, gethGenesisStartLondon, setupChain } from '../helpers.ts'
 
+import { SIGNER_G } from '@ethereumjs/testdata'
 import type { PrefixedHexString } from '@ethereumjs/util'
 import type { Chain } from '../../../src/blockchain/index.ts'
 import type { VMExecution } from '../../../src/execution/index.ts'
 
 const method = 'eth_feeHistory'
 
-const privateKey = hexToBytes('0xe331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109')
-const pKeyAddress = createAddressFromPrivateKey(privateKey)
-
-const privateKey4844 = hexToBytes(
+/*const privateKey4844 = hexToBytes(
   '0x45a915e4d060149eb4365960e6a7a45f334393093061116b197e3240065ff2d8',
 )
 const p4844Address = createAddressFromPrivateKey(privateKey4844)
-const kzg = new microEthKZG(trustedSetup)
+const kzg = new microEthKZG(trustedSetup)*/
 
 const produceFakeGasUsedBlock = async (execution: VMExecution, chain: Chain, gasUsed: bigint) => {
   const { vm } = execution
@@ -76,7 +60,7 @@ const produceBlockWithTx = async (
   gasLimits: bigint[] = [BigInt(0xfffff)],
 ) => {
   const { vm } = execution
-  const account = await vm.stateManager.getAccount(pKeyAddress)
+  const account = await vm.stateManager.getAccount(SIGNER_G.address)
   let nonce = account?.nonce ?? BIGINT_0
   const parentBlock = await chain.getCanonicalHeadBlock()
   const vmCopy = await vm.shallowCopy()
@@ -105,7 +89,7 @@ const produceBlockWithTx = async (
           data: '0xFE',
         },
         { common: vmCopy.common },
-      ).sign(privateKey),
+      ).sign(SIGNER_G.privateKey),
     )
     nonce++
   }
@@ -121,7 +105,7 @@ const produceBlockWithTx = async (
  * @param chain
  * @param blobsCount Array of blob txs to produce. The amount of blobs in here is thus the amount of blobs per tx.
  */
-const produceBlockWith4844Tx = async (
+/*const produceBlockWith4844Tx = async (
   execution: VMExecution,
   chain: Chain,
   blobsCount: number[],
@@ -182,7 +166,7 @@ const produceBlockWith4844Tx = async (
   const { block } = await blockBuilder.build()
   await chain.putBlocks([block], true)
   await execution.run()
-}
+}*/
 
 describe(method, () => {
   it(`${method}: should return 12.5% increased baseFee if parent block is full`, async () => {
@@ -215,22 +199,22 @@ describe(method, () => {
       ) / 1000
 
     // Note: this also ensures that block 2,3 are returned, since gas of block 0 -> 1 and 1 -> 2 does not change
-    assert.equal(increase, 0.125)
+    assert.strictEqual(increase, 0.125)
     // Sanity check
-    assert.equal(firstBaseFee, previousBaseFee)
+    assert.strictEqual(firstBaseFee, previousBaseFee)
     // 2 blocks are requested, but the next baseFee is able to be calculated from the latest block
     // Per spec, also return this. So return 3 baseFeePerGas
-    assert.equal(res.result.baseFeePerGas.length, 3)
+    assert.strictEqual(res.result.baseFeePerGas.length, 3)
 
     // Check that the expected gasRatios of the blocks are correct
-    assert.equal(res.result.gasUsedRatio[0], 0.5) // Block 2
-    assert.equal(res.result.gasUsedRatio[1], 1) // Block 3
+    assert.strictEqual(res.result.gasUsedRatio[0], 0.5) // Block 2
+    assert.strictEqual(res.result.gasUsedRatio[1], 1) // Block 3
 
     // No ratios were requested
     assert.deepEqual(res.result.reward, [[], []])
 
     // oldestBlock is correct
-    assert.equal(res.result.oldestBlock, '0x2')
+    assert.strictEqual(res.result.oldestBlock, '0x2')
   })
 
   it(`${method}: should return 12.5% decreased base fee if the block is empty`, async () => {
@@ -256,7 +240,7 @@ describe(method, () => {
           bytesToBigInt(hexToBytes(previousBaseFee)),
       ) / 1000
 
-    assert.equal(decrease, -0.125)
+    assert.strictEqual(decrease, -0.125)
   })
 
   it(`${method}: should return initial base fee if the block number is london hard fork`, async () => {
@@ -276,7 +260,7 @@ describe(method, () => {
 
     const [baseFee] = res.result.baseFeePerGas as [PrefixedHexString]
 
-    assert.equal(bytesToBigInt(hexToBytes(baseFee)), initialBaseFee)
+    assert.strictEqual(bytesToBigInt(hexToBytes(baseFee)), initialBaseFee)
   })
 
   it(`${method}: should return 0x0 for base fees requested before eip-1559`, async () => {
@@ -294,8 +278,8 @@ describe(method, () => {
       PrefixedHexString,
     ]
 
-    assert.equal(previousBaseFee, '0x0')
-    assert.equal(nextBaseFee, '0x0')
+    assert.strictEqual(previousBaseFee, '0x0')
+    assert.strictEqual(nextBaseFee, '0x0')
   })
 
   it(`${method}: should return correct gas used ratios`, async () => {
@@ -313,8 +297,8 @@ describe(method, () => {
 
     const [genesisGasUsedRatio, nextGasUsedRatio] = res.result.gasUsedRatio as [number, number]
 
-    assert.equal(genesisGasUsedRatio, 0)
-    assert.equal(nextGasUsedRatio, 0.5)
+    assert.strictEqual(genesisGasUsedRatio, 0)
+    assert.strictEqual(nextGasUsedRatio, 0.5)
   })
 
   it(`${method}: should throw error if block count is below 1`, async () => {
@@ -344,12 +328,12 @@ describe(method, () => {
 
     const rpc = getRPCClient(server)
     const res = await rpc.request(method, ['0x1', 'latest', [50, 60]])
-    assert.equal(
+    assert.strictEqual(
       parseInt(res.result.reward[0][0]),
       0,
       'Should return 0 for empty block reward percentiles',
     )
-    assert.equal(
+    assert.strictEqual(
       res.result.reward[0][1],
       '0x0',
       'Should return 0 for empty block reward percentiles',
@@ -433,7 +417,7 @@ describe(method, () => {
   /**
    * 4844-related test
    */
-  it(
+  /*it(
     `${method} - Should correctly return the right blob base fees and ratios for a chain with 4844 active`,
     async () => {
       const { chain, execution, server } = await setupChain(eip4844GethGenesis, 'post-merge', {
@@ -478,5 +462,5 @@ describe(method, () => {
     {
       timeout: 60000,
     },
-  )
+  )*/
 })

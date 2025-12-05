@@ -5,25 +5,26 @@ import { assert, describe, it } from 'vitest'
 
 import { createVM, runTx } from '../../../src/index.ts'
 
+import type { InterpreterStep } from '@ethereumjs/evm'
+import { SIGNER_A } from '@ethereumjs/testdata'
 import type { PrefixedHexString } from '@ethereumjs/util'
 
 // Test cases source: https://gist.github.com/holiman/174548cad102096858583c6fbbb0649a
 describe('EIP 2929: gas cost tests', () => {
   const initialGas = BigInt(0xffffffffff)
   const address = new Address(hexToBytes('0x000000000000000000000000636F6E7472616374'))
-  const senderKey = hexToBytes('0xe331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109')
   const common = new Common({ chain: Mainnet, hardfork: Hardfork.Berlin, eips: [2929] })
 
   const runTest = async function (test: any) {
     let i = 0
     let currentGas = initialGas
     const vm = await createVM({ common })
-    vm.evm.events!.on('step', function (step, resolve) {
+    const handler = function (step: InterpreterStep) {
       const gasUsed = currentGas - step.gasLeft
       currentGas = step.gasLeft
 
       if (test.steps.length > 0) {
-        assert.equal(
+        assert.strictEqual(
           step.opcode.name,
           test.steps[i].expectedOpcode,
           `Expected Opcode: ${test.steps[i].expectedOpcode}`,
@@ -35,7 +36,7 @@ describe('EIP 2929: gas cost tests', () => {
         // (ex: PUSH) and the last opcode is always STOP
         if (i > 0) {
           const expectedGasUsed = BigInt(test.steps[i - 1].expectedGasUsed)
-          assert.equal(
+          assert.strictEqual(
             true,
             gasUsed === expectedGasUsed,
             `Opcode: ${
@@ -45,8 +46,8 @@ describe('EIP 2929: gas cost tests', () => {
         }
       }
       i++
-      resolve?.()
-    })
+    }
+    vm.evm.events!.on('step', handler)
 
     await vm.stateManager.putCode(address, hexToBytes(test.code))
 
@@ -55,20 +56,19 @@ describe('EIP 2929: gas cost tests', () => {
       to: address, // call to the contract address,
     })
 
-    const tx = unsignedTx.sign(senderKey)
+    const tx = unsignedTx.sign(SIGNER_A.privateKey)
 
     const result = await runTx(vm, { tx, skipHardForkValidation: true })
 
     const totalGasUsed = initialGas - currentGas
-    assert.equal(true, totalGasUsed === BigInt(test.totalGasUsed) + BigInt(21000)) // Add tx upfront cost.
+    assert.strictEqual(true, totalGasUsed === BigInt(test.totalGasUsed) + BigInt(21000)) // Add tx upfront cost.
+    vm.evm.events!.removeListener('step', handler)
     return result
   }
 
   const runCodeTest = async function (code: PrefixedHexString, expectedGasUsed: bigint) {
     // setup the accounts for this test
-    const privateKey = hexToBytes(
-      '0xe331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109',
-    )
+    const privateKey = SIGNER_A.privateKey
     const contractAddress = new Address(hexToBytes('0x00000000000000000000000000000000000000ff'))
 
     const common = new Common({ chain: Mainnet, hardfork: Hardfork.Berlin, eips: [2929] })
@@ -96,7 +96,7 @@ describe('EIP 2929: gas cost tests', () => {
 
     const result = await runTx(vm, { tx, skipHardForkValidation: true })
 
-    assert.equal(result.totalGasSpent, expectedGasUsed)
+    assert.strictEqual(result.totalGasSpent, expectedGasUsed)
   }
 
   // Checks EXT(codehash,codesize,balance) of precompiles, which should be 100,
@@ -145,7 +145,7 @@ describe('EIP 2929: gas cost tests', () => {
     }
 
     const result = await runTest(test)
-    assert.equal(undefined, result.execResult.exceptionError)
+    assert.strictEqual(undefined, result.execResult.exceptionError)
   })
 
   // Checks `extcodecopy( 0xff,0,0,0,0)` twice, (should be expensive first time),
@@ -175,7 +175,7 @@ describe('EIP 2929: gas cost tests', () => {
     }
 
     const result = await runTest(test)
-    assert.equal(undefined, result.execResult.exceptionError)
+    assert.strictEqual(undefined, result.execResult.exceptionError)
   })
 
   // Checks `sload( 0x1)` followed by `sstore(loc: 0x01, val:0x11)`,
@@ -206,7 +206,7 @@ describe('EIP 2929: gas cost tests', () => {
     }
 
     const result = await runTest(test)
-    assert.equal(undefined, result.execResult.exceptionError)
+    assert.strictEqual(undefined, result.execResult.exceptionError)
   })
 
   // Calls the `identity`-precompile (cheap), then calls an account (expensive)
@@ -248,7 +248,7 @@ describe('EIP 2929: gas cost tests', () => {
     }
 
     const result = await runTest(test)
-    assert.equal(undefined, result.execResult.exceptionError)
+    assert.strictEqual(undefined, result.execResult.exceptionError)
   })
 
   it('ensure warm addresses/slots are tracked transaction-wide', async () => {

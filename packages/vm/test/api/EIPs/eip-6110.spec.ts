@@ -11,7 +11,7 @@ import {
   hexToBytes,
   randomBytes,
 } from '@ethereumjs/util'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 import { assert, describe, it } from 'vitest'
 
 import { buildBlock, runBlock } from '../../../src/index.ts'
@@ -67,7 +67,7 @@ describe('EIP-6110 runBlock tests', () => {
       to: DEPOSIT_CONTRACT_ADDRESS,
     }).sign(pk)
     const beaconContractAccount = createAccount({
-      codeHash: keccak256(depositContractByteCode),
+      codeHash: keccak_256(depositContractByteCode),
     })
     const beaconContractAddress = createAddressFromString(DEPOSIT_CONTRACT_ADDRESS)
     await vm.stateManager.putAccount(beaconContractAddress, beaconContractAccount)
@@ -80,11 +80,11 @@ describe('EIP-6110 runBlock tests', () => {
       { common },
     )
     const res = await runBlock(vm, { block, generate: true, skipBlockValidation: true })
-    assert.equal(res.requests?.length, 1)
+    assert.strictEqual(res.requests?.length, 1)
     const depositRequest = res.requests![0]
-    assert.equal(depositRequest.type, CLRequestType.Deposit)
+    assert.strictEqual(depositRequest.type, CLRequestType.Deposit)
     const parsedRequest = parseDepositRequest(depositRequest.data)
-    assert.equal(bytesToHex(parsedRequest.pubkey), pubkey)
+    assert.strictEqual(bytesToHex(parsedRequest.pubkey), pubkey)
   })
 })
 
@@ -102,7 +102,7 @@ describe('EIP-7685 buildBlock tests', () => {
       to: DEPOSIT_CONTRACT_ADDRESS,
     }).sign(pk)
     const beaconContractAccount = createAccount({
-      codeHash: keccak256(depositContractByteCode),
+      codeHash: keccak_256(depositContractByteCode),
     })
     const beaconContractAddress = createAddressFromString(DEPOSIT_CONTRACT_ADDRESS)
     await vm.stateManager.putAccount(beaconContractAddress, beaconContractAccount)
@@ -113,11 +113,11 @@ describe('EIP-7685 buildBlock tests', () => {
     const blockBuilder = await buildBlock(vm, { parentBlock: block })
     await blockBuilder.addTransaction(depositTx)
     const res = await blockBuilder.build()
-    assert.equal(res.requests?.length, 1)
+    assert.strictEqual(res.requests?.length, 1)
 
     const depositRequest = res.requests![0]
-    assert.equal(depositRequest.type, CLRequestType.Deposit)
+    assert.strictEqual(depositRequest.type, CLRequestType.Deposit)
     const parsedRequest = parseDepositRequest(depositRequest.data)
-    assert.equal(bytesToHex(parsedRequest.pubkey), pubkey)
+    assert.strictEqual(bytesToHex(parsedRequest.pubkey), pubkey)
   })
 })

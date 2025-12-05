@@ -13,7 +13,7 @@ Ethereum `mainnet` compatible execution context for
 [@ethereumjs/evm](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/evm)
 to build and run blocks and txs and update state.
 
-- 🦄 All hardforks up till **Pectra**
+- 🦄 All hardforks up till **Osaka**
 - 🌴 Tree-shakeable API
 - 👷🏼 Controlled dependency set (7 external + `@Noble` crypto)
 - 🧩 Flexible EIP on/off engine
@@ -243,21 +243,21 @@ const main = async () => {
 
   const vm = await createVM()
   await vm.stateManager.generateCanonicalGenesis!(genesisState)
-  const account = await vm.stateManager.getAccount(
-    createAddressFromString('0x000d836201318ec6899a67540690382780743280'),
-  )
+  const accountAddress = '0x000d836201318ec6899a67540690382780743280'
+  const account = await vm.stateManager.getAccount(createAddressFromString(accountAddress))
 
   if (account === undefined) {
     throw new Error('Account does not exist: failed to import genesis state')
   }
 
   console.log(
-    `This balance for account 0x000d836201318ec6899a67540690382780743280 in this chain's genesis state is ${Number(
+    `This balance for account ${accountAddress} in this chain's genesis state is ${Number(
       account?.balance,
     )}`,
   )
 }
 void main()
+
 ```
 
 Genesis state can be configured to contain both EOAs as well as (system) contracts with initial storage values set.
@@ -276,9 +276,12 @@ import { createVM } from '@ethereumjs/vm'
 const main = async () => {
   const common = new Common({ chain: Mainnet, hardfork: Hardfork.Cancun, eips: [7702] })
   const vm = await createVM({ common })
-  console.log(`EIP 7702 is active in isolation on top of the Cancun HF - ${vm.common.isActivatedEIP(7702)}`)
+  console.log(
+    `EIP 7702 is active in isolation on top of the Cancun HF - ${vm.common.isActivatedEIP(7702)}`,
+  )
 }
 void main()
+
 ```
 
 For a list with supported EIPs see the [@ethereumjs/evm](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/evm) documentation.
@@ -373,8 +376,8 @@ The following loggers are currently available:
 | Logger      | Description                                                        |
 | ----------- | ------------------------------------------------------------------ |
 | `vm:block`  | Block operations (run txs, generating receipts, block rewards,...) |
-| `vm:tx`     |  Transaction operations (account updates, checkpointing,...)       |
-| `vm:tx:gas` |  Transaction gas logger                                            |
+| `vm:tx`     |  Transaction operations (account updates, checkpointing,...)       |
+| `vm:tx:gas` |  Transaction gas logger                                            |
 | `vm:state`  | StateManager logger                                                |
 
 Note that there are additional EVM-specific loggers in the [@ethereumjs/evm](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/evm) package.
@@ -413,20 +416,32 @@ DEBUG=ethjs,vm:tx,vm:evm,vm:ops:sstore,vm:*:gas tsx test.ts
 
 ## Internal Structure
 
-The VM processes state changes at many levels.
+The VM processes state changes at several levels:
 
-- **runBlockchain**
-  - for every block, runBlock
-- **runBlock**
-  - for every tx, runTx
-  - pay miner and uncles
-- **runTx**
-  - check sender balance
-  - check sender nonce
-  - runCall
-  - transfer gas charges
+- **[`runBlock`](./src/runBlock.ts)**: Processes a single block.
+  - Performs initial setup: Validates hardfork compatibility, sets the state root (if provided), applies DAO fork logic if necessary.
+  - Manages state checkpoints before and after processing.
+  - Iterates through transactions within the block:
+    - For each transaction, calls `runTx`.
+  - Processes withdrawals (post-Shanghai/EIP-4895).
+  - Calculates and assigns block rewards to the miner (and uncles, pre-Merge).
+  - Finalizes the block state (state root, receipts root, logs bloom).
+  - Commits or reverts state changes based on success.
+- **[`runTx`](./src/runTx.ts)**: Processes a single transaction.
+  - Performs pre-execution checks: Sender balance sufficient for gas+value, sender nonce validity, transaction gas limit against block gas limit, EIP activations (e.g., 2930 Access Lists, 1559 Fee Market, 4844 Blobs).
+  - Warms up state access based on Access Lists (EIP-2929/2930).
+  - Pays intrinsic gas cost.
+  - Executes the transaction code using `vm.evm.runCall` (or specific logic for contract creation).
+  - Calculates gas used and refunds remaining gas.
+  - Transfers gas fees to the fee recipient (recipient receives all pre EIP-1559, base fee is burned post EIP-1559).
+  - Generates a transaction receipt.
+  - Manages state checkpoints and commits/reverts changes for the transaction.
+- **[`vm.evm.runCall`](../evm/src/evm.ts)** (within `@ethereumjs/evm`): Executes the EVM code for a transaction (message call or contract creation).
+  - Steps through EVM opcodes.
+  - Manages memory, stack, and storage changes.
+  - Handles exceptions and gas consumption during execution.
 
-TODO: this section likely needs an update.
+Note: The process of iterating through the blockchain (block by block) is typically managed by components outside the core VM package, such as `@ethereumjs/blockchain` or a full client implementation, which then utilize the VM's `runBlock` method.
 
 ## Development
 

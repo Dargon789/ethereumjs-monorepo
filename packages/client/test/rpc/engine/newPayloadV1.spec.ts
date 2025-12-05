@@ -1,11 +1,6 @@
-import { postMergeGethGenesis } from '@ethereumjs/testdata'
+import { SIGNER_G, postMergeGethGenesis } from '@ethereumjs/testdata'
 import { createFeeMarket1559Tx } from '@ethereumjs/tx'
-import {
-  bytesToHex,
-  createAddressFromPrivateKey,
-  createAddressFromString,
-  hexToBytes,
-} from '@ethereumjs/util'
+import { bytesToHex, createAddressFromString } from '@ethereumjs/util'
 import { assert, describe, it } from 'vitest'
 
 import { INVALID_PARAMS } from '../../../src/rpc/error-code.ts'
@@ -28,7 +23,7 @@ describe(method, () => {
     ]
 
     const res = await rpc.request(method, blockDataWithInvalidParentHash)
-    assert.equal(res.error.code, INVALID_PARAMS)
+    assert.strictEqual(res.error.code, INVALID_PARAMS)
     assert.isTrue(
       res.error.message.includes(
         "invalid argument 0 for key 'parentHash': hex string without 0x prefix",
@@ -41,7 +36,7 @@ describe(method, () => {
 
     const blockDataWithInvalidBlockHash = [{ ...blockData, blockHash: '0x-invalid-block-hash' }]
     const res = await rpc.request(method, blockDataWithInvalidBlockHash)
-    assert.equal(res.error.code, INVALID_PARAMS)
+    assert.strictEqual(res.error.code, INVALID_PARAMS)
     assert.isTrue(
       res.error.message.includes("invalid argument 0 for key 'blockHash': invalid block hash"),
     )
@@ -58,7 +53,7 @@ describe(method, () => {
     ]
     const res = await rpc.request(method, blockDataNonExistentBlockHash)
 
-    assert.equal(res.result.status, 'INVALID_BLOCK_HASH')
+    assert.strictEqual(res.result.status, 'INVALID_BLOCK_HASH')
   })
 
   it('call with non existent parent hash', async () => {
@@ -73,7 +68,7 @@ describe(method, () => {
     ]
     const res = await rpc.request(method, blockDataNonExistentParentHash)
 
-    assert.equal(res.result.status, 'ACCEPTED')
+    assert.strictEqual(res.result.status, 'ACCEPTED')
   })
 
   it('call with unknown parent hash to store in remoteBlocks, then call valid ancestor in fcU', async () => {
@@ -81,11 +76,11 @@ describe(method, () => {
     const rpc = getRPCClient(server)
     let res = await rpc.request(method, [beaconData[1]])
 
-    assert.equal(res.result.status, 'ACCEPTED')
+    assert.strictEqual(res.result.status, 'ACCEPTED')
 
     res = await rpc.request(method, [beaconData[0]])
 
-    assert.equal(res.result.status, 'VALID')
+    assert.strictEqual(res.result.status, 'VALID')
 
     // should return syncing as block1 would still not be executed
     const state = {
@@ -95,12 +90,12 @@ describe(method, () => {
     }
     res = await rpc.request('engine_forkchoiceUpdatedV1', [state])
 
-    assert.equal(res.result.payloadStatus.status, 'SYNCING')
+    assert.strictEqual(res.result.payloadStatus.status, 'SYNCING')
 
     // now block2 should be executed
     res = await rpc.request(method, [beaconData[1]])
 
-    assert.equal(res.result.status, 'VALID')
+    assert.strictEqual(res.result.status, 'VALID')
   })
 
   it('call with valid data', async () => {
@@ -108,22 +103,21 @@ describe(method, () => {
     const rpc = getRPCClient(server)
     const res = await rpc.request(method, [blockData])
 
-    assert.equal(res.result.status, 'VALID')
-    assert.equal(res.result.latestValidHash, blockData.blockHash)
+    assert.strictEqual(res.result.status, 'VALID')
+    assert.strictEqual(res.result.latestValidHash, blockData.blockHash)
   })
 
   it('call with valid data but invalid transactions', async () => {
-    const { chain, server } = await setupChain(postMergeGethGenesis, 'post-merge', { engine: true })
+    const { server } = await setupChain(postMergeGethGenesis, 'post-merge', { engine: true })
     const rpc = getRPCClient(server)
-    chain.config.logger!.silent = true
     const blockDataWithInvalidTransaction = {
       ...blockData,
       transactions: ['0x1'],
     }
 
     const res = await rpc.request(method, [blockDataWithInvalidTransaction])
-    assert.equal(res.result.status, 'INVALID')
-    assert.equal(res.result.latestValidHash, blockData.parentHash)
+    assert.strictEqual(res.result.status, 'INVALID')
+    assert.strictEqual(res.result.latestValidHash, blockData.parentHash)
     const expectedError = 'Invalid tx at index 0: Error: Invalid serialized tx input: must be array'
     assert.isTrue(
       res.result.validationError.includes(expectedError),
@@ -132,11 +126,10 @@ describe(method, () => {
   })
 
   it('call with valid data & valid transaction but not signed', async () => {
-    const { server, common, chain } = await setupChain(postMergeGethGenesis, 'post-merge', {
+    const { server, common } = await setupChain(postMergeGethGenesis, 'post-merge', {
       engine: true,
     })
     const rpc = getRPCClient(server)
-    chain.config.logger!.silent = true
 
     // Let's mock a non-signed transaction so execution fails
     const tx = createFeeMarket1559Tx(
@@ -158,20 +151,16 @@ describe(method, () => {
 
     const res = await rpc.request(method, [blockDataWithValidTransaction])
 
-    assert.equal(res.result.status, 'INVALID')
+    assert.strictEqual(res.result.status, 'INVALID')
     assert.isTrue(res.result.validationError.includes('transaction at index 0 is unsigned'))
   })
 
   it('call with valid data & valid transaction', async () => {
-    const accountPk = hexToBytes(
-      '0xe331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109',
-    )
-    const accountAddress = createAddressFromPrivateKey(accountPk)
     const newGenesisJSON = {
       ...postMergeGethGenesis,
       alloc: {
         ...postMergeGethGenesis.alloc,
-        [accountAddress.toString()]: {
+        [SIGNER_G.address.toString()]: {
           balance: '0x1000000',
         },
       },
@@ -186,7 +175,7 @@ describe(method, () => {
         gasLimit: 53_000,
       },
       { common },
-    ).sign(accountPk)
+    ).sign(SIGNER_G.privateKey)
     const transactions = [bytesToHex(tx.serialize())]
     const blockDataWithValidTransaction = {
       ...blockData,
@@ -199,19 +188,15 @@ describe(method, () => {
     }
 
     const res = await rpc.request(method, [blockDataWithValidTransaction])
-    assert.equal(res.result.status, 'VALID')
+    assert.strictEqual(res.result.status, 'VALID')
   })
 
   it('call with too many transactions', async () => {
-    const accountPk = hexToBytes(
-      '0xe331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109',
-    )
-    const accountAddress = createAddressFromPrivateKey(accountPk)
     const newGenesisJSON = {
       ...postMergeGethGenesis,
       alloc: {
         ...postMergeGethGenesis.alloc,
-        [accountAddress.toString()]: {
+        [SIGNER_G.address.toString()]: {
           balance: '0x100000000',
         },
       },
@@ -230,7 +215,7 @@ describe(method, () => {
           gasLimit: 53_000,
         },
         { common },
-      ).sign(accountPk)
+      ).sign(SIGNER_G.privateKey)
 
       return bytesToHex(tx.serialize())
     })
@@ -251,14 +236,14 @@ describe(method, () => {
     // newpayload shouldn't execute block but just return either SYNCING or ACCEPTED
 
     let res = await rpc.request(method, [blockDataWithValidTransaction])
-    assert.equal(res.result.status, 'SYNCING')
+    assert.strictEqual(res.result.status, 'SYNCING')
 
     // set the newpayload limit to 101 and the block should be executed
     /// @ts-expect-error -- Assign to-readonly property
     chain.config.engineNewpayloadMaxTxsExecute = 101
 
     res = await rpc.request(method, [blockDataWithValidTransaction])
-    assert.equal(res.result.status, 'VALID')
+    assert.strictEqual(res.result.status, 'VALID')
   })
 
   it('re-execute payload and verify that no errors occur', async () => {
@@ -275,12 +260,12 @@ describe(method, () => {
     ])
 
     // Let's set new head hash
-    assert.equal(res.result.payloadStatus.status, 'VALID')
+    assert.strictEqual(res.result.payloadStatus.status, 'VALID')
 
     // Now let's try to re-execute payload
     res = await rpc.request(method, [blockData])
 
-    assert.equal(res.result.status, 'VALID')
+    assert.strictEqual(res.result.status, 'VALID')
   })
 
   it('parent hash equals to block hash', async () => {
@@ -294,6 +279,6 @@ describe(method, () => {
     const rpc = getRPCClient(server)
     const res = await rpc.request(method, blockDataHasBlockHashSameAsParentHash)
 
-    assert.equal(res.result.status, 'INVALID_BLOCK_HASH')
+    assert.strictEqual(res.result.status, 'INVALID_BLOCK_HASH')
   })
 })

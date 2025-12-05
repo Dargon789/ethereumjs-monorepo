@@ -34,14 +34,15 @@ Install with `-g` if you want to use the CLI.
 ```ts
 // ./examples/simple.ts
 
-import { RLP } from '@ethereumjs/rlp'
 import assert from 'assert'
+import { RLP } from '@ethereumjs/rlp'
 
 const nestedList = [[], [[]], [[], [[]]]]
 const encoded = RLP.encode(nestedList)
 const decoded = RLP.decode(encoded)
 assert.deepStrictEqual(decoded, nestedList, 'decoded output does not match original')
 console.log('assert.deepStrictEqual would have thrown if the decoded output did not match')
+
 ```
 
 ## Browser
@@ -82,7 +83,7 @@ See our organizational [documentation](https://ethereumjs.readthedocs.io) for an
 [rlp-npm-link]: https://www.npmjs.com/package/@ethereumjs/rlp
 [rlp-issues-badge]: https://img.shields.io/github/issues/ethereumjs/ethereumjs-monorepo/package:%20rlp?label=issues
 [rlp-issues-link]: https://github.com/ethereumjs/ethereumjs-monorepo/issues?q=is%3Aopen+is%3Aissue+label%3A"package%3A+rlp"
-[rlp-actions-badge]: https://github.com/ethereumjs/ethereumjs-monorepo/workflows/rlp/badge.svg
+[rlp-actions-badge]: https://github.com/ethereumjs/ethereumjs-monorepo/actions/workflows/static-build.yml/badge.svg
 [rlp-actions-link]: https://github.com/ethereumjs/ethereumjs-monorepo/actions?query=workflow%3A%22rlp%22
 [rlp-coverage-badge]: https://codecov.io/gh/ethereumjs/ethereumjs-monorepo/branch/master/graph/badge.svg?flag=rlp
 [rlp-coverage-link]: https://codecov.io/gh/ethereumjs/ethereumjs-monorepo/tree/master/packages/rlp

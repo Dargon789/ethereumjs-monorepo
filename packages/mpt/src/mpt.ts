@@ -17,8 +17,8 @@ import {
   concatBytes,
   equalsBytes,
 } from '@ethereumjs/util'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 import debug from 'debug'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
 
 import { CheckpointDB } from './db/checkpointDB.ts'
 import {
@@ -51,11 +51,19 @@ import type { OnFound } from './util/asyncWalk.ts'
 
 /**
  * The basic trie interface, use with `import { MerklePatriciaTrie } from '@ethereumjs/mpt'`.
+ *
+ * A MerklePatriciaTrie object can be created with the constructor method:
+ *
+ * - {@link createMPT}
+ *
+ * A sparse MerklePatriciaTrie object can be created from a merkle proof:
+ *
+ * - {@link createMPTFromProof}
  */
 export class MerklePatriciaTrie {
   protected readonly _opts: MPTOptsWithDefaults = {
     useKeyHashing: false,
-    useKeyHashingFunction: keccak256,
+    useKeyHashingFunction: keccak_256,
     keyPrefix: undefined,
     useRootPersistence: false,
     useNodePruning: false,
@@ -93,7 +101,7 @@ export class MerklePatriciaTrie {
       }
       this._opts = { ...this._opts, ...opts }
       this._opts.useKeyHashingFunction =
-        opts.common?.customCrypto.keccak256 ?? opts.useKeyHashingFunction ?? keccak256
+        opts.common?.customCrypto.keccak256 ?? opts.useKeyHashingFunction ?? keccak_256
 
       valueEncoding =
         opts.db !== undefined ? (opts.valueEncoding ?? ValueEncoding.String) : ValueEncoding.Bytes

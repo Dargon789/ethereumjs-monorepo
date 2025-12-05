@@ -7,7 +7,7 @@ import { createFeeMarket1559Tx } from '../src/index.ts'
 
 import { eip1559Data } from './testData/eip1559.ts' // Source: Besu
 
-import { secp256k1 } from 'ethereum-cryptography/secp256k1'
+import { secp256k1 } from '@noble/curves/secp256k1.js'
 import type { JSONTx } from '../src/index.ts'
 
 const common = createCustomCommon({ chainId: 4 }, Mainnet)
@@ -77,11 +77,19 @@ describe('[FeeMarket1559Tx]', () => {
       },
       { common },
     )
-    assert.equal(tx.getUpfrontCost(), BigInt(806), 'correct upfront cost with default base fee')
+    assert.strictEqual(
+      tx.getUpfrontCost(),
+      BigInt(806),
+      'correct upfront cost with default base fee',
+    )
     let baseFee = BigInt(0)
-    assert.equal(tx.getUpfrontCost(baseFee), BigInt(806), 'correct upfront cost with 0 base fee')
+    assert.strictEqual(
+      tx.getUpfrontCost(baseFee),
+      BigInt(806),
+      'correct upfront cost with 0 base fee',
+    )
     baseFee = BigInt(4)
-    assert.equal(
+    assert.strictEqual(
       tx.getUpfrontCost(baseFee),
       BigInt(1006),
       'correct upfront cost with cost-changing base fee value',
@@ -96,12 +104,12 @@ describe('[FeeMarket1559Tx]', () => {
       },
       { common },
     )
-    assert.equal(tx.getEffectivePriorityFee(BigInt(10)), BigInt(0))
-    assert.equal(tx.getEffectivePriorityFee(BigInt(9)), BigInt(1))
-    assert.equal(tx.getEffectivePriorityFee(BigInt(8)), BigInt(2))
-    assert.equal(tx.getEffectivePriorityFee(BigInt(2)), BigInt(8))
-    assert.equal(tx.getEffectivePriorityFee(BigInt(1)), BigInt(8))
-    assert.equal(tx.getEffectivePriorityFee(BigInt(0)), BigInt(8))
+    assert.strictEqual(tx.getEffectivePriorityFee(BigInt(10)), BigInt(0))
+    assert.strictEqual(tx.getEffectivePriorityFee(BigInt(9)), BigInt(1))
+    assert.strictEqual(tx.getEffectivePriorityFee(BigInt(8)), BigInt(2))
+    assert.strictEqual(tx.getEffectivePriorityFee(BigInt(2)), BigInt(8))
+    assert.strictEqual(tx.getEffectivePriorityFee(BigInt(1)), BigInt(8))
+    assert.strictEqual(tx.getEffectivePriorityFee(BigInt(0)), BigInt(8))
     assert.throws(() => tx.getEffectivePriorityFee(BigInt(11)))
   })
 
@@ -147,10 +155,21 @@ describe('[FeeMarket1559Tx]', () => {
     const tx = createFeeMarket1559Tx({})
 
     const msgHash = tx.getHashedMessageToSign()
-    const { recovery, r, s } = secp256k1.sign(msgHash, privKey, { extraEntropy: false })
+    // Use same options as Legacy.sign internally uses
+    const signatureBytes = secp256k1.sign(msgHash, privKey, {
+      extraEntropy: false,
+      format: 'recovered',
+      prehash: false,
+    })
+    const { recovery, r, s } = secp256k1.Signature.fromBytes(signatureBytes, 'recovered')
 
-    const signedTx = tx.sign(privKey)
+    if (recovery === undefined) {
+      throw new Error('Invalid signature recovery')
+    }
+
     const addSignatureTx = tx.addSignature(BigInt(recovery), r, s)
+    // Sign separately to get a signed tx to compare with
+    const signedTx = tx.sign(privKey)
 
     assert.deepEqual(signedTx.toJSON(), addSignatureTx.toJSON())
   })
@@ -160,7 +179,16 @@ describe('[FeeMarket1559Tx]', () => {
     const tx = createFeeMarket1559Tx({})
 
     const msgHash = tx.getHashedMessageToSign()
-    const { recovery, r, s } = secp256k1.sign(msgHash, privKey)
+    // Must use format: 'recovered' to get 65-byte signature with recovery byte
+    const signatureBytes = secp256k1.sign(msgHash, privKey, {
+      format: 'recovered',
+      prehash: false,
+    })
+    const { recovery, r, s } = secp256k1.Signature.fromBytes(signatureBytes, 'recovered')
+
+    if (recovery === undefined) {
+      throw new Error('Invalid signature recovery')
+    }
 
     assert.throws(() => {
       // This will throw, since we now try to set either v=27 or v=28
@@ -221,7 +249,7 @@ describe('[FeeMarket1559Tx]', () => {
       },
     })
     const signedTxn = txn.sign(pkey)
-    assert.equal(
+    assert.strictEqual(
       signedTxn.common.hardfork(),
       Hardfork.Paris,
       'signed tx common is taken from tx.common',

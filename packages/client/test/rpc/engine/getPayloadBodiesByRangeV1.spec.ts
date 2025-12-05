@@ -1,15 +1,9 @@
 import { createBlock, createBlockHeader } from '@ethereumjs/block'
 import { Hardfork } from '@ethereumjs/common'
 import { MerkleStateManager } from '@ethereumjs/statemanager'
-import { eip4844GethGenesis, postMergeGethGenesis } from '@ethereumjs/testdata'
+import { SIGNER_A, eip4844GethGenesis, postMergeGethGenesis } from '@ethereumjs/testdata'
 import { createTx } from '@ethereumjs/tx'
-import {
-  Account,
-  Units,
-  bytesToHex,
-  createAddressFromPrivateKey,
-  hexToBytes,
-} from '@ethereumjs/util'
+import { Account, Units, bytesToHex } from '@ethereumjs/util'
 import { assert, describe, it, vi } from 'vitest'
 
 import { INVALID_PARAMS, TOO_LARGE_REQUEST } from '../../../src/rpc/error-code.ts'
@@ -22,7 +16,7 @@ describe(method, () => {
     const { rpc } = await baseSetup({ engine: true, includeVM: true })
 
     const res = await rpc.request(method, ['0x1', '0x55'])
-    assert.equal(res.error.code, TOO_LARGE_REQUEST)
+    assert.strictEqual(res.error.code, TOO_LARGE_REQUEST)
     assert.isTrue(res.error.message.includes('More than 32 execution payload bodies requested'))
   })
 
@@ -30,7 +24,7 @@ describe(method, () => {
     const { rpc } = await baseSetup({ engine: true, includeVM: true })
 
     const res = await rpc.request(method, ['0x0', '0x0'])
-    assert.equal(res.error.code, INVALID_PARAMS)
+    assert.strictEqual(res.error.code, INVALID_PARAMS)
     assert.isTrue(res.error.message.includes('Start and Count parameters cannot be less than 1'))
   })
 
@@ -45,13 +39,11 @@ describe(method, () => {
     })
     const rpc = getRPCClient(server)
     common.setHardfork(Hardfork.Cancun)
-    const pkey = hexToBytes('0x9c9996335451aab4fc4eac58e31a8c300e095cdbcee532d53d09280e83360355')
-    const address = createAddressFromPrivateKey(pkey)
-    await service.execution.vm.stateManager.putAccount(address, new Account())
-    const account = await service.execution.vm.stateManager.getAccount(address)
+    await service.execution.vm.stateManager.putAccount(SIGNER_A.address, new Account())
+    const account = await service.execution.vm.stateManager.getAccount(SIGNER_A.address)
 
     account!.balance = 0xfffffffffffffffn
-    await service.execution.vm.stateManager.putAccount(address, account!)
+    await service.execution.vm.stateManager.putAccount(SIGNER_A.address, account!)
     const tx = createTx(
       {
         type: 0x01,
@@ -61,7 +53,7 @@ describe(method, () => {
         gasLimit: 30000000n,
       },
       { common },
-    ).sign(pkey)
+    ).sign(SIGNER_A.privateKey)
     const tx2 = createTx(
       {
         type: 0x01,
@@ -72,7 +64,7 @@ describe(method, () => {
         nonce: 1n,
       },
       { common },
-    ).sign(pkey)
+    ).sign(SIGNER_A.privateKey)
     const block = createBlock(
       {
         transactions: [tx],
@@ -97,19 +89,19 @@ describe(method, () => {
     await chain.putBlocks([block, block2], true)
 
     const res = await rpc.request(method, ['0x1', '0x4'])
-    assert.equal(
+    assert.strictEqual(
       res.result[0].transactions[0],
       bytesToHex(tx.serialize()),
       'got expected transaction from first payload',
     )
-    assert.equal(
+    assert.strictEqual(
       res.result.length,
       2,
       'length of response matches start of range up to highest known block',
     )
 
     const res2 = await rpc.request(method, ['0x3', '0x2'])
-    assert.equal(
+    assert.strictEqual(
       res2.result.length,
       0,
       'got empty array when start of requested range is beyond current chain head',
@@ -127,13 +119,11 @@ describe(method, () => {
     })
     const rpc = getRPCClient(server)
     common.setHardfork(Hardfork.London)
-    const pkey = hexToBytes('0x9c9996335451aab4fc4eac58e31a8c300e095cdbcee532d53d09280e83360355')
-    const address = createAddressFromPrivateKey(pkey)
-    await service.execution.vm.stateManager.putAccount(address, new Account())
-    const account = await service.execution.vm.stateManager.getAccount(address)
+    await service.execution.vm.stateManager.putAccount(SIGNER_A.address, new Account())
+    const account = await service.execution.vm.stateManager.getAccount(SIGNER_A.address)
 
     account!.balance = 0xfffffffffffffffn
-    await service.execution.vm.stateManager.putAccount(address, account!)
+    await service.execution.vm.stateManager.putAccount(SIGNER_A.address, account!)
     const tx = createTx(
       {
         type: 0x01,
@@ -143,7 +133,7 @@ describe(method, () => {
         gasLimit: 30000000n,
       },
       { common },
-    ).sign(pkey)
+    ).sign(SIGNER_A.privateKey)
     const tx2 = createTx(
       {
         type: 0x01,
@@ -154,7 +144,7 @@ describe(method, () => {
         nonce: 1n,
       },
       { common },
-    ).sign(pkey)
+    ).sign(SIGNER_A.privateKey)
     const block = createBlock(
       {
         transactions: [tx],
