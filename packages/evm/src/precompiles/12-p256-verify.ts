@@ -21,7 +21,7 @@ export async function precompile12(opts: PrecompileInput): Promise<ExecResult> {
   }
 
   if (opts.data.length !== 160) {
-    opts._debug?.(`${pName} failed: Invalid input length: expeted 160, got ${opts.data.length}`)
+    opts._debug?.(`${pName} failed: Invalid input length: expected 160, got ${opts.data.length}`)
     return EVMErrorResult(new EVMError(EVMError.errorMessages.INVALID_INPUT_LENGTH), opts.gasLimit)
   }
 
