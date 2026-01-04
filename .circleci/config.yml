@@ -17,8 +17,7 @@ jobs:
     executor: my-custom-executor
     steps:
       - checkout
-      - run: |
-          # echo Hello, World!
+      - run: echo "web3-defi-game-project pipeline stub: CI is wired up and running"
 
 workflows:
   my-custom-workflow:
