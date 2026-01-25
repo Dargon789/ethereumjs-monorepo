@@ -149,8 +149,8 @@ export async function runTx(vm: VM, opts: RunTxOpts): Promise<RunTxResult> {
 
     for (const accessListItem of castedTx.accessList) {
       const [addressBytes, slotBytesList] = accessListItem
+      // Using deprecated bytesToUnprefixedHex for performance: journal methods expect unprefixed hex strings for Map/Set lookups.
       const address = bytesToUnprefixedHex(addressBytes)
-      // Note: in here, the 0x is stripped, so immediately do this here
       vm.evm.journal.addAlwaysWarmAddress(address, true)
       for (const storageKey of slotBytesList) {
         vm.evm.journal.addAlwaysWarmSlot(address, bytesToUnprefixedHex(storageKey), true)
@@ -243,10 +243,12 @@ async function _runTx(vm: VM, opts: RunTxOpts): Promise<RunTxResult> {
     vm.evm.journal.addAlwaysWarmAddress(caller.toString())
     if (tx.to !== undefined) {
       // Note: in case we create a contract, we do vm in EVMs `_executeCreate` (vm is also correct in inner calls, per the EIP)
+      // Using deprecated bytesToUnprefixedHex for performance: journal methods expect unprefixed hex strings.
       vm.evm.journal.addAlwaysWarmAddress(bytesToUnprefixedHex(tx.to.bytes))
     }
     if (vm.common.isActivatedEIP(3651)) {
       const coinbase = block?.header.coinbase.bytes ?? DEFAULT_HEADER.coinbase.bytes
+      // Using deprecated bytesToUnprefixedHex for performance: journal methods expect unprefixed hex strings.
       vm.evm.journal.addAlwaysWarmAddress(bytesToUnprefixedHex(coinbase))
     }
   }
@@ -318,7 +320,7 @@ async function _runTx(vm: VM, opts: RunTxOpts): Promise<RunTxResult> {
     debug(`Sender's pre-tx balance is ${balance}`)
   }
   // EIP-3607: Reject transactions from senders with deployed code
-  if (vm.common.isActivatedEIP(3607) && !equalsBytes(fromAccount.codeHash, KECCAK256_NULL)) {
+  if (!equalsBytes(fromAccount.codeHash, KECCAK256_NULL)) {
     const isActive7702 = vm.common.isActivatedEIP(7702)
     switch (isActive7702) {
       case true: {
