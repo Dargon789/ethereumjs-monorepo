@@ -120,13 +120,7 @@ We have a simple release script for lightweight in-between releases like nightly
 for e.g. external targeted testing and releases are not mentioned in CHANGELOG.md files.
 
 ```sh
-tsx scripts/simple-release.ts <version> <npm_token> <tag>
-```
-
-Example:
-
-```sh
-tsx scripts/simple-release.ts 10.1.1-nightly.1 abc123 nightly
+tsx scripts/simple-release.ts <version> <tag>
 ```
 
 #### Windows Users Note
