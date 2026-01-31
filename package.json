@@ -32,7 +32,7 @@
     "tsc": "npm run tsc --workspaces --if-present"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.2.5",
     "@eslint/js": "^9.22.0",
     "@types/estree": "^1.0.1",
     "@types/node": "22.13.10",
