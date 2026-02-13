@@ -116,7 +116,7 @@ tsx scripts/release-npm.ts --publish=latest
 The following prompt has been tested with Cursor IDE to work well for CHANGELOG updates (please update placeholders in the first paragraph accordingly):
 
 ```markdown
-I want to do a new release round for all active packages listed in @README.md. Version bump has already been done, see an exemplary [ REFERENCE package.json FILE ] file, release is target for today. Last release round has been done on [ ENTER DATE IN FORMAT: April 29 2025 ] along commit [ ENTER COMMIT HASH, e.g.: 9e461f54312bf20c710b43ab73f7d3ad753f8765 ]. An exemplary CHANGELOG.md file is [ REFERENCE e.g. block CHANGELOG.md file ].
+I want to do a new release round for all active packages listed in @README.md. Version bump has already been done, see an exemplary [ REFERENCE package.json FILE ] file, release is target for today. Last release round has been done on [ ENTER DATE IN FORMAT: April 29 2025 ] along commit [ ENTER COMMIT HASH, e.g.: 9e461f54312bf20c710b43ab73f7d3ad753f8765 ]. An exemplary CHANGELOG.md file is [ REFERENCE e.g. block CHANGELOG.md file ].
 
 Can you please add new sections in the CHANGELOG files and add one-line summaries for the user-facing changes? For this please go for the commits since last release, one commit represents one PR due to our (squash) merge policy. You can leave out PRs only updating documentation, code in the examples folder or tests. Also tooling infrastructure (linting,...) and CI updating PRs can be left out. New support for new and deprecation for older Node.js as well as TypeScript versions should be added. Version updates for external dependencies - so not from within the monorepo - should be added as well.
 
