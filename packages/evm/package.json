@@ -1,6 +1,6 @@
 {
   "name": "@ethereumjs/evm",
-  "version": "10.0.0",
+  "version": "10.1.1",
   "description": "JavaScript Ethereum Virtual Machine (EVM) implementation",
   "keywords": ["ethereum", "EVM", "JavaScript", "TypeScript"],
   "homepage": "https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/evm#readme",
@@ -12,7 +12,7 @@
     "url": "https://github.com/ethereumjs/ethereumjs-monorepo.git"
   },
   "license": "MPL-2.0",
-  "author": "EthereumJS",
+  "author": "EthereumJS Team",
   "contributors": ["Alex Beregszaszi <alex@rtfs.hu>"],
   "type": "module",
   "sideEffects": false,
@@ -36,7 +36,7 @@
     "coverage": "DEBUG=ethjs npx vitest run -c ../../config/vitest.config.coverage.mts",
     "coverage:istanbul": "DEBUG=ethjs npx vitest run -c ../../config/vitest.config.coverage.istanbul.mts",
     "docs:build": "typedoc --options typedoc.mjs",
-    "examples": "tsx ../../scripts/examples-runner.ts -- evm && tsx ../../scripts/examples-runner.ts -- evm precompiles",
+    "examples": "tsx ../../scripts/examples-runner.ts -- evm && tsx ../../scripts/examples-runner.ts -- evm precompiles && tsx ../../scripts/examples-runner.ts -- evm opcodes",
     "examples:build": "npx embedme README.md",
     "formatTest": "node ./scripts/formatTest",
     "lint": "npm run biome && eslint  --config ./eslint.config.mjs .",
@@ -54,13 +54,13 @@
     "visualize:bundle": "npx vite build --config=./vite.config.bundler.ts --emptyOutDir=false --outDir ."
   },
   "dependencies": {
-    "@ethereumjs/binarytree": "^10.0.0",
-    "@ethereumjs/common": "^10.0.0",
-    "@ethereumjs/statemanager": "^10.0.0",
-    "@ethereumjs/util": "^10.0.0",
-    "@noble/curves": "^1.9.0",
+    "@ethereumjs/binarytree": "^10.1.1",
+    "@ethereumjs/common": "^10.1.1",
+    "@ethereumjs/statemanager": "^10.1.1",
+    "@ethereumjs/util": "^10.1.1",
+    "@noble/curves": "^2.0.1",
+    "@noble/hashes": "^2.0.1",
     "debug": "^4.4.0",
-    "ethereum-cryptography": "^3.2.0",
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
@@ -82,6 +82,6 @@
     "split": "^1.0.1"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   }
 }

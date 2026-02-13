@@ -1,3 +1,15 @@
+/**
+ * This file is deprecated.
+ *
+ * The new runner in executionSpecBlockchain.test.ts will become the main
+ * entry point for blockchain tests.
+ *
+ * If you discover functionality here which is still missing in the new runner,
+ * please open a PR against executionSpecBlockchain.test.ts.
+ *
+ * PLEASE DO NOT COPY LARGER PARTS OF THE CODE TO THE NEW RUNNER BUT RE-IMPLEMENT
+ * (USE COMMON SENSE).
+ */
 import { createBlock, createBlockFromRLP } from '@ethereumjs/block'
 import { EthashConsensus, createBlockchain } from '@ethereumjs/blockchain'
 import { ConsensusAlgorithm } from '@ethereumjs/common'
@@ -14,6 +26,7 @@ import {
   isHexString,
   stripHexPrefix,
 } from '@ethereumjs/util'
+import { assert } from 'vitest'
 
 import { buildBlock, createVM, runBlock } from '../../../src/index.ts'
 import { setupPreConditions, verifyPostConditions } from '../../util.ts'
@@ -22,7 +35,14 @@ import type { Block } from '@ethereumjs/block'
 import type { Blockchain, ConsensusDict } from '@ethereumjs/blockchain'
 import type { Common, StateManagerInterface } from '@ethereumjs/common'
 import type { PrefixedHexString } from '@ethereumjs/util'
-import type * as tape from 'tape'
+
+function logComment(t: typeof assert, message: string): void {
+  console.log(`[TEST] ${message}`)
+}
+
+function incrementCount(options: any) {
+  options.testCount = (options.testCount ?? 0) + 1
+}
 
 function formatBlockHeader(data: any) {
   const formatted: any = {}
@@ -32,10 +52,10 @@ function formatBlockHeader(data: any) {
   return formatted
 }
 
-export async function runBlockchainTest(options: any, testData: any, t: tape.Test) {
+export async function runBlockchainTest(options: any, testData: any, t: typeof assert) {
   // ensure that the test data is the right fork data
   if (testData.network !== options.forkConfigTestSuite) {
-    t.comment(`skipping test: no data available for ${options.forkConfigTestSuite}`)
+    logComment(t, `skipping test: no data available for ${options.forkConfigTestSuite}`)
     return
   }
 
@@ -61,7 +81,8 @@ export async function runBlockchainTest(options: any, testData: any, t: tape.Tes
   // and being set to Ethash PoW validation
   if (testData.sealEngine === 'Ethash') {
     if (common.consensusAlgorithm() !== ConsensusAlgorithm.Ethash) {
-      t.skip('SealEngine setting is not matching chain consensus type, skip test.')
+      // Return early - test is filtered in blockchain.spec.ts
+      return
     }
     validatePow = true
   }
@@ -74,7 +95,8 @@ export async function runBlockchainTest(options: any, testData: any, t: tape.Tes
 
   if (typeof testData.genesisRLP === 'string') {
     const rlp = hexToBytes(testData.genesisRLP)
-    t.deepEquals(genesisBlock.serialize(), rlp, 'correct genesis RLP')
+    t.deepEqual(genesisBlock.serialize(), rlp, 'correct genesis RLP')
+    incrementCount(options)
   }
 
   const consensusDict: ConsensusDict = {}
@@ -90,8 +112,6 @@ export async function runBlockchainTest(options: any, testData: any, t: tape.Tes
   if (validatePow) {
     ;(blockchain.consensus as EthashConsensus)._ethash!.cacheDB = cacheDB
   }
-
-  const begin = Date.now()
 
   const evmOpts = {
     bls: options.bls,
@@ -111,17 +131,19 @@ export async function runBlockchainTest(options: any, testData: any, t: tape.Tes
   // set up pre-state
   await setupPreConditions(vm.stateManager, testData)
 
-  t.deepEquals(
+  t.deepEqual(
     await vm.stateManager.getStateRoot(),
     genesisBlock.header.stateRoot,
     'correct pre stateRoot',
   )
+  incrementCount(options)
 
   async function handleError(error: string | undefined, expectException: string | boolean) {
     if (expectException !== false) {
-      t.pass(`Expected exception ${expectException}`)
+      t.ok(true, `Expected exception ${expectException}`)
+      incrementCount(options)
     } else {
-      t.fail(error)
+      assert.fail(error)
     }
   }
 
@@ -179,13 +201,14 @@ export async function runBlockchainTest(options: any, testData: any, t: tape.Tes
             const tx = createTxFromRLP(txRLP, { common })
             await blockBuilder.addTransaction(tx)
             if (shouldFail) {
-              t.fail('tx should fail, but did not fail')
+              assert.fail('tx should fail, but did not fail')
             }
           } catch (e: any) {
             if (!shouldFail) {
-              t.fail(`tx should not fail, but failed: ${e.message}`)
+              assert.fail(`tx should not fail, but failed: ${e.message}`)
             } else {
-              t.pass('tx successfully failed')
+              t.ok(true, 'tx successfully failed')
+              incrementCount(options)
             }
           }
         }
@@ -235,7 +258,7 @@ export async function runBlockchainTest(options: any, testData: any, t: tape.Tes
       }
 
       if (expectException !== false) {
-        t.fail(`expected exception but test did not throw an exception: ${expectException}`)
+        assert.fail(`expected exception but test did not throw an exception: ${expectException}`)
         return
       }
     } catch (error: any) {
@@ -250,11 +273,7 @@ export async function runBlockchainTest(options: any, testData: any, t: tape.Tes
     '0x' + testData.lastblockhash,
     'correct last header block',
   )
-
-  const end = Date.now()
-  const timeSpent = `${(end - begin) / 1000} secs`
-  t.comment(`Time: ${timeSpent}`)
-
+  incrementCount(options)
   // Explicitly delete objects for memory optimization (early GC)
   common = blockchain = stateTree = stateManager = vm = cacheDB = null as any
 }

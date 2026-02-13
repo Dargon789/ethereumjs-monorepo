@@ -24,6 +24,9 @@
     }
   ],
   "words": [
+    "unpadding",
+    "prehash",
+    "viem",
     "immediates",
     "unerasable",
     "bytelist",
@@ -70,6 +73,7 @@
     "headerchain",
     "Merkle",
     "cornercase",
+    "constantinoplefix",
     "Deauthorizations",
     "Deauthorizing",
     "deauthorized",
@@ -640,6 +644,7 @@
     "peerdas",
     "getpayload",
     "ckzg",
-    "Damgård"
+    "Damgård",
+    "viem"
   ]
 }

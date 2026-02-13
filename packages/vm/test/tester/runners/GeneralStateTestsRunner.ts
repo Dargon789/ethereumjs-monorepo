@@ -1,21 +1,30 @@
+/**
+ * This file is deprecated.
+ *
+ * The new runner in executionSpecState.test.ts will become the main
+ * entry point for state tests.
+ *
+ * If you discover functionality here which is still missing in the new runner,
+ * please open a PR against executionSpecState.test.ts.
+ *
+ * PLEASE DO NOT COPY LARGER PARTS OF THE CODE TO THE NEW RUNNER BUT RE-IMPLEMENT
+ * (USE COMMON SENSE).
+ */
 import { Block } from '@ethereumjs/block'
 import { createBlockchain } from '@ethereumjs/blockchain'
 import { type InterpreterStep } from '@ethereumjs/evm'
 import { MerklePatriciaTrie } from '@ethereumjs/mpt'
 import { Caches, MerkleStateManager } from '@ethereumjs/statemanager'
-import {
-  Account,
-  bytesToHex,
-  createAddressFromString,
-  equalsBytes,
-  toBytes,
-} from '@ethereumjs/util'
+import { Account, bytesToHex, createAddressFromString, toBytes } from '@ethereumjs/util'
+import type { assert } from 'vitest'
 
+import type { StateManagerInterface } from '@ethereumjs/common'
 import { createVM, runTx } from '../../../src/index.ts'
 import { makeBlockFromEnv, makeTx, setupPreConditions } from '../../util.ts'
 
-import type { StateManagerInterface } from '@ethereumjs/common'
-import type * as tape from 'tape'
+function logComment(message: string): void {
+  console.log(`[TEST] ${message}`)
+}
 
 function parseTestCases(
   forkConfigTestSuite: string,
@@ -71,7 +80,7 @@ function parseTestCases(
   return testCases
 }
 
-async function runTestCase(options: any, testData: any, t: tape.Test) {
+async function runTestCase(options: any, testData: any, t: typeof assert) {
   const begin = Date.now()
   // Copy the common object to not create long-lasting
   // references in memory which might prevent GC
@@ -134,7 +143,7 @@ async function runTestCase(options: any, testData: any, t: tape.Test) {
       opName: e.opcode.name,
     }
 
-    t.comment(JSON.stringify(opTrace))
+    logComment(JSON.stringify(opTrace))
     resolve?.()
   }
 
@@ -142,7 +151,7 @@ async function runTestCase(options: any, testData: any, t: tape.Test) {
     const stateRoot = {
       stateRoot: bytesToHex(await vm.stateManager.getStateRoot()),
     }
-    t.comment(JSON.stringify(stateRoot))
+    logComment(JSON.stringify(stateRoot))
     resolve?.()
   }
 
@@ -158,7 +167,6 @@ async function runTestCase(options: any, testData: any, t: tape.Test) {
         await runTx(vm, { tx, block })
         execInfo = 'successful tx run'
       } catch (e: any) {
-        console.log(e)
         execInfo = `tx runtime error :${e.message}`
       }
     } else {
@@ -171,12 +179,12 @@ async function runTestCase(options: any, testData: any, t: tape.Test) {
 
   const stateManagerStateRoot = await vm.stateManager.getStateRoot() // Ensure state root is updated (flush all changes to trie)
   const testDataPostStateRoot = toBytes(testData.postStateRoot)
-  const stateRootsAreEqual = equalsBytes(stateManagerStateRoot, testDataPostStateRoot)
 
   const end = Date.now()
   const timeSpent = `${(end - begin) / 1000} secs`
 
-  t.ok(stateRootsAreEqual, `[ ${timeSpent} ] the state roots should match (${execInfo})`)
+  const msg = `error running test case for fork: ${options.forkConfigTestSuite} (${execInfo})`
+  t.deepEqual(stateManagerStateRoot, testDataPostStateRoot, msg)
 
   vm.evm.events!.removeListener('step', stepHandler)
   vm.events.removeListener('afterTx', afterTxHandler)
@@ -186,32 +194,28 @@ async function runTestCase(options: any, testData: any, t: tape.Test) {
   return parseFloat(timeSpent)
 }
 
-export async function runStateTest(options: any, testData: any, t: tape.Test) {
-  try {
-    const testCases = parseTestCases(
-      options.forkConfigTestSuite,
-      testData,
-      options.data,
-      options.gasLimit,
-      options.value,
-    )
-    if (testCases.length === 0) {
-      t.comment(`No ${options.forkConfigTestSuite} post state defined, skip test`)
-      return
-    }
-    for (const testCase of testCases) {
-      if (options.reps !== undefined && options.reps > 0) {
-        let totalTimeSpent = 0
-        for (let x = 0; x < options.reps; x++) {
-          totalTimeSpent += await runTestCase(options, testCase, t)
-        }
-        t.comment(`Average test run: ${(totalTimeSpent / options.reps).toLocaleString()} s`)
-      } else {
-        await runTestCase(options, testCase, t)
+export async function runStateTest(options: any, testData: any, t: typeof assert) {
+  const testCases = parseTestCases(
+    options.forkConfigTestSuite,
+    testData,
+    options.data,
+    options.gasLimit,
+    options.value,
+  )
+  if (testCases.length === 0) {
+    logComment(`No ${options.forkConfigTestSuite} post state defined, skip test`)
+    return
+  }
+  for (const testCase of testCases) {
+    if (options.reps !== undefined && options.reps > 0) {
+      let totalTimeSpent = 0
+      for (let x = 0; x < options.reps; x++) {
+        totalTimeSpent += await runTestCase(options, testCase, t)
       }
+      logComment(`Average test run: ${(totalTimeSpent / options.reps).toLocaleString()} s`)
+    } else {
+      await runTestCase(options, testCase, t)
     }
-  } catch (e: any) {
-    console.log(e)
-    t.fail(`error running test case for fork: ${options.forkConfigTestSuite}`)
+    options.testCount++
   }
 }

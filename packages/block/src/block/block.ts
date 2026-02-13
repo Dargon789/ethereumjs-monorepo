@@ -10,8 +10,8 @@ import {
   bytesToHex,
   equalsBytes,
 } from '@ethereumjs/util'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
-import { sha256 } from 'ethereum-cryptography/sha256.js'
+import { sha256 } from '@noble/hashes/sha2.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 
 import type { Common } from '@ethereumjs/common'
 import type { FeeMarket1559Tx, LegacyTx, TypedTransaction } from '@ethereumjs/tx'
@@ -82,7 +82,7 @@ export class Block {
   ) {
     this.header = header ?? new BlockHeader({}, opts)
     this.common = this.header.common
-    this.keccakFunction = this.common.customCrypto.keccak256 ?? keccak256
+    this.keccakFunction = this.common.customCrypto.keccak256 ?? keccak_256
     this.sha256Function = this.common.customCrypto.sha256 ?? sha256
 
     this.transactions = transactions
@@ -116,7 +116,7 @@ export class Block {
   }
 
   /**
-   * Returns a Array of the raw Bytes Arrays of this block, in order.
+   * Returns an array of the raw byte arrays for this block, in order.
    */
   raw(): BlockBytes {
     const bytesArray: BlockBytes = [
@@ -209,7 +209,7 @@ export class Block {
         }
       }
       if (this.common.isActivatedEIP(4844)) {
-        const blobGasLimit = this.common.param('maxBlobGasPerBlock')
+        const blobGasLimit = this.common.getBlobGasSchedule().maxBlobGasPerBlock
         const blobGasPerBlob = this.common.param('blobGasPerBlob')
         if (tx instanceof Blob4844Tx) {
           blobGasUsed += BigInt(tx.numBlobs()) * blobGasPerBlob
@@ -251,10 +251,28 @@ export class Block {
    * - All transactions are valid
    * - The transactions trie is valid
    * - The uncle hash is valid
+   * - Block size limit (EIP-7934)
    * @param onlyHeader if only passed the header, skip validating txTrie and unclesHash (default: false)
    * @param verifyTxs if set to `false`, will not check for transaction validation errors (default: true)
+   * @param validateBlockSize if set to `true`, will check for block size limit (EIP-7934) (default: false)
    */
-  async validateData(onlyHeader: boolean = false, verifyTxs: boolean = true): Promise<void> {
+  async validateData(
+    onlyHeader: boolean = false,
+    verifyTxs: boolean = true,
+    validateBlockSize: boolean = false,
+  ): Promise<void> {
+    // EIP-7934: RLP Execution Block Size Limit validation
+    if (validateBlockSize && this.common.isActivatedEIP(7934)) {
+      const rlpEncoded = this.serialize()
+      const maxRlpBlockSize = this.common.param('maxRlpBlockSize')
+      if (rlpEncoded.length > maxRlpBlockSize) {
+        const msg = this._errorMsg(
+          `Block size exceeds maximum RLP block size limit: ${rlpEncoded.length} bytes > ${maxRlpBlockSize} bytes`,
+        )
+        throw EthereumJSErrorWithoutCode(msg)
+      }
+    }
+
     if (verifyTxs) {
       const txErrors = this.getTransactionsValidationErrors()
       if (txErrors.length > 0) {
@@ -302,7 +320,7 @@ export class Block {
    */
   validateBlobTransactions(parentHeader: BlockHeader) {
     if (this.common.isActivatedEIP(4844)) {
-      const blobGasLimit = this.common.param('maxBlobGasPerBlock')
+      const blobGasLimit = this.common.getBlobGasSchedule().maxBlobGasPerBlock
       const blobGasPerBlob = this.common.param('blobGasPerBlob')
       let blobGasUsed = BIGINT_0
 

@@ -1,3 +1,15 @@
+/**
+ * This file is deprecated (helper for old test runner).
+ *
+ * The new runners in executionSpec*.test.ts will become the main
+ * entry point for test running.
+ *
+ * If you discover functionality here which is still missing in the new runner,
+ * please open a PR against executionSpecState.test.ts.
+ *
+ * PLEASE DO NOT COPY LARGER PARTS OF THE CODE TO THE NEW RUNNER BUT RE-IMPLEMENT
+ * (USE COMMON SENSE).
+ */
 import * as path from 'path'
 import { Common, Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common'
 
@@ -439,9 +451,9 @@ export function getExpectedTests(
  * @param defaultChoice if to use `NONE` or `ALL` as default choice
  * @returns array with test names
  */
-export function getSkipTests(choices: string, defaultChoice: string): string[] {
+export function getSkipTests(choices: string | undefined, defaultChoice: string): string[] {
   let skipTests: string[] = []
-  if (!choices) {
+  if (choices === undefined) {
     choices = defaultChoice
   }
   choices = choices.toLowerCase()
