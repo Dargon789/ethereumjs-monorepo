@@ -126,7 +126,7 @@ export function precompile100(opts: PrecompileInput): ExecResult {
       }
       return {
         executionGasUsed: gasUsed,
-        returnValue: SUCCESS_RETURN,
+        returnValue: new Uint8Array(SUCCESS_RETURN),
       }
     } else {
       if (opts._debug !== undefined) {
