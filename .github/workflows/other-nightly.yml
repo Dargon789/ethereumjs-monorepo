@@ -13,6 +13,8 @@ env:
 jobs:
   test-ethash:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
 
@@ -29,6 +31,8 @@ jobs:
 
   test-client:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
 
@@ -45,6 +49,8 @@ jobs:
   
   test-devp2p:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
 
@@ -61,6 +67,8 @@ jobs:
   
   test-wallet:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
 
@@ -77,6 +85,8 @@ jobs:
   
   test-verkle:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
 
