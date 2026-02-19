@@ -96,7 +96,7 @@ Thanks, that was great!
 
 Last release round has been done on April 29 2025 along commit 9e461f54312bf20c710b43ab73f7d3ad753f8765.
 
-We now would want to deal with the rather minor changes being done since then and include them in the new section fo the CHANGELOG.md files for the active repositories that you just prepared for.
+We now would want to deal with the rather minor changes being done since then and include them in the new section of the CHANGELOG.md files for the active repositories that you just prepared for.
 
 As a first step can you go through all commits after the mentioned last release round and identify PRs (one commit is the same as one PR in our specific work setup) where active production code in the respective src directories has been touched. You can leave out PRs only updating documentation, code in the examples folder or tests. Also tooling infrastructure (linting,...) and CI updating PRs can be left out. New support for new and deprecation for older Node.js as well as TypeScript versions should be added. Version updates for external dependencies - so not from within the monorepo - should be added as well.
 
