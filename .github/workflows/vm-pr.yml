@@ -17,6 +17,9 @@ on:
         required: false
         default: 'none'
 
+permissions:
+  contents: read
+
 env:
   cwd: ${{github.workspace}}/packages/vm
 
