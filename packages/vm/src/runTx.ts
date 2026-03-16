@@ -756,6 +756,7 @@ async function _runTx(vm: VM, opts: RunTxOpts): Promise<RunTxResult> {
     fromAccount.balance = BIGINT_0
   }
   await vm.evm.journal.putAccount(caller, fromAccount)
+
   if (vm.common.isActivatedEIP(7928)) {
     vm.evm.blockLevelAccessList!.addBalanceChange(
       caller.toString(),
@@ -844,8 +845,9 @@ async function _runTx(vm: VM, opts: RunTxOpts): Promise<RunTxResult> {
     debug(`Generated tx bloom with logs=${results.execResult.logs?.length}`)
   }
 
-  // Calculate the total gas used
-  results.totalGasSpent = results.execResult.executionGasUsed + intrinsicGas
+  // Calculate tx gas used before refund processing
+  const totalGasSpentBeforeRefund = results.execResult.executionGasUsed + intrinsicGas
+  results.totalGasSpent = totalGasSpentBeforeRefund
   if (vm.DEBUG) {
     debugGas(`tx add baseFee ${intrinsicGas} to totalGasSpent (-> ${results.totalGasSpent})`)
   }
@@ -884,6 +886,12 @@ async function _runTx(vm: VM, opts: RunTxOpts): Promise<RunTxResult> {
     }
   }
 
+  // EIP-7778: block-level gas accounting does not subtract tx refunds.
+  // For pre-7778 forks this equals the amount paid by the sender.
+  results.blockGasSpent = vm.common.isActivatedEIP(7778)
+    ? bigIntMax(totalGasSpentBeforeRefund, floorCost)
+    : results.totalGasSpent
+
   results.amountSpent = results.totalGasSpent * gasPrice
 
   // Update sender's balance
@@ -911,6 +919,14 @@ async function _runTx(vm: VM, opts: RunTxOpts): Promise<RunTxResult> {
   }
 
   await vm.evm.journal.putAccount(caller, fromAccount)
+  // EIP-7928: Track sender balance change for gas refund in Block Access List
+  if (vm.common.isActivatedEIP(7928) && txCostDiff > BIGINT_0) {
+    vm.evm.blockLevelAccessList!.addBalanceChange(
+      caller.toString(),
+      fromAccount.balance,
+      vm.evm.blockLevelAccessList!.blockAccessIndex,
+    )
+  }
   if (vm.DEBUG) {
     debug(
       `Refunded txCostDiff (${txCostDiff}) to fromAccount (caller) balance (-> ${fromAccount.balance})`,

@@ -1,5 +1,5 @@
 import { Hardfork } from '@ethereumjs/common'
-import type { BlockLevelAccessList } from '@ethereumjs/util'
+import type { BlockLevelAccessList, PrefixedHexString } from '@ethereumjs/util'
 import {
   Account,
   Address,
@@ -21,6 +21,7 @@ import {
 import debugDefault from 'debug'
 import { EventEmitter } from 'eventemitter3'
 
+import { createEIP7708TransferLog } from './eip7708.ts'
 import { FORMAT } from './eof/constants.ts'
 import { isEOF } from './eof/util.ts'
 import { EVMError } from './errors.ts'
@@ -46,6 +47,7 @@ import {
   type EVMRunCallOpts,
   type EVMRunCodeOpts,
   type ExecResult,
+  type Log,
 } from './types.ts'
 
 import type { Common, StateManagerInterface } from '@ethereumjs/common'
@@ -288,10 +290,10 @@ export class EVM implements EVMInterface {
 
     // Supported EIPs
     const supportedEIPs = [
-      663, 1153, 1559, 2537, 2565, 2718, 2929, 2930, 2935, 3198, 3529, 3540, 3541, 3607, 3651, 3670,
+      1153, 1559, 2537, 2565, 2718, 2929, 2930, 2935, 3198, 3529, 3540, 3541, 3607, 3651, 3670,
       3855, 3860, 4200, 4399, 4750, 4788, 4844, 4895, 5133, 5450, 5656, 6110, 6206, 6780, 7002,
       7069, 7251, 7480, 7516, 7594, 7620, 7685, 7691, 7692, 7698, 7702, 7709, 7823, 7825, 7934,
-      7939, 7951,
+      7939, 7951, 8024,
     ]
 
     for (const eip of this.common.eips()) {
@@ -481,13 +483,36 @@ export class EVM implements EVMInterface {
         debug(`Exit early on value transfer overflowed (CALL)`)
       }
     }
+
+    // EIP-7708: Create ETH transfer log for non-zero value transfers to a different account.
+    // CALLCODE always executes in the caller's context (to == caller), so it is a self-transfer.
+    // Self-transfers (caller == to) and DELEGATECALL do not emit a log.
+    let eip7708Log: Log | undefined
+    const isTransferToDifferentAccount = !equalsBytes(message.caller.bytes, message.to.bytes)
+    if (
+      this.common.isActivatedEIP(7708) &&
+      !message.delegatecall &&
+      message.value > BIGINT_0 &&
+      isTransferToDifferentAccount &&
+      errorMessage === undefined
+    ) {
+      eip7708Log = createEIP7708TransferLog(message.caller, message.to, message.value)
+      if (this.DEBUG) {
+        debug(
+          `EIP-7708: Created ETH transfer log from ${message.caller} to ${message.to} value=${message.value}`,
+        )
+      }
+    }
+
     if (exit) {
+      // Even on early exit, we may need to return the EIP-7708 log if value was transferred
       return {
         execResult: {
           gasRefund: message.gasRefund,
           executionGasUsed: message.gasLimit - gasLimit,
           exceptionError: errorMessage, // Only defined if addToBalance failed
           returnValue: new Uint8Array(0),
+          logs: eip7708Log ? [eip7708Log] : undefined,
         },
       }
     }
@@ -509,6 +534,10 @@ export class EVM implements EVMInterface {
       }
       result = await this.runPrecompile(message.code as PrecompileFunc, message.data, gasLimit)
 
+      if (eip7708Log !== undefined) {
+        result.logs = result.logs !== undefined ? [eip7708Log, ...result.logs] : [eip7708Log]
+      }
+
       if (this._optsCached.profiler?.enabled === true) {
         this.performanceLogger.stopTimer(timer!, Number(result.executionGasUsed), 'precompiles')
         if (callTimer !== undefined) {
@@ -520,11 +549,14 @@ export class EVM implements EVMInterface {
       if (this.DEBUG) {
         debug(`Start bytecode processing...`)
       }
-      result = await this.runInterpreter({
-        ...{ codeAddress: message.codeAddress },
-        ...message,
-        gasLimit,
-      } as Message)
+      result = await this.runInterpreter(
+        {
+          ...{ codeAddress: message.codeAddress },
+          ...message,
+          gasLimit,
+        } as Message,
+        { initialLogs: eip7708Log ? [eip7708Log] : undefined },
+      )
     }
 
     if (message.depth === 0) {
@@ -683,6 +715,23 @@ export class EVM implements EVMInterface {
       }
     }
 
+    // EIP-7708: Create ETH transfer log for contract creation with value
+    let eip7708CreateLog: Log | undefined
+    if (
+      this.common.isActivatedEIP(7708) &&
+      message.value > BIGINT_0 &&
+      message.to !== undefined &&
+      !equalsBytes(message.caller.bytes, message.to.bytes) &&
+      errorMessage === undefined
+    ) {
+      eip7708CreateLog = createEIP7708TransferLog(message.caller, message.to, message.value)
+      if (this.DEBUG) {
+        debug(
+          `EIP-7708: Created ETH transfer log for CREATE from ${message.caller} to ${message.to} value=${message.value}`,
+        )
+      }
+    }
+
     if (exit) {
       if (this.common.isActivatedEIP(6800) || this.common.isActivatedEIP(7864)) {
         const createCompleteAccessGas = message.accessWitness!.writeAccountHeader(message.to)
@@ -712,6 +761,7 @@ export class EVM implements EVMInterface {
           gasRefund: message.gasRefund,
           exceptionError: errorMessage, // only defined if addToBalance failed
           returnValue: new Uint8Array(0),
+          logs: eip7708CreateLog ? [eip7708CreateLog] : undefined,
         },
       }
     }
@@ -721,7 +771,9 @@ export class EVM implements EVMInterface {
     }
 
     // run the message with the updated gas limit and add accessed gas used to the result
-    let result = await this.runInterpreter({ ...message, gasLimit, isCreate: true } as Message)
+    let result = await this.runInterpreter({ ...message, gasLimit, isCreate: true } as Message, {
+      initialLogs: eip7708CreateLog ? [eip7708CreateLog] : undefined,
+    })
     result.executionGasUsed += message.gasLimit - gasLimit
 
     // fee for size of the return value
@@ -921,6 +973,7 @@ export class EVM implements EVMInterface {
       blobVersionedHashes: message.blobVersionedHashes ?? [],
       accessWitness: message.accessWitness,
       createdAddresses: message.createdAddresses,
+      initialLogs: opts.initialLogs,
     }
 
     const interpreter = new Interpreter(
@@ -1182,11 +1235,22 @@ export class EVM implements EVMInterface {
   }
 
   /**
-   * Returns code for precompile at the given address, or undefined
-   * if no such precompile exists.
+   * Returns the precompile function registered at the given address,
+   * or `undefined` if no precompile is active there.
+   *
+   * Accepts either an `Address` instance or a `0x`-prefixed hex string.
+   *
+   * ```ts
+   * const evm = await createEVM({
+   *   customPrecompiles: [{ address: '0x000000000000000000000000000000000000ff01', function: myFn }],
+   * })
+   * const fn = evm.getPrecompile('0x000000000000000000000000000000000000ff01')
+   * ```
    */
-  getPrecompile(address: Address): PrecompileFunc | undefined {
-    // Using deprecated bytesToUnprefixedHex for performance: used as Map keys for precompile lookups.
+  getPrecompile(address: Address | PrefixedHexString): PrecompileFunc | undefined {
+    if (typeof address === 'string') {
+      return this.precompiles.get(address.slice(2).padStart(40, '0').toLowerCase())
+    }
     return this.precompiles.get(bytesToUnprefixedHex(address.bytes))
   }
 

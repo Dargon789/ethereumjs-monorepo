@@ -158,6 +158,11 @@ export async function runBlockchainTestCase(
             false,
           )
           balDiffMessage = diffString
+          t.deepEqual(
+            bytesToHex(expectedBAL.hash()),
+            bytesToHex(block.header.blockAccessListHash!),
+            `expected block level access list correct${balDiffMessage}`,
+          )
         }
         t.deepEqual(
           bytesToHex(result.blockLevelAccessList!.hash()),
@@ -278,6 +283,7 @@ const exceptionMessages: Record<string, RegExp> = {
   'TransactionException.TYPE_4_TX_PRE_FORK': /^EIP-7702 not enabled on Common$/,
 
   // BlockException entries
+  'BlockException.GAS_USED_OVERFLOW': /tx has a higher gas limit than the block/,
   'BlockException.INCORRECT_BLOB_GAS_USED': /invalid blobGasUsed/,
   'BlockException.INCORRECT_BLOCK_FORMAT':
     /(?:blob gas used can only be provided with EIP4844 activated|^invalid header.*)/,

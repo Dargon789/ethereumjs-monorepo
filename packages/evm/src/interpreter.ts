@@ -6,14 +6,21 @@ import {
   BIGINT_2,
   EthereumJSErrorWithoutCode,
   MAX_UINT64,
+  bigIntToBytes,
   bigIntToHex,
   bytesToBigInt,
   bytesToHex,
   equalsBytes,
+  setLengthLeft,
   setLengthRight,
 } from '@ethereumjs/util'
 import debugDefault from 'debug'
 
+import {
+  EIP7708_SELFDESTRUCT_TOPIC,
+  EIP7708_SYSTEM_ADDRESS,
+  EIP7708_TRANSFER_TOPIC,
+} from './eip7708.ts'
 import { FORMAT, MAGIC, VERSION } from './eof/constants.ts'
 import { EOFContainerMode, validateEOF } from './eof/container.ts'
 import { setupEOF } from './eof/setup.ts'
@@ -23,6 +30,7 @@ import { type EVMPerformanceLogger, type Timer } from './logger.ts'
 import { Memory } from './memory.ts'
 import { Message } from './message.ts'
 import { trap } from './opcodes/index.ts'
+import { isEIP8024PairImmediateValid, isEIP8024SingleImmediateValid } from './opcodes/util.ts'
 import { Stack } from './stack.ts'
 
 import type {
@@ -48,6 +56,8 @@ const debugGas = debugDefault('evm:gas')
 
 export interface InterpreterOpts {
   pc?: number
+  /** Logs to prepend to the result (e.g. EIP-7708 ETH transfer log from message-level value transfer) */
+  initialLogs?: Log[]
 }
 
 /**
@@ -87,6 +97,8 @@ export interface Env {
   createdAddresses?: Set<string>
   accessWitness?: BinaryTreeAccessWitnessInterface
   chargeCodeAccesses?: boolean
+  /** Logs to prepend (e.g. EIP-7708 ETH transfer log from message-level value transfer) */
+  initialLogs?: Log[]
 }
 
 export interface RunState {
@@ -208,7 +220,7 @@ export class Interpreter {
     this.journal = journal
     this._env = env
     this._result = {
-      logs: [],
+      logs: env.initialLogs ? [...env.initialLogs] : [],
       returnValue: undefined,
       selfdestruct: new Set(),
     }
@@ -585,6 +597,21 @@ export class Interpreter {
           // Define a JUMPDEST as a 1 in the valid jumps array
           jumps[i] = 1
         }
+      } else if (
+        this.common.isActivatedEIP(8024) &&
+        (opcode === 0xe6 || opcode === 0xe7 || opcode === 0xe8)
+      ) {
+        const immediate = code[i + 1]
+        if (immediate === undefined) {
+          continue
+        }
+        const skipImmediate =
+          opcode === 0xe8
+            ? isEIP8024PairImmediateValid(immediate)
+            : isEIP8024SingleImmediateValid(immediate)
+        if (skipImmediate === true) {
+          i++
+        }
       }
     }
     return { jumps, pushes, opcodesCached }
@@ -920,6 +947,16 @@ export class Interpreter {
    */
   getBlockGasLimit(): bigint {
     return this._env.block.header.gasLimit
+  }
+
+  /**
+   * Returns the block's slot number (EIP-7843).
+   */
+  getBlockSlotNumber(): bigint {
+    if (this._env.block.header.slotNumber === undefined) {
+      throw EthereumJSErrorWithoutCode('slotNumber is not available on this block')
+    }
+    return this._env.block.header.slotNumber
   }
 
   /**
@@ -1276,6 +1313,21 @@ export class Interpreter {
     this._result.selfdestruct.add(bytesToHex(this._env.address.bytes))
 
     const toSelf = equalsBytes(toAddress.bytes, this._env.address.bytes)
+    const contractBalance = this._env.contract.balance
+
+    // EIP-7708: Emit ETH transfer log for SELFDESTRUCT with value to a different account
+    if (this.common.isActivatedEIP(7708) && contractBalance > BIGINT_0 && !toSelf) {
+      // Transfer log: from contract to beneficiary
+      const fromTopic = setLengthLeft(this._env.address.bytes, 32)
+      const toTopic = setLengthLeft(toAddress.bytes, 32)
+      const data = setLengthLeft(bigIntToBytes(contractBalance), 32)
+      const transferLog: Log = [
+        EIP7708_SYSTEM_ADDRESS,
+        [EIP7708_TRANSFER_TOPIC, fromTopic, toTopic],
+        data,
+      ]
+      this._result.logs.push(transferLog)
+    }
 
     // Add to beneficiary balance
     if (!toSelf) {
@@ -1284,7 +1336,7 @@ export class Interpreter {
         toAccount = new Account()
       }
       const originalBalance = toAccount.balance
-      toAccount.balance += this._env.contract.balance
+      toAccount.balance += contractBalance
       await this.journal.putAccount(toAddress, toAccount)
       if (this.common.isActivatedEIP(7928)) {
         this._evm.blockLevelAccessList!.addBalanceChange(
@@ -1309,6 +1361,20 @@ export class Interpreter {
         // Check if ETH being sent to another account (thus set balance to 0)
         doModify = !toSelf
       }
+    }
+
+    // EIP-7708: Emit a Selfdestruct log for SELFDESTRUCT to self only when the balance
+    // is actually zeroed (doModify=true, i.e. same-tx contract creation). Pre-existing
+    // contracts where EIP-6780 prevents the burn should not emit a log.
+    if (this.common.isActivatedEIP(7708) && contractBalance > BIGINT_0 && toSelf && doModify) {
+      const contractTopic = setLengthLeft(this._env.address.bytes, 32)
+      const data = setLengthLeft(bigIntToBytes(contractBalance), 32)
+      const selfdestructLog: Log = [
+        EIP7708_SYSTEM_ADDRESS,
+        [EIP7708_SELFDESTRUCT_TOPIC, contractTopic],
+        data,
+      ]
+      this._result.logs.push(selfdestructLog)
     }
 
     // Set contract balance to 0
