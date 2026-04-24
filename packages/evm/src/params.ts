@@ -1,4 +1,5 @@
 import type { ParamsDict } from '@ethereumjs/common'
+import { SYSTEM_ADDRESS } from '@ethereumjs/util'
 
 export const paramsEVM: ParamsDict = {
   /**
@@ -79,6 +80,7 @@ export const paramsEVM: ParamsDict = {
     numberGas: 2, // Base fee of the NUMBER opcode
     difficultyGas: 2, // Base fee of the DIFFICULTY opcode
     gaslimitGas: 2, // Base fee of the GASLIMIT opcode
+    slotnumGas: 2, // Base fee of the SLOTNUM opcode (EIP-7843)
     popGas: 2, // Base fee of the POP opcode
     mloadGas: 3, // Base fee of the MLOAD opcode
     mstoreGas: 3, // Base fee of the MSTORE opcode
@@ -202,9 +204,9 @@ export const paramsEVM: ParamsDict = {
   },
 
   /**
-.  * SWAPN, DUPN and EXCHANGE instructions
+.  * DUPN, SWAPN and EXCHANGE instructions
 .  */
-  663: {
+  8024: {
     // gasPrices
     dupnGas: 3, // Base fee of the DUPN opcode
     swapnGas: 3, // Base fee of the SWAPN opcode
@@ -273,7 +275,7 @@ export const paramsEVM: ParamsDict = {
     // evm
     historyStorageAddress: '0x0000F90827F1C53A10CB7A02335B175320002935', // The address where the historical blockhashes are stored
     historyServeWindow: 8192, // The amount of blocks to be served by the historical blockhash contract
-    systemAddress: '0xfffffffffffffffffffffffffffffffffffffffe', // The system address
+    systemAddress: SYSTEM_ADDRESS, // The system address
   },
   /**
 .  * BASEFEE opcode
@@ -357,14 +359,6 @@ export const paramsEVM: ParamsDict = {
     jumpfGas: 5, // Base fee of the JUMPF opcode
   },
   /**
-   * Ethereum state using a unified verkle tree (experimental)
-   */
-  6800: {
-    // gasPrices
-    createGas: 1000, // Base fee of the CREATE opcode
-    coldsloadGas: 0, // Gas cost of the first read of storage from a given location (per transaction)
-  },
-  /**
 .  * Revamped CALL instructions
 .  */
   7069: {
@@ -408,5 +402,12 @@ export const paramsEVM: ParamsDict = {
     // gasPrices
     eofcreateGas: 32000, // Base fee of the EOFCREATE opcode (Same as CREATE/CREATE2)
     returncontractGas: 0, // Base fee of the RETURNCONTRACT opcode
+  },
+  /**
+.  * Count leading zeros (CLZ) opcode
+.  */
+  7939: {
+    // gasPrices
+    clzGas: 5, // Base fee of the CLZ opcode (matching MUL as per EIP-7939)
   },
 }

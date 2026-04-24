@@ -24,6 +24,11 @@
     }
   ],
   "words": [
+    "baljson",
+    "slotnum",
+    "unpadding",
+    "prehash",
+    "viem",
     "immediates",
     "unerasable",
     "bytelist",
@@ -42,8 +47,6 @@
     "ethash",
     "KECCAK",
     "keccak",
-    "Verkle",
-    "verkle",
     "maxblob",
     "Randao",
     "hardforks",
@@ -72,6 +75,7 @@
     "headerchain",
     "Merkle",
     "cornercase",
+    "constantinoplefix",
     "Deauthorizations",
     "Deauthorizing",
     "deauthorized",
@@ -436,6 +440,7 @@
     "RIPEMD",
     "journaling",
     "BLOBHASH",
+    "BALJSON",
     "coldaccountaccess",
     "warmstorageread",
     "coldsload",
@@ -640,6 +645,9 @@
     "blobschedule",
     "hoodi",
     "peerdas",
-    "getpayload"
+    "getpayload",
+    "ckzg",
+    "Damgård",
+    "viem"
   ]
 }

@@ -1,9 +1,8 @@
 import { createBlock, genRequestsRoot } from '@ethereumjs/block'
 import { ConsensusType, Hardfork } from '@ethereumjs/common'
-import { type EVM, type EVMInterface, VerkleAccessWitness } from '@ethereumjs/evm'
+import { type EVM, type EVMInterface } from '@ethereumjs/evm'
 import { MerklePatriciaTrie } from '@ethereumjs/mpt'
 import { RLP } from '@ethereumjs/rlp'
-import { type StatelessVerkleStateManager, verifyVerkleStateProof } from '@ethereumjs/statemanager'
 import { TransactionType } from '@ethereumjs/tx'
 import {
   Account,
@@ -19,6 +18,7 @@ import {
   bytesToHex,
   concatBytes,
   createAddressFromString,
+  createBlockLevelAccessList,
   equalsBytes,
   hexToBytes,
   intToBytes,
@@ -26,8 +26,8 @@ import {
   short,
   unprefixedHexToBytes,
 } from '@ethereumjs/util'
+import { sha256 } from '@noble/hashes/sha2.js'
 import debugDefault from 'debug'
-import { sha256 } from 'ethereum-cryptography/sha256.js'
 
 import { Bloom } from './bloom/index.ts'
 import { emitEVMProfile } from './emitEVMProfile.ts'
@@ -64,9 +64,8 @@ const entireBlockLabel = 'Entire block'
 /**
  * Processes the `block` running all of the transactions it contains and updating the miner's account
  *
- * vm method modifies the state. If `generate` is `true`, the state modifications will be
- * reverted if an exception is raised. If it's `false`, it won't revert if the block's header is
- * invalid. If an error is thrown from an event handler, the state may or may not be reverted.
+ * vm method modifies the state if successfully executed and header fields are valid.
+ * state modifications will be reverted if an exception is raised during execution or validation.
  *
  * @param {VM} vm
  * @param {RunBlockOpts} opts - Default values for options:
@@ -78,12 +77,10 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
     // eslint-disable-next-line no-console
     console.time(entireBlockLabel)
   }
-
   const stateManager = vm.stateManager
 
   const { root } = opts
   const clearCache = opts.clearCache ?? true
-  const setHardfork = opts.setHardfork ?? false
   let { block } = opts
   const generateFields = opts.generate === true
 
@@ -106,14 +103,16 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
    */
   await vm._emit('beforeBlock', block)
 
-  if (setHardfork !== false || vm['_setHardfork'] !== false) {
-    const setHardforkUsed = setHardfork ?? vm['_setHardfork']
-    if (setHardforkUsed === true) {
-      vm.common.setHardforkBy({
-        blockNumber: block.header.number,
-        timestamp: block.header.timestamp,
-      })
-    }
+  const setHardforkUsed = opts.setHardfork ?? vm['_setHardfork']
+  if (setHardforkUsed === true) {
+    vm.common.setHardforkBy({
+      blockNumber: block.header.number,
+      timestamp: block.header.timestamp,
+    })
+  }
+
+  if (vm.common.isActivatedEIP(7928)) {
+    vm.evm.blockLevelAccessList = createBlockLevelAccessList()
   }
 
   if (vm.DEBUG) {
@@ -133,48 +132,14 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
     await stateManager.setStateRoot(root, clearCache)
   }
 
-  if (vm.common.isActivatedEIP(6800) || vm.common.isActivatedEIP(7864)) {
+  if (vm.common.isActivatedEIP(7864)) {
     // Initialize the access witness
-
-    if (vm.common.customCrypto.verkle === undefined) {
-      throw Error('verkleCrypto required when EIP-6800 is active')
-    }
-    vm.evm.verkleAccessWitness = new VerkleAccessWitness({
-      verkleCrypto: vm.common.customCrypto.verkle,
-    })
-    vm.evm.systemVerkleAccessWitness = new VerkleAccessWitness({
-      verkleCrypto: vm.common.customCrypto.verkle,
-    })
-
-    if (typeof stateManager.initVerkleExecutionWitness !== 'function') {
-      throw Error(`VerkleStateManager needed for execution of verkle blocks`)
-    }
 
     if (vm.DEBUG) {
       debug(`Initializing executionWitness`)
     }
     if (clearCache) {
       stateManager.clearCaches()
-    }
-
-    // Populate the execution witness
-    stateManager.initVerkleExecutionWitness!(block.header.number, block.executionWitness)
-
-    // Check if statemanager is a Verkle State Manager (stateless and stateful both have verifyVerklePostState)
-    if ('verifyVerklePostState' in stateManager) {
-      // Update the stateRoot cache
-      await stateManager.setStateRoot(block.header.stateRoot)
-      if (verifyVerkleStateProof(stateManager as StatelessVerkleStateManager) === true) {
-        if (vm.DEBUG) {
-          debug(`Verkle proof verification succeeded`)
-        }
-      } else {
-        throw Error(`Verkle proof verification failed`)
-      }
-    }
-  } else {
-    if (typeof stateManager.initVerkleExecutionWitness === 'function') {
-      throw Error(`StatelessVerkleStateManager can't execute merkle blocks`)
     }
   }
 
@@ -222,19 +187,12 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
     }
     throw err
   }
-
   let requestsHash: Uint8Array | undefined
   let requests: CLRequest<CLRequestType>[] | undefined
   if (block.common.isActivatedEIP(7685)) {
     const sha256Function = vm.common.customCrypto.sha256 ?? sha256
     requests = await accumulateRequests(vm, result.results)
     requestsHash = genRequestsRoot(requests, sha256Function)
-  }
-
-  // Persist state
-  await vm.evm.journal.commit()
-  if (vm.DEBUG) {
-    debug(`block checkpoint committed`)
   }
 
   const stateRoot = await stateManager.getStateRoot()
@@ -261,21 +219,20 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
     }
     block = createBlock(blockData, { common: vm.common })
   } else {
-    if (vm.common.isActivatedEIP(7685)) {
-      if (!equalsBytes(block.header.requestsHash!, requestsHash!)) {
-        if (vm.DEBUG)
-          debug(
-            `Invalid requestsHash received=${bytesToHex(
-              block.header.requestsHash!,
-            )} expected=${bytesToHex(requestsHash!)}`,
-          )
-        const msg = _errorMsg('invalid requestsHash', vm, block)
-        throw EthereumJSErrorWithoutCode(msg)
+    try {
+      if (vm.common.isActivatedEIP(7685)) {
+        if (!equalsBytes(block.header.requestsHash!, requestsHash!)) {
+          if (vm.DEBUG)
+            debug(
+              `Invalid requestsHash received=${bytesToHex(
+                block.header.requestsHash!,
+              )} expected=${bytesToHex(requestsHash!)}`,
+            )
+          const msg = _errorMsg('invalid requestsHash', vm, block)
+          throw EthereumJSErrorWithoutCode(msg)
+        }
       }
-    }
 
-    // Check if statemanager is a StatelessVerkleStateManager by checking for a method only on StatelessVerkleStateManager API
-    if (!('verifyVerklePostState' in vm.stateManager)) {
       // Only validate the following headers if Stateless isn't activated
       if (equalsBytes(result.receiptsRoot, block.header.receiptTrie) === false) {
         if (vm.DEBUG) {
@@ -323,38 +280,36 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
         )
         throw EthereumJSErrorWithoutCode(msg)
       }
-    }
 
-    if (vm.common.isActivatedEIP(6800)) {
-      if (vm.evm.verkleAccessWitness === undefined) {
-        throw Error(`verkleAccessWitness required if verkle (EIP-6800) is activated`)
+      if (vm.common.isActivatedEIP(7864)) {
+        if (vm.evm.binaryTreeAccessWitness === undefined) {
+          throw Error(`binaryTreeAccessWitness required if binary tree (EIP-7864) is activated`)
+        }
+        // If binary tree is activated and executing statelessly, only validate the post-state
+        if (
+          (await vm['_opts'].stateManager!.verifyBinaryTreePostState!(
+            vm.evm.binaryTreeAccessWitness,
+          )) === false
+        ) {
+          throw EthereumJSErrorWithoutCode(
+            `Binary tree post state verification failed on block ${block.header.number}`,
+          )
+        }
+        debug(`Binary tree post state verification succeeded`)
       }
-      // If verkle is activated and executing statelessly, only validate the post-state
-      if (
-        (await vm['_opts'].stateManager!.verifyVerklePostState!(vm.evm.verkleAccessWitness)) ===
-        false
-      ) {
-        throw EthereumJSErrorWithoutCode(
-          `Verkle post state verification failed on block ${block.header.number}`,
-        )
+    } catch (err) {
+      await vm.evm.journal.revert()
+      if (vm.DEBUG) {
+        debug(`block checkpoint reverted`)
       }
-      debug(`Verkle post state verification succeeded`)
-    } else if (vm.common.isActivatedEIP(7864)) {
-      if (vm.evm.binaryTreeAccessWitness === undefined) {
-        throw Error(`binaryTreeAccessWitness required if binary tree (EIP-7864) is activated`)
-      }
-      // If binary tree is activated and executing statelessly, only validate the post-state
-      if (
-        (await vm['_opts'].stateManager!.verifyBinaryTreePostState!(
-          vm.evm.binaryTreeAccessWitness,
-        )) === false
-      ) {
-        throw EthereumJSErrorWithoutCode(
-          `Binary tree post state verification failed on block ${block.header.number}`,
-        )
-      }
-      debug(`Binary tree post state verification succeeded`)
+      throw err
     }
+  }
+
+  // Persist state
+  await vm.evm.journal.commit()
+  if (vm.DEBUG) {
+    debug(`block checkpoint committed`)
   }
 
   if (enableProfiler) {
@@ -372,6 +327,7 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
     preimages: result.preimages,
     requestsHash,
     requests,
+    blockLevelAccessList: vm.evm.blockLevelAccessList,
   }
 
   const afterBlockEvent: AfterBlockEvent = { ...results, block }
@@ -437,7 +393,7 @@ async function applyBlock(vm: VM, block: Block, opts: RunBlockOpts): Promise<App
           )
         }
       }
-      await block.validateData()
+      await block.validateData(false, true, opts.validateBlockSize ?? false)
     }
   }
   if (vm.common.isActivatedEIP(4788)) {
@@ -512,18 +468,6 @@ async function applyBlock(vm: VM, block: Block, opts: RunBlockOpts): Promise<App
     await assignBlockRewards(vm, block)
   }
 
-  // Merge system AccessWitness with AccessWitness
-  if (vm.common.isActivatedEIP(6800) && vm.evm.systemVerkleAccessWitness !== undefined) {
-    vm.evm.systemVerkleAccessWitness?.commit()
-    if (vm.DEBUG) {
-      debug('Verkle access witness aggregate costs:')
-      vm.evm.verkleAccessWitness?.debugWitnessCost()
-      debug('System verkle access witness aggregate costs:')
-      vm.evm.systemVerkleAccessWitness?.debugWitnessCost()
-    }
-    vm.evm.verkleAccessWitness?.merge(vm.evm.systemVerkleAccessWitness)
-  }
-
   if (vm.common.isActivatedEIP(7864) && vm.evm.systemBinaryTreeAccessWitness !== undefined) {
     vm.evm.systemBinaryTreeAccessWitness?.commit()
     if (vm.DEBUG) {
@@ -534,6 +478,7 @@ async function applyBlock(vm: VM, block: Block, opts: RunBlockOpts): Promise<App
     }
     vm.evm.binaryTreeAccessWitness?.merge(vm.evm.systemBinaryTreeAccessWitness)
   }
+
   return blockResults
 }
 
@@ -572,14 +517,7 @@ export async function accumulateParentBlockHash(
     // ringKey is the key the hash is actually put in (it is a ring buffer)
     const ringKey = number % historyServeWindow
 
-    // generate access witness
-    if (vm.common.isActivatedEIP(6800)) {
-      if (vm.evm.systemVerkleAccessWitness === undefined) {
-        throw Error(`verkleAccessWitness required if verkle (EIP-6800) is activated`)
-      }
-      // Add to system verkle access witness so that it doesn't warm up tx accesses
-      vm.evm.systemVerkleAccessWitness.writeAccountStorage(historyAddress, ringKey)
-    } else if (vm.common.isActivatedEIP(7864)) {
+    if (vm.common.isActivatedEIP(7864)) {
       if (vm.evm.systemBinaryTreeAccessWitness === undefined) {
         throw Error(`systemBinaryTreeAccessWitness required if binary tree (EIP-7864) is activated`)
       }
@@ -587,6 +525,14 @@ export async function accumulateParentBlockHash(
       vm.evm.systemBinaryTreeAccessWitness.writeAccountStorage(historyAddress, ringKey)
     }
     const key = setLengthLeft(bigIntToBytes(ringKey), 32)
+    if (vm.common.isActivatedEIP(7928)) {
+      vm.evm.blockLevelAccessList!.addStorageWrite(
+        historyAddress.toString(),
+        key,
+        hash,
+        vm.evm.blockLevelAccessList!.blockAccessIndex,
+      )
+    }
     await vm.stateManager.putStorage(historyAddress, key, hash)
   }
   await putBlockHash(vm, parentHash, currentBlockNumber - BIGINT_1)
@@ -615,15 +561,30 @@ export async function accumulateParentBeaconBlockRoot(vm: VM, root: Uint8Array, 
 
   if (code.length === 0) {
     // Exit early, system contract has no code so no storage is written
-    // TODO: verify with Gabriel that this is fine regarding verkle (should we put an empty account?)
+    // TODO: verify with Gabriel that this is fine regarding binary trees (should we put an empty account?)
     return
   }
-
+  if (vm.common.isActivatedEIP(7928)) {
+    vm.evm.blockLevelAccessList!.addStorageWrite(
+      parentBeaconBlockRootAddress.toString(),
+      setLengthLeft(bigIntToBytes(timestampIndex), 32),
+      bigIntToBytes(timestamp),
+      vm.evm.blockLevelAccessList!.blockAccessIndex,
+    )
+  }
   await vm.stateManager.putStorage(
     parentBeaconBlockRootAddress,
     setLengthLeft(bigIntToBytes(timestampIndex), 32),
     bigIntToBytes(timestamp),
   )
+  if (vm.common.isActivatedEIP(7928)) {
+    vm.evm.blockLevelAccessList!.addStorageWrite(
+      parentBeaconBlockRootAddress.toString(),
+      setLengthLeft(bigIntToBytes(timestampExtended), 32),
+      root,
+      vm.evm.blockLevelAccessList!.blockAccessIndex,
+    )
+  }
   await vm.stateManager.putStorage(
     parentBeaconBlockRootAddress,
     setLengthLeft(bigIntToBytes(timestampExtended), 32),
@@ -648,8 +609,10 @@ async function applyTransactions(vm: VM, block: Block, opts: RunBlockOpts) {
   }
 
   const bloom = new Bloom(undefined, vm.common)
-  // the total amount of gas used processing these transactions
+  // Block header gas accounting (EIP-7778: no refund subtraction)
   let gasUsed = BIGINT_0
+  // Receipt cumulative gas accounting (keeps tx refund subtraction semantics)
+  let receiptGasUsed = BIGINT_0
 
   let receiptTrie: MerklePatriciaTrie | undefined = undefined
   if (block.transactions.length !== 0) {
@@ -663,15 +626,18 @@ async function applyTransactions(vm: VM, block: Block, opts: RunBlockOpts) {
    * Process transactions
    */
   for (let txIdx = 0; txIdx < block.transactions.length; txIdx++) {
+    if (vm.common.isActivatedEIP(7928)) {
+      vm.evm.blockLevelAccessList!.blockAccessIndex = txIdx + 1
+    }
     const tx = block.transactions[txIdx]
 
-    let maxGasLimit
-    if (vm.common.isActivatedEIP(1559)) {
-      maxGasLimit = block.header.gasLimit * vm.common.param('elasticityMultiplier')
-    } else {
-      maxGasLimit = block.header.gasLimit
+    if (vm.DEBUG) {
+      debug(
+        `Run tx ${txIdx + 1}/${block.transactions.length} gasLimit=${tx.gasLimit} type=${tx.type} (block gas used so far: ${gasUsed}/${block.header.gasLimit})`,
+      )
     }
-    const gasLimitIsHigherThanBlock = maxGasLimit < tx.gasLimit + gasUsed
+
+    const gasLimitIsHigherThanBlock = block.header.gasLimit < tx.gasLimit + gasUsed
     if (gasLimitIsHigherThanBlock) {
       const msg = _errorMsg('tx has a higher gas limit than the block', vm, block)
       throw EthereumJSErrorWithoutCode(msg)
@@ -686,7 +652,7 @@ async function applyTransactions(vm: VM, block: Block, opts: RunBlockOpts) {
       skipBalance,
       skipNonce,
       skipHardForkValidation,
-      blockGasUsed: gasUsed,
+      blockGasUsed: receiptGasUsed,
       reportPreimages,
     })
     txResults.push(txRes)
@@ -695,9 +661,10 @@ async function applyTransactions(vm: VM, block: Block, opts: RunBlockOpts) {
     }
 
     // Add to total block gas usage
-    gasUsed += txRes.totalGasSpent
+    gasUsed += txRes.blockGasSpent
+    receiptGasUsed += txRes.totalGasSpent
     if (vm.DEBUG) {
-      debug(`Add tx gas used (${txRes.totalGasSpent}) to total block gas usage (-> ${gasUsed})`)
+      debug(`Add tx gas used (${txRes.blockGasSpent}) to total block gas usage (-> ${gasUsed})`)
     }
 
     // Combine blooms via bitwise OR
@@ -727,6 +694,9 @@ async function applyTransactions(vm: VM, block: Block, opts: RunBlockOpts) {
 }
 
 async function assignWithdrawals(vm: VM, block: Block): Promise<void> {
+  if (vm.common.isActivatedEIP(7928)) {
+    vm.evm.blockLevelAccessList!.blockAccessIndex = block.transactions.length + 1
+  }
   const withdrawals = block.withdrawals!
   for (const withdrawal of withdrawals) {
     const { address, amount } = withdrawal
@@ -793,12 +763,6 @@ export async function rewardAccount(
 ): Promise<Account> {
   let account = await evm.stateManager.getAccount(address)
   if (account === undefined) {
-    if (common.isActivatedEIP(6800) === true && reward !== BIGINT_0) {
-      if (evm.systemVerkleAccessWitness === undefined) {
-        throw Error(`verkleAccessWitness required if verkle (EIP-6800) is activated`)
-      }
-      evm.systemVerkleAccessWitness.writeAccountHeader(address)
-    }
     if (common.isActivatedEIP(7864) === true && reward !== BIGINT_0) {
       if (evm.systemBinaryTreeAccessWitness === undefined) {
         throw Error(`systemBinaryTreeAccessWitness required if binary tree (EIP-7864) is activated`)
@@ -807,17 +771,22 @@ export async function rewardAccount(
     }
     account = new Account()
   }
+  const originalBalance = account.balance
   account.balance += reward
+  if (common.isActivatedEIP(7928)) {
+    if (reward === BIGINT_0) {
+      evm.blockLevelAccessList?.addAddress(address.toString())
+    } else {
+      evm.blockLevelAccessList!.addBalanceChange(
+        address.toString(),
+        account.balance,
+        evm.blockLevelAccessList!.blockAccessIndex,
+        originalBalance,
+      )
+    }
+  }
   await evm.journal.putAccount(address, account)
 
-  if (common.isActivatedEIP(6800) === true && reward !== BIGINT_0) {
-    if (evm.systemVerkleAccessWitness === undefined) {
-      throw Error(`verkleAccessWitness required if verkle (EIP-6800) is activated`)
-    }
-    // use vm utility to build access but the computed gas is not charged and hence free
-    evm.systemVerkleAccessWitness.writeAccountBasicData(address)
-    evm.systemVerkleAccessWitness.readAccountCodeHash(address)
-  }
   if (common.isActivatedEIP(7864) === true && reward !== BIGINT_0) {
     if (evm.systemBinaryTreeAccessWitness === undefined) {
       throw Error(`systemBinaryTreeAccessWitness required if binary tree (EIP-7864) is activated`)
@@ -871,6 +840,7 @@ async function _applyDAOHardfork(evm: EVMInterface) {
     DAORefundAccount = new Account()
   }
 
+  const originalDAORefundAccountBalance = DAORefundAccount.balance
   for (const addr of DAOAccountList) {
     // retrieve the account and add it to the DAO's Refund accounts' balance.
     const address = new Address(unprefixedHexToBytes(addr))
@@ -880,12 +850,29 @@ async function _applyDAOHardfork(evm: EVMInterface) {
     }
     DAORefundAccount.balance += account.balance
     // clear the accounts' balance
+    const originalBalance = account.balance
     account.balance = BIGINT_0
     await evm.journal.putAccount(address, account)
+    if (evm.common.isActivatedEIP(7928)) {
+      evm.blockLevelAccessList!.addBalanceChange(
+        address.toString(),
+        account.balance,
+        evm.blockLevelAccessList!.blockAccessIndex,
+        originalBalance,
+      )
+    }
   }
 
   // finally, put the Refund Account
   await evm.journal.putAccount(DAORefundContractAddress, DAORefundAccount)
+  if (evm.common.isActivatedEIP(7928)) {
+    evm.blockLevelAccessList!.addBalanceChange(
+      DAORefundContractAddress.toString(),
+      DAORefundAccount.balance,
+      evm.blockLevelAccessList!.blockAccessIndex,
+      originalDAORefundAccountBalance,
+    )
+  }
 }
 
 async function _genTxTrie(block: Block) {

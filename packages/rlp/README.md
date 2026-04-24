@@ -34,14 +34,15 @@ Install with `-g` if you want to use the CLI.
 ```ts
 // ./examples/simple.ts
 
-import { RLP } from '@ethereumjs/rlp'
 import assert from 'assert'
+import { RLP } from '@ethereumjs/rlp'
 
 const nestedList = [[], [[]], [[], [[]]]]
 const encoded = RLP.encode(nestedList)
 const decoded = RLP.decode(encoded)
 assert.deepStrictEqual(decoded, nestedList, 'decoded output does not match original')
 console.log('assert.deepStrictEqual would have thrown if the decoded output did not match')
+
 ```
 
 ## Browser
@@ -70,7 +71,7 @@ It is easily possible to run a browser build of one of the EthereumJS libraries 
 
 ## EthereumJS
 
-See our organizational [documentation](https://ethereumjs.readthedocs.io) for an introduction to `EthereumJS` as well as information on current standards and best practices. If you want to join for work or carry out improvements on the libraries, please review our [contribution guidelines](https://ethereumjs.readthedocs.io/en/latest/contributing.html) first.
+The `EthereumJS` GitHub organization and its repositories are managed by members of the former Ethereum Foundation JavaScript team and the broader Ethereum community. If you want to join for work or carry out improvements on the libraries see the [developer docs](../../DEVELOPER.md) for an overview of current standards and tools and review our [code of conduct](../../CODE_OF_CONDUCT.md).
 
 ## License
 

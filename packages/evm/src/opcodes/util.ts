@@ -13,7 +13,7 @@ import {
   setLengthLeft,
   setLengthRight,
 } from '@ethereumjs/util'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 
 import { EVMError } from '../errors.ts'
 
@@ -92,11 +92,51 @@ export function trap(err: string) {
   throw new EVMError(err as EVMErrorType)
 }
 
+export function readImmediateByteOrZero(runState: RunState): number {
+  const immediate = runState.code[runState.programCounter] ?? 0
+  runState.programCounter++
+  return immediate
+}
+
+export function isEIP8024SingleImmediateValid(immediate: number): boolean {
+  return immediate <= 0x5a || immediate >= 0x80
+}
+
+export function decodeEIP8024SingleImmediate(immediate: number): number {
+  if (!isEIP8024SingleImmediateValid(immediate)) {
+    trap(EVMError.errorMessages.INVALID_OPCODE)
+  }
+  return immediate <= 0x5a ? immediate + 17 : immediate - 20
+}
+
+export function isEIP8024PairImmediateValid(immediate: number): boolean {
+  return immediate <= 0x4f || immediate >= 0x80
+}
+
+/**
+ * Decodes EIP-8024 EXCHANGE immediate into stack depths expected by `Stack.exchange()`.
+ *
+ * Returned values are stack distances from the top where `0` is top.
+ * EIP-8024 EXCHANGE never targets depth `0`, so decoded values are always >= 1.
+ */
+export function decodeEIP8024PairImmediate(immediate: number): [number, number] {
+  if (!isEIP8024PairImmediateValid(immediate)) {
+    trap(EVMError.errorMessages.INVALID_OPCODE)
+  }
+  const k = immediate <= 0x4f ? immediate : immediate - 48
+  const q = Math.floor(k / 16)
+  const r = k % 16
+  if (q < r) {
+    return [q + 1, r + 1]
+  }
+  return [r + 1, 29 - q]
+}
+
 /**
  * Error message helper - generates location string
  */
 export function describeLocation(runState: RunState): string {
-  const keccakFunction = runState.interpreter._evm.common.customCrypto.keccak256 ?? keccak256
+  const keccakFunction = runState.interpreter._evm.common.customCrypto.keccak256 ?? keccak_256
   const hash = bytesToHex(keccakFunction(runState.interpreter.getCode()))
   const address = runState.interpreter.getAddress().toString()
   const pc = runState.programCounter - 1

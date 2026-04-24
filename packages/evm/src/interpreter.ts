@@ -6,14 +6,21 @@ import {
   BIGINT_2,
   EthereumJSErrorWithoutCode,
   MAX_UINT64,
+  bigIntToBytes,
   bigIntToHex,
   bytesToBigInt,
   bytesToHex,
   equalsBytes,
+  setLengthLeft,
   setLengthRight,
 } from '@ethereumjs/util'
 import debugDefault from 'debug'
 
+import {
+  EIP7708_SELFDESTRUCT_TOPIC,
+  EIP7708_SYSTEM_ADDRESS,
+  EIP7708_TRANSFER_TOPIC,
+} from './eip7708.ts'
 import { FORMAT, MAGIC, VERSION } from './eof/constants.ts'
 import { EOFContainerMode, validateEOF } from './eof/container.ts'
 import { setupEOF } from './eof/setup.ts'
@@ -23,13 +30,13 @@ import { type EVMPerformanceLogger, type Timer } from './logger.ts'
 import { Memory } from './memory.ts'
 import { Message } from './message.ts'
 import { trap } from './opcodes/index.ts'
+import { isEIP8024PairImmediateValid, isEIP8024SingleImmediateValid } from './opcodes/util.ts'
 import { Stack } from './stack.ts'
 
 import type {
   BinaryTreeAccessWitnessInterface,
   Common,
   StateManagerInterface,
-  VerkleAccessWitnessInterface,
 } from '@ethereumjs/common'
 import type { Address, PrefixedHexString } from '@ethereumjs/util'
 import { stackDelta } from './eof/stackDelta.ts'
@@ -49,6 +56,8 @@ const debugGas = debugDefault('evm:gas')
 
 export interface InterpreterOpts {
   pc?: number
+  /** Logs to prepend to the result (e.g. EIP-7708 ETH transfer log from message-level value transfer) */
+  initialLogs?: Log[]
 }
 
 /**
@@ -58,9 +67,9 @@ export interface RunResult {
   logs: Log[]
   returnValue?: Uint8Array
   /**
-   * A set of accounts to selfdestruct
+   * Selfdestructed accounts mapped to their beneficiary
    */
-  selfdestruct: Set<PrefixedHexString>
+  selfdestruct: Map<PrefixedHexString, PrefixedHexString>
 
   /**
    * A map which tracks which addresses were created (used in EIP 6780)
@@ -86,8 +95,10 @@ export interface Env {
   eof?: EOFEnv /* Optional EOF environment in case of EOF execution */
   blobVersionedHashes: PrefixedHexString[] /** Versioned hashes for blob transactions */
   createdAddresses?: Set<string>
-  accessWitness?: VerkleAccessWitnessInterface | BinaryTreeAccessWitnessInterface
+  accessWitness?: BinaryTreeAccessWitnessInterface
   chargeCodeAccesses?: boolean
+  /** Logs to prepend (e.g. EIP-7708 ETH transfer log from message-level value transfer) */
+  initialLogs?: Log[]
 }
 
 export interface RunState {
@@ -209,9 +220,9 @@ export class Interpreter {
     this.journal = journal
     this._env = env
     this._result = {
-      logs: [],
+      logs: env.initialLogs ? [...env.initialLogs] : [],
       returnValue: undefined,
-      selfdestruct: new Set(),
+      selfdestruct: new Map(),
     }
     this.profilerOpts = profilerOpts
     this.performanceLogger = performanceLogs
@@ -309,11 +320,11 @@ export class Interpreter {
         opCode = opCodeObj.opcodeInfo.code
       }
 
-      // if its an invalid opcode with verkle activated, then check if its because of a missing code
+      // if its an invalid opcode with binary activated, then check if its because of a missing code
       // chunk in the witness, and throw appropriate error to distinguish from an actual invalid opcode
       if (
         opCode === 0xfe &&
-        (this.common.isActivatedEIP(6800) || this.common.isActivatedEIP(7864)) &&
+        this.common.isActivatedEIP(7864) &&
         // is this a code loaded from state using witnesses
         this._runState.env.chargeCodeAccesses === true
       ) {
@@ -586,6 +597,21 @@ export class Interpreter {
           // Define a JUMPDEST as a 1 in the valid jumps array
           jumps[i] = 1
         }
+      } else if (
+        this.common.isActivatedEIP(8024) &&
+        (opcode === 0xe6 || opcode === 0xe7 || opcode === 0xe8)
+      ) {
+        const immediate = code[i + 1]
+        if (immediate === undefined) {
+          continue
+        }
+        const skipImmediate =
+          opcode === 0xe8
+            ? isEIP8024PairImmediateValid(immediate)
+            : isEIP8024SingleImmediateValid(immediate)
+        if (skipImmediate === true) {
+          i++
+        }
       }
     }
     return { jumps, pushes, opcodesCached }
@@ -666,6 +692,10 @@ export class Interpreter {
    * @param address - Address of account
    */
   async getExternalBalance(address: Address): Promise<bigint> {
+    // Track address access for EIP-7928 BAL
+    if (this._evm.common.isActivatedEIP(7928)) {
+      this._evm.blockLevelAccessList?.addAddress(address.toString())
+    }
     // shortcut if current account
     if (address.equals(this._env.address)) {
       return this._env.contract.balance
@@ -682,7 +712,24 @@ export class Interpreter {
    * Store 256-bit a value in memory to persistent storage.
    */
   async storageStore(key: Uint8Array, value: Uint8Array): Promise<void> {
+    // EIP-7928: Get the original (pre-transaction) value BEFORE storing
+    // This is needed to detect no-op writes (where new value equals original value)
+    let originalValue: Uint8Array | undefined
+    if (this._evm.common.isActivatedEIP(7928)) {
+      originalValue = await this._stateManager.originalStorageCache.get(this._env.address, key)
+    }
+
     await this._stateManager.putStorage(this._env.address, key, value)
+
+    if (this._evm.common.isActivatedEIP(7928)) {
+      this._evm.blockLevelAccessList?.addStorageWrite(
+        this._env.address.toString(),
+        key,
+        value,
+        this._evm.blockLevelAccessList!.blockAccessIndex,
+        originalValue,
+      )
+    }
     const account = await this._stateManager.getAccount(this._env.address)
     if (!account) {
       throw EthereumJSErrorWithoutCode('could not read account while persisting memory')
@@ -694,8 +741,13 @@ export class Interpreter {
    * Loads a 256-bit value to memory from persistent storage.
    * @param key - Storage key
    * @param original - If true, return the original storage value (default: false)
+   * @param trackBAL - If true, track in BAL storageReads (default: true). Set to false for
+   *                   implicit reads (e.g., SSTORE gas calculation) that should not appear in BAL.
    */
-  async storageLoad(key: Uint8Array, original = false): Promise<Uint8Array> {
+  async storageLoad(key: Uint8Array, original = false, trackBAL = true): Promise<Uint8Array> {
+    if (this._evm.common.isActivatedEIP(7928) && trackBAL) {
+      this._evm.blockLevelAccessList?.addStorageRead(this._env.address.toString(), key)
+    }
     if (original) {
       return this._stateManager.originalStorageCache.get(this._env.address, key)
     } else {
@@ -898,6 +950,16 @@ export class Interpreter {
   }
 
   /**
+   * Returns the block's slot number (EIP-7843).
+   */
+  getBlockSlotNumber(): bigint {
+    if (this._env.block.header.slotNumber === undefined) {
+      throw EthereumJSErrorWithoutCode('slotNumber is not available on this block')
+    }
+    return this._env.block.header.slotNumber
+  }
+
+  /**
    * Returns the Base Fee of the block as proposed in [EIP-3198](https://eips.ethereum.org/EIPS/eip-3198)
    */
   getBlockBaseFee(): bigint {
@@ -1027,7 +1089,7 @@ export class Interpreter {
   }
 
   async _baseCall(msg: Message): Promise<bigint> {
-    const selfdestruct = new Set(this._result.selfdestruct)
+    const selfdestruct = new Map(this._result.selfdestruct)
     msg.selfdestruct = selfdestruct
     msg.gasRefund = this._runState.gasRefund
 
@@ -1069,8 +1131,8 @@ export class Interpreter {
     }
 
     if (!results.execResult.exceptionError) {
-      for (const addressToSelfdestructHex of selfdestruct) {
-        this._result.selfdestruct.add(addressToSelfdestructHex)
+      for (const [addressToSelfdestructHex, beneficiaryHex] of selfdestruct) {
+        this._result.selfdestruct.set(addressToSelfdestructHex, beneficiaryHex)
       }
       if (this.common.isActivatedEIP(6780)) {
         // copy over the items to result via iterator
@@ -1100,7 +1162,7 @@ export class Interpreter {
     salt?: Uint8Array,
     eofCallData?: Uint8Array,
   ): Promise<bigint> {
-    const selfdestruct = new Set(this._result.selfdestruct)
+    const selfdestruct = new Map(this._result.selfdestruct)
     const caller = this._env.address
     const depth = this._env.depth + 1
 
@@ -1122,6 +1184,13 @@ export class Interpreter {
 
     this._env.contract.nonce += BIGINT_1
     await this.journal.putAccount(this._env.address, this._env.contract)
+    if (this.common.isActivatedEIP(7928)) {
+      this._evm.blockLevelAccessList!.addNonceChange(
+        this._env.address.toString(),
+        this._env.contract.nonce,
+        this._evm.blockLevelAccessList!.blockAccessIndex,
+      )
+    }
 
     if (this.common.isActivatedEIP(3860)) {
       if (
@@ -1173,8 +1242,8 @@ export class Interpreter {
       !results.execResult.exceptionError ||
       results.execResult.exceptionError.error === EVMError.errorMessages.CODESTORE_OUT_OF_GAS
     ) {
-      for (const addressToSelfdestructHex of selfdestruct) {
-        this._result.selfdestruct.add(addressToSelfdestructHex)
+      for (const [addressToSelfdestructHex, beneficiaryHex] of selfdestruct) {
+        this._result.selfdestruct.set(addressToSelfdestructHex, beneficiaryHex)
       }
       if (this.common.isActivatedEIP(6780)) {
         // copy over the items to result via iterator
@@ -1237,13 +1306,29 @@ export class Interpreter {
 
   async _selfDestruct(toAddress: Address): Promise<void> {
     // only add to refund if this is the first selfdestruct for the address
-    if (!this._result.selfdestruct.has(bytesToHex(this._env.address.bytes))) {
+    const selfdestructAddressHex = bytesToHex(this._env.address.bytes)
+    if (!this._result.selfdestruct.has(selfdestructAddressHex)) {
       this.refundGas(this.common.param('selfdestructRefundGas'))
     }
 
-    this._result.selfdestruct.add(bytesToHex(this._env.address.bytes))
+    this._result.selfdestruct.set(selfdestructAddressHex, toAddress.toString())
 
     const toSelf = equalsBytes(toAddress.bytes, this._env.address.bytes)
+    const contractBalance = this._env.contract.balance
+
+    // EIP-7708: Emit ETH transfer log for SELFDESTRUCT with value to a different account
+    if (this.common.isActivatedEIP(7708) && contractBalance > BIGINT_0 && !toSelf) {
+      // Transfer log: from contract to beneficiary
+      const fromTopic = setLengthLeft(this._env.address.bytes, 32)
+      const toTopic = setLengthLeft(toAddress.bytes, 32)
+      const data = setLengthLeft(bigIntToBytes(contractBalance), 32)
+      const transferLog: Log = [
+        EIP7708_SYSTEM_ADDRESS,
+        [EIP7708_TRANSFER_TOPIC, fromTopic, toTopic],
+        data,
+      ]
+      this._result.logs.push(transferLog)
+    }
 
     // Add to beneficiary balance
     if (!toSelf) {
@@ -1251,8 +1336,17 @@ export class Interpreter {
       if (!toAccount) {
         toAccount = new Account()
       }
-      toAccount.balance += this._env.contract.balance
+      const originalBalance = toAccount.balance
+      toAccount.balance += contractBalance
       await this.journal.putAccount(toAddress, toAccount)
+      if (this.common.isActivatedEIP(7928)) {
+        this._evm.blockLevelAccessList!.addBalanceChange(
+          toAddress.toString(),
+          toAccount.balance,
+          this._evm.blockLevelAccessList!.blockAccessIndex,
+          originalBalance,
+        )
+      }
     }
 
     // Modify the account (set balance to 0) flag
@@ -1270,11 +1364,34 @@ export class Interpreter {
       }
     }
 
+    // EIP-7708: Emit a Selfdestruct log for SELFDESTRUCT to self only when the balance
+    // is actually zeroed (doModify=true, i.e. same-tx contract creation). Pre-existing
+    // contracts where EIP-6780 prevents the burn should not emit a log.
+    if (this.common.isActivatedEIP(7708) && contractBalance > BIGINT_0 && toSelf && doModify) {
+      const contractTopic = setLengthLeft(this._env.address.bytes, 32)
+      const data = setLengthLeft(bigIntToBytes(contractBalance), 32)
+      const selfdestructLog: Log = [
+        EIP7708_SYSTEM_ADDRESS,
+        [EIP7708_SELFDESTRUCT_TOPIC, contractTopic],
+        data,
+      ]
+      this._result.logs.push(selfdestructLog)
+    }
+
     // Set contract balance to 0
     if (doModify) {
+      const originalBalance = this._env.contract.balance
       await this._stateManager.modifyAccountFields(this._env.address, {
         balance: BIGINT_0,
       })
+      if (this.common.isActivatedEIP(7928)) {
+        this._evm.blockLevelAccessList!.addBalanceChange(
+          this._env.address.toString(),
+          BIGINT_0,
+          this._evm.blockLevelAccessList!.blockAccessIndex,
+          originalBalance,
+        )
+      }
     }
 
     trap(EVMError.errorMessages.STOP)

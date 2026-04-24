@@ -168,7 +168,6 @@
     "validblock",
     "rustbn",
     "Preimage",
-    "verkle",
     "Preimages",
     "modexp",
     "roninjin",
@@ -330,6 +329,7 @@
     "unsnappy",
     "ethportal",
     "bytevector",
-    "hoodi"
+    "hoodi",
+    "feelyourprotocol"
   ]
 }

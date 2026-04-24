@@ -26,7 +26,7 @@ import {
   setLengthLeft,
   setLengthRight,
 } from '@ethereumjs/util'
-import { keccak256 } from 'ethereum-cryptography/keccak.js'
+import { keccak_256 } from '@noble/hashes/sha3.js'
 
 import { EOFContainer, EOFContainerMode } from '../eof/container.ts'
 import { EOFErrorMessage } from '../eof/errors.ts'
@@ -35,12 +35,15 @@ import { EVMError } from '../errors.ts'
 
 import {
   createAddressFromStackBigInt,
+  decodeEIP8024PairImmediate,
+  decodeEIP8024SingleImmediate,
   describeLocation,
   exponentiation,
   fromTwos,
   getDataSlice,
   jumpIsValid,
   mod,
+  readImmediateByteOrZero,
   toTwos,
   trap,
   writeCallOutput,
@@ -391,6 +394,26 @@ export const handlers: Map<number, OpHandler> = new Map([
       runState.stack.push(r)
     },
   ],
+  // 0x1e: CLZ
+  [
+    0x1e,
+    function (runState) {
+      const x = runState.stack.pop()
+
+      // If x is zero, return 256
+      if (x === BIGINT_0) {
+        runState.stack.push(BIGINT_256)
+        return
+      }
+
+      // toString(2) yields a binary string with no leading zeros.
+      // So 256 - binaryStr.length equals the leading-zero count.
+      const binaryStr = x.toString(2)
+
+      const leadingZeros = 256 - binaryStr.length
+      runState.stack.push(BigInt(leadingZeros))
+    },
+  ],
   // 0x20 range - crypto
   // 0x20: KECCAK256
   [
@@ -401,7 +424,7 @@ export const handlers: Map<number, OpHandler> = new Map([
       if (length !== BIGINT_0) {
         data = runState.memory.read(Number(offset), Number(length))
       }
-      const r = BigInt(bytesToHex((common.customCrypto.keccak256 ?? keccak256)(data)))
+      const r = BigInt(bytesToHex((common.customCrypto.keccak256 ?? keccak_256)(data)))
       runState.stack.push(r)
     },
   ],
@@ -514,6 +537,10 @@ export const handlers: Map<number, OpHandler> = new Map([
     async function (runState) {
       const addressBigInt = runState.stack.pop()
       const address = createAddressFromStackBigInt(addressBigInt)
+      // EIP-7928: Track address access in BAL
+      if (runState.interpreter._evm.common.isActivatedEIP(7928)) {
+        runState.interpreter._evm.blockLevelAccessList?.addAddress(address.toString())
+      }
       // EOF check
       const code = await runState.stateManager.getCode(address)
       if (isEOF(code)) {
@@ -532,9 +559,13 @@ export const handlers: Map<number, OpHandler> = new Map([
     0x3c,
     async function (runState) {
       const [addressBigInt, memOffset, codeOffset, dataLength] = runState.stack.popN(4)
+      const address = createAddressFromStackBigInt(addressBigInt)
+      // EIP-7928: Track address access in BAL
+      if (runState.interpreter._evm.common.isActivatedEIP(7928)) {
+        runState.interpreter._evm.blockLevelAccessList?.addAddress(address.toString())
+      }
 
       if (dataLength !== BIGINT_0) {
-        const address = createAddressFromStackBigInt(addressBigInt)
         let code = await runState.stateManager.getCode(address)
 
         if (isEOF(code)) {
@@ -555,6 +586,10 @@ export const handlers: Map<number, OpHandler> = new Map([
     async function (runState) {
       const addressBigInt = runState.stack.pop()
       const address = createAddressFromStackBigInt(addressBigInt)
+      // EIP-7928: Track address access in BAL
+      if (runState.interpreter._evm.common.isActivatedEIP(7928)) {
+        runState.interpreter._evm.blockLevelAccessList?.addAddress(address.toString())
+      }
 
       // EOF check
       const code = await runState.stateManager.getCode(address)
@@ -695,6 +730,13 @@ export const handlers: Map<number, OpHandler> = new Map([
     0x45,
     function (runState) {
       runState.stack.push(runState.interpreter.getBlockGasLimit())
+    },
+  ],
+  // 0x4b: SLOTNUM (EIP-7843)
+  [
+    0x4b,
+    function (runState) {
+      runState.stack.push(runState.interpreter.getBlockSlotNumber())
     },
   ],
   // 0x46: CHAINID
@@ -1193,54 +1235,37 @@ export const handlers: Map<number, OpHandler> = new Map([
   // 0xe6: DUPN
   [
     0xe6,
-    function (runState) {
-      if (runState.env.eof === undefined) {
-        // Opcode not available in legacy contracts
+    function (runState, common) {
+      if (!common.isActivatedEIP(8024)) {
         trap(EVMError.errorMessages.INVALID_OPCODE)
       }
-      const toDup =
-        Number(
-          bytesToBigInt(
-            runState.code.subarray(runState.programCounter, runState.programCounter + 1),
-          ),
-        ) + 1
+      const immediate = readImmediateByteOrZero(runState)
+      const toDup = decodeEIP8024SingleImmediate(immediate)
       runState.stack.dup(toDup)
-      runState.programCounter++
     },
   ],
   // 0xe7: SWAPN
   [
     0xe7,
-    function (runState) {
-      if (runState.env.eof === undefined) {
-        // Opcode not available in legacy contracts
+    function (runState, common) {
+      if (!common.isActivatedEIP(8024)) {
         trap(EVMError.errorMessages.INVALID_OPCODE)
       }
-      const toSwap =
-        Number(
-          bytesToBigInt(
-            runState.code.subarray(runState.programCounter, runState.programCounter + 1),
-          ),
-        ) + 1
+      const immediate = readImmediateByteOrZero(runState)
+      const toSwap = decodeEIP8024SingleImmediate(immediate)
       runState.stack.swap(toSwap)
-      runState.programCounter++
     },
   ],
   // 0xe8: EXCHANGE
   [
     0xe8,
-    function (runState) {
-      if (runState.env.eof === undefined) {
-        // Opcode not available in legacy contracts
+    function (runState, common) {
+      if (!common.isActivatedEIP(8024)) {
         trap(EVMError.errorMessages.INVALID_OPCODE)
       }
-      const toExchange = Number(
-        bytesToBigInt(runState.code.subarray(runState.programCounter, runState.programCounter + 1)),
-      )
-      const n = (toExchange >> 4) + 1
-      const m = (toExchange & 0x0f) + 1
-      runState.stack.exchange(n, n + m)
-      runState.programCounter++
+      const immediate = readImmediateByteOrZero(runState)
+      const [x, y] = decodeEIP8024PairImmediate(immediate)
+      runState.stack.exchange(x, y)
     },
   ],
   // 0xec: EOFCREATE

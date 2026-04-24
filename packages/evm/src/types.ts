@@ -3,9 +3,8 @@ import type {
   Common,
   ParamsDict,
   StateManagerInterface,
-  VerkleAccessWitnessInterface,
 } from '@ethereumjs/common'
-import type { Account, Address, PrefixedHexString } from '@ethereumjs/util'
+import type { Account, Address, BlockLevelAccessList, PrefixedHexString } from '@ethereumjs/util'
 import type { EventEmitter } from 'eventemitter3'
 import type { BinaryTreeAccessWitness } from './binaryTreeAccessWitness.ts'
 import type { EOFContainer } from './eof/container.ts'
@@ -16,7 +15,6 @@ import type { AsyncDynamicGasHandler, SyncDynamicGasHandler } from './opcodes/ga
 import type { OpHandler } from './opcodes/index.ts'
 import type { CustomPrecompile } from './precompiles/index.ts'
 import type { PrecompileFunc } from './precompiles/types.ts'
-import type { VerkleAccessWitness } from './verkleAccessWitness.ts'
 
 export type DeleteOpcode = {
   opcode: number
@@ -29,6 +27,8 @@ export type AddOpcode = {
   gasFunction?: AsyncDynamicGasHandler | SyncDynamicGasHandler
   logicFunction: OpHandler
 }
+
+export type SelfdestructMap = Map<PrefixedHexString, PrefixedHexString>
 
 export type CustomOpcode = AddOpcode | DeleteOpcode
 
@@ -87,9 +87,9 @@ interface EVMRunOpts {
    */
   isStatic?: boolean
   /**
-   * Addresses to selfdestruct. Defaults to the empty set.
+   * Selfdestructed addresses mapped to their beneficiary. Defaults to the empty map.
    */
-  selfdestruct?: Set<PrefixedHexString>
+  selfdestruct?: SelfdestructMap
   /**
    * The address of the account that is executing this code (`address(this)`). Defaults to the zero address.
    */
@@ -141,7 +141,7 @@ export interface EVMRunCallOpts extends EVMRunOpts {
    */
   message?: Message
 
-  accessWitness?: VerkleAccessWitnessInterface | BinaryTreeAccessWitnessInterface
+  accessWitness?: BinaryTreeAccessWitnessInterface
 }
 
 interface NewContractEvent {
@@ -176,13 +176,13 @@ export interface EVMInterface {
   }
   stateManager: StateManagerInterface
   precompiles: Map<string, PrecompileFunc>
+  getPrecompile?(address: Address | PrefixedHexString): PrecompileFunc | undefined
   runCall(opts: EVMRunCallOpts): Promise<EVMResult>
   runCode(opts: EVMRunCodeOpts): Promise<ExecResult>
   events?: EventEmitter<EVMEvent>
-  verkleAccessWitness?: VerkleAccessWitness
-  systemVerkleAccessWitness?: VerkleAccessWitness
   binaryTreeAccessWitness?: BinaryTreeAccessWitness
   systemBinaryTreeAccessWitness?: BinaryTreeAccessWitness
+  blockLevelAccessList?: BlockLevelAccessList
 }
 
 export type EVMProfilerOpts = {
@@ -235,6 +235,7 @@ export interface EVMOpts {
    * - [EIP-7692](https://eips.ethereum.org/EIPS/eip-7692) - EVM Object Format (EOF) v1 (`experimental`)
    * - [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) - Set EOA account code (Prague)
    * - [EIP-7709](https://eips.ethereum.org/EIPS/eip-7709) - Read BLOCKHASH from storage and update cost (Verkle)
+   * - [EIP-7934](https://eips.ethereum.org/EIPS/eip-7934) - RLP Execution Block Size Limit
    *
    * *Annotations:*
    *
@@ -355,7 +356,7 @@ export interface EVMOpts {
    * `@ethereumjs/statemanager` package.
    *
    * The `@ethereumjs/statemanager` package also provides a variety of state manager
-   * implementations for different needs (MPT-tree backed, RPC, experimental verkle)
+   * implementations for different needs (MPT-tree backed, RPC, experimental binary tree)
    * which can be used by this option as a replacement.
    */
   stateManager?: StateManagerInterface
@@ -373,6 +374,12 @@ export interface EVMOpts {
    *
    */
   profiler?: EVMProfilerOpts
+
+  /**
+   * If EIP-7928 is activated, a block-level access list can be provided here.
+   * If not provided, a new one will be created if EIP-7928 is activated
+   */
+  blockLevelAccessList?: BlockLevelAccessList
 
   /**
    * When running the EVM with PoA consensus, the `cliqueSigner` function from the `@ethereumjs/block` class
@@ -422,9 +429,9 @@ export interface ExecResult {
    */
   logs?: Log[]
   /**
-   * A set of accounts to selfdestruct
+   * Selfdestructed accounts mapped to their beneficiary
    */
-  selfdestruct?: Set<PrefixedHexString>
+  selfdestruct?: SelfdestructMap
   /**
    * Map of addresses which were created (used in EIP 6780)
    */
@@ -446,9 +453,7 @@ export interface ExecResult {
 export type EVMBLSInterface = {
   init?(): void
   addG1(input: Uint8Array): Uint8Array
-  mulG1(input: Uint8Array): Uint8Array
   addG2(input: Uint8Array): Uint8Array
-  mulG2(input: Uint8Array): Uint8Array
   mapFPtoG1(input: Uint8Array): Uint8Array
   mapFP2toG2(input: Uint8Array): Uint8Array
   msmG1(input: Uint8Array): Uint8Array
@@ -480,6 +485,7 @@ export type Block = {
     prevRandao: Uint8Array
     gasLimit: bigint
     baseFeePerGas?: bigint
+    slotNumber?: bigint
     getBlobGasPrice(): bigint | undefined
   }
 }
