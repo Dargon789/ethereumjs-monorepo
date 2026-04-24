@@ -16,6 +16,7 @@ import {
   equalsBytes,
   generateAddress,
   generateAddress2,
+  isDebugEnabled,
   short,
 } from '@ethereumjs/util'
 import debugDefault from 'debug'
@@ -351,9 +352,7 @@ export class EVM implements EVMInterface {
     this.performanceLogger = new EVMPerformanceLogger()
 
     // Skip DEBUG calls unless 'ethjs' included in environmental DEBUG variables
-    // Additional window check is to prevent vite browser bundling (and potentially other) to break
-    this.DEBUG =
-      typeof window === 'undefined' ? (process?.env?.DEBUG?.includes('ethjs') ?? false) : false
+    this.DEBUG = isDebugEnabled('ethjs')
   }
 
   /**
@@ -1009,7 +1008,7 @@ export class EVM implements EVMInterface {
       result = {
         ...result,
         logs: [],
-        selfdestruct: new Set(),
+        selfdestruct: new Map(),
         createdAddresses: new Set(),
       }
     }
@@ -1086,7 +1085,7 @@ export class EVM implements EVMInterface {
         isCompiled: opts.isCompiled,
         isStatic: opts.isStatic,
         salt: opts.salt,
-        selfdestruct: opts.selfdestruct ?? new Set(),
+        selfdestruct: opts.selfdestruct ?? new Map(),
         createdAddresses: opts.createdAddresses ?? new Set(),
         delegatecall: opts.delegatecall,
         blobVersionedHashes: opts.blobVersionedHashes,
@@ -1166,7 +1165,7 @@ export class EVM implements EVMInterface {
     // (this only happens the Frontier/Chainstart fork)
     // then the error is dismissed
     if (err && err.error !== EVMError.errorMessages.CODESTORE_OUT_OF_GAS) {
-      result.execResult.selfdestruct = new Set()
+      result.execResult.selfdestruct = new Map()
       result.execResult.createdAddresses = new Set()
       result.execResult.gasRefund = BIGINT_0
     }
@@ -1226,7 +1225,7 @@ export class EVM implements EVMInterface {
       caller: opts.caller,
       value: opts.value,
       depth: opts.depth,
-      selfdestruct: opts.selfdestruct ?? new Set(),
+      selfdestruct: opts.selfdestruct ?? new Map(),
       isStatic: opts.isStatic,
       blobVersionedHashes: opts.blobVersionedHashes,
     })
