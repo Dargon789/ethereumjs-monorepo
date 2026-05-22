@@ -1,30 +1,44 @@
 import { createBlock, genRequestsRoot } from '@ethereumjs/block'
 import { ConsensusType, Hardfork } from '@ethereumjs/common'
-import { type EVM, type EVMInterface } from '@ethereumjs/evm'
+import { type EVM, type EVMInterface, computeIntrinsicGasDimensions8037 } from '@ethereumjs/evm'
 import { MerklePatriciaTrie } from '@ethereumjs/mpt'
 import { RLP } from '@ethereumjs/rlp'
 import { TransactionType } from '@ethereumjs/tx'
 import {
   Account,
   Address,
+  type BALJSONBlockAccessList,
   BIGINT_0,
   BIGINT_1,
   BIGINT_8,
+  BlockLevelAccessList,
+  type CLRequest,
+  type CLRequestType,
   EthereumJSErrorWithoutCode,
   GWEI_TO_WEI,
   KECCAK256_RLP,
+  type PrefixedHexString,
   bigIntToAddressBytes,
   bigIntToBytes,
   bytesToHex,
   concatBytes,
   createAddressFromString,
   createBlockLevelAccessList,
+  createBlockLevelAccessListFromJSON,
+  createBlockLevelAccessListFromRLP,
+  equalsBlockAccessList,
   equalsBytes,
   hexToBytes,
   intToBytes,
+  isAccountOrderOnlyViolation,
   setLengthLeft,
   short,
   unprefixedHexToBytes,
+  validateBlockAccessListGasLimit,
+  validateBlockAccessListHash,
+  validateBlockAccessListHashFromJSON,
+  validateBlockAccessListJSONStructure,
+  validateBlockAccessListStructure,
 } from '@ethereumjs/util'
 import { sha256 } from '@noble/hashes/sha2.js'
 import debugDefault from 'debug'
@@ -36,7 +50,6 @@ import { accumulateRequests } from './requests.ts'
 
 import type { Block } from '@ethereumjs/block'
 import type { Common } from '@ethereumjs/common'
-import type { CLRequest, CLRequestType, PrefixedHexString } from '@ethereumjs/util'
 import type {
   AfterBlockEvent,
   ApplyBlockResult,
@@ -115,6 +128,16 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
     vm.evm.blockLevelAccessList = createBlockLevelAccessList()
   }
 
+  let providedBlockAccessList: BlockLevelAccessList | undefined
+  if (vm.common.isActivatedEIP(7928) && opts.blockAccessList !== undefined) {
+    providedBlockAccessList = parseProvidedBlockAccessList(
+      opts.blockAccessList,
+      block.header.blockAccessListHash,
+      generateFields,
+    )
+    validateBlockAccessListStructure(providedBlockAccessList)
+  }
+
   if (vm.DEBUG) {
     debug('-'.repeat(100))
     debug(
@@ -187,12 +210,30 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
     }
     throw err
   }
+
   let requestsHash: Uint8Array | undefined
   let requests: CLRequest<CLRequestType>[] | undefined
   if (block.common.isActivatedEIP(7685)) {
     const sha256Function = vm.common.customCrypto.sha256 ?? sha256
-    requests = await accumulateRequests(vm, result.results)
+    requests = await accumulateRequests(vm, result.results, block.header.gasLimit)
     requestsHash = genRequestsRoot(requests, sha256Function)
+  }
+
+  if (vm.common.isActivatedEIP(7928) && vm.evm.blockLevelAccessList !== undefined) {
+    try {
+      validateBlockAccessListGasLimit(vm.evm.blockLevelAccessList, block.header.gasLimit)
+    } catch {
+      await vm.evm.journal.revert()
+      if (vm.DEBUG) {
+        debug(`block checkpoint reverted`)
+      }
+      if (enableProfiler) {
+        // eslint-disable-next-line no-console
+        console.timeEnd(withdrawalsRewardsCommitLabel)
+      }
+      const msg = _errorMsg('block access list gas limit exceeded', vm, block)
+      throw EthereumJSErrorWithoutCode(msg)
+    }
   }
 
   const stateRoot = await stateManager.getStateRoot()
@@ -205,13 +246,24 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
     const gasUsed = result.gasUsed
     const receiptTrie = result.receiptsRoot
     const transactionsTrie = await _genTxTrie(block)
-    const generatedFields = {
+    const generatedFields: {
+      stateRoot: Uint8Array
+      logsBloom: Uint8Array
+      gasUsed: bigint
+      receiptTrie: Uint8Array
+      transactionsTrie: Uint8Array
+      requestsHash?: Uint8Array
+      blockAccessListHash?: Uint8Array
+    } = {
       stateRoot,
       logsBloom,
       gasUsed,
       receiptTrie,
       transactionsTrie,
       requestsHash,
+    }
+    if (vm.common.isActivatedEIP(7928) && vm.evm.blockLevelAccessList !== undefined) {
+      generatedFields.blockAccessListHash = vm.evm.blockLevelAccessList.hash()
     }
     const blockData = {
       ...block,
@@ -229,6 +281,24 @@ export async function runBlock(vm: VM, opts: RunBlockOpts): Promise<RunBlockResu
               )} expected=${bytesToHex(requestsHash!)}`,
             )
           const msg = _errorMsg('invalid requestsHash', vm, block)
+          throw EthereumJSErrorWithoutCode(msg)
+        }
+      }
+
+      if (vm.common.isActivatedEIP(7928) && providedBlockAccessList !== undefined) {
+        const generated = vm.evm.blockLevelAccessList
+        if (
+          generated === undefined ||
+          equalsBlockAccessList(providedBlockAccessList, generated) === false
+        ) {
+          if (vm.DEBUG) {
+            debug(
+              `Invalid block access list received hash=${bytesToHex(
+                providedBlockAccessList.hash(),
+              )} expected hash=${bytesToHex(generated?.hash() ?? new Uint8Array(32))}`,
+            )
+          }
+          const msg = _errorMsg('invalid block access list', vm, block)
           throw EthereumJSErrorWithoutCode(msg)
         }
       }
@@ -609,8 +679,14 @@ async function applyTransactions(vm: VM, block: Block, opts: RunBlockOpts) {
   }
 
   const bloom = new Bloom(undefined, vm.common)
-  // Block header gas accounting (EIP-7778: no refund subtraction)
+  // Block header gas accounting (EIP-7778: no refund subtraction).
+  // Under EIP-8037 this is the bottleneck of two dimensions:
+  //   gas_used = max(block_regular_gas_used, block_state_gas_used)
+  // tracked via blockRegularGasUsed / blockStateGasUsed below.
   let gasUsed = BIGINT_0
+  // EIP-8037 per-dimension accumulators
+  let blockRegularGasUsed = BIGINT_0
+  let blockStateGasUsed = BIGINT_0
   // Receipt cumulative gas accounting (keeps tx refund subtraction semantics)
   let receiptGasUsed = BIGINT_0
 
@@ -637,10 +713,49 @@ async function applyTransactions(vm: VM, block: Block, opts: RunBlockOpts) {
       )
     }
 
-    const gasLimitIsHigherThanBlock = block.header.gasLimit < tx.gasLimit + gasUsed
-    if (gasLimitIsHigherThanBlock) {
-      const msg = _errorMsg('tx has a higher gas limit than the block', vm, block)
-      throw EthereumJSErrorWithoutCode(msg)
+    // EIP-8037 pre-execution check (spec):
+    //   regular: min(TX_MAX_GAS_LIMIT, tx.gas - intrinsic_state) > regular_available  → reject
+    //   state:   tx.gas - intrinsic_regular                       > state_available    → reject
+    // where *_available = block.gas_limit - block_*_gas_used.
+    // The intrinsic.state subtraction in the regular check and the
+    // intrinsic_regular subtraction in the state check are essential: a tx's
+    // regular execution can only use `tx.gas - intrinsic_state`, and its
+    // worst-case state-gas consumption is `tx.gas - intrinsic_regular` (the
+    // residual after paying regular intrinsic). See
+    // execution-specs/tests/amsterdam/eip8037.../test_state_gas_reservoir.py
+    // (`test_block_state_gas_limit_boundary` and
+    // `test_creation_tx_regular_check_subtracts_intrinsic_state`).
+    // Pre-EIP-8037 keeps the original check (`tx.gasLimit + gasUsed <= block.gasLimit`).
+    if (vm.common.isActivatedEIP(8037)) {
+      const txMax = tx.common.param('maxTransactionGasLimit')
+      const regularAvailable =
+        block.header.gasLimit > blockRegularGasUsed
+          ? block.header.gasLimit - blockRegularGasUsed
+          : BIGINT_0
+      const stateAvailable =
+        block.header.gasLimit > blockStateGasUsed
+          ? block.header.gasLimit - blockStateGasUsed
+          : BIGINT_0
+      const { intrinsicRegular, intrinsicState } = computeIntrinsicGasDimensions8037(
+        tx.common,
+        tx,
+        block.header.gasLimit,
+      )
+      const txRegularContrib =
+        tx.gasLimit > intrinsicState ? tx.gasLimit - intrinsicState : BIGINT_0
+      const txStateContrib =
+        tx.gasLimit > intrinsicRegular ? tx.gasLimit - intrinsicRegular : BIGINT_0
+      const txRegularBound = txRegularContrib < txMax ? txRegularContrib : txMax
+      if (txRegularBound > regularAvailable || txStateContrib > stateAvailable) {
+        const msg = _errorMsg('tx has a higher gas limit than the block', vm, block)
+        throw EthereumJSErrorWithoutCode(msg)
+      }
+    } else {
+      const gasLimitIsHigherThanBlock = block.header.gasLimit < tx.gasLimit + gasUsed
+      if (gasLimitIsHigherThanBlock) {
+        const msg = _errorMsg('tx has a higher gas limit than the block', vm, block)
+        throw EthereumJSErrorWithoutCode(msg)
+      }
     }
 
     // Run the tx through the VM
@@ -660,8 +775,26 @@ async function applyTransactions(vm: VM, block: Block, opts: RunBlockOpts) {
       debug('-'.repeat(100))
     }
 
-    // Add to total block gas usage
-    gasUsed += txRes.blockGasSpent
+    // Add to total block gas usage.
+    // Pre-EIP-8037: single-dimension accumulator (blockGasSpent already
+    // applies the EIP-7623 calldata floor and respects EIP-7778's no-refund
+    // semantics).
+    // EIP-8037: track regular and state dimensions independently and use
+    // their max as the block's gas_used. tx_regular_gas/tx_state_gas come
+    // from runTx; the calldata floor applies to the regular dimension.
+    if (vm.common.isActivatedEIP(8037) && txRes.txRegularGas !== undefined) {
+      // EIP-8037: track regular and state dimensions independently and use
+      // their max as the block's gas_used. txRegularGas already incorporates
+      // the EIP-7623 calldata floor (max(intrinsic+exec_regular, floorCost))
+      // applied in runTx, so we accumulate it directly without re-max'ing
+      // against blockGasSpent (which is the combined regular+state total
+      // and would inflate blockRegular).
+      blockRegularGasUsed += txRes.txRegularGas
+      blockStateGasUsed += txRes.txStateGas ?? BIGINT_0
+      gasUsed = blockRegularGasUsed > blockStateGasUsed ? blockRegularGasUsed : blockStateGasUsed
+    } else {
+      gasUsed += txRes.blockGasSpent
+    }
     receiptGasUsed += txRes.totalGasSpent
     if (vm.DEBUG) {
       debug(`Add tx gas used (${txRes.blockGasSpent}) to total block gas usage (-> ${gasUsed})`)
@@ -897,6 +1030,35 @@ function _errorMsg(msg: string, vm: VM, block: Block) {
 
   const errorMsg = `${msg} (${vm.errorStr()} -> ${blockErrorStr})`
   return errorMsg
+}
+
+function parseProvidedBlockAccessList(
+  blockAccessList: NonNullable<RunBlockOpts['blockAccessList']>,
+  blockAccessListHash: Uint8Array | undefined,
+  generateFields: boolean,
+): BlockLevelAccessList {
+  if (blockAccessList instanceof BlockLevelAccessList) {
+    if (blockAccessListHash !== undefined && generateFields === false) {
+      validateBlockAccessListHash(blockAccessList, blockAccessListHash)
+    }
+    return blockAccessList
+  }
+  if (blockAccessList instanceof Uint8Array) {
+    const bal = createBlockLevelAccessListFromRLP(blockAccessList)
+    if (blockAccessListHash !== undefined && generateFields === false) {
+      validateBlockAccessListHash(bal, blockAccessListHash)
+    }
+    return bal
+  }
+  const json: BALJSONBlockAccessList = blockAccessList
+  validateBlockAccessListJSONStructure(json)
+  if (isAccountOrderOnlyViolation(json)) {
+    throw EthereumJSErrorWithoutCode('invalid header: block access list accounts are not sorted')
+  }
+  if (blockAccessListHash !== undefined && generateFields === false) {
+    validateBlockAccessListHashFromJSON(json, blockAccessListHash)
+  }
+  return createBlockLevelAccessListFromJSON(json)
 }
 
 const DAOConfig = {
