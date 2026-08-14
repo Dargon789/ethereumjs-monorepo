@@ -1,6 +1,6 @@
 {
   "name": "@ethereumjs/common",
-  "version": "10.1.1",
+  "version": "10.1.2",
   "description": "Resources common to all Ethereum implementations",
   "keywords": [
     "ethereum",
@@ -36,7 +36,10 @@
         "typescript": "./src/index.ts",
         "default": "./dist/esm/index.js"
       },
-      "require": "./dist/cjs/index.js"
+      "require": {
+        "typescript": "./src/index.ts",
+        "default": "./dist/cjs/index.js"
+      }
     }
   },
   "files": ["dist", "src"],
@@ -63,7 +66,7 @@
     "tsc": "../../config/cli/ts-compile.sh"
   },
   "dependencies": {
-    "@ethereumjs/util": "^10.1.1",
+    "@ethereumjs/util": "^10.1.2",
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {

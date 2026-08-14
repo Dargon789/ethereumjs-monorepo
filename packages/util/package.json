@@ -1,6 +1,6 @@
 {
   "name": "@ethereumjs/util",
-  "version": "10.1.1",
+  "version": "10.1.2",
   "description": "A collection of utility functions for Ethereum",
   "keywords": ["ethereum", "utilities", "utils"],
   "homepage": "https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/util#readme",
@@ -67,7 +67,10 @@
         "typescript": "./src/index.ts",
         "default": "./dist/esm/index.js"
       },
-      "require": "./dist/cjs/index.js"
+      "require": {
+        "typescript": "./src/index.ts",
+        "default": "./dist/cjs/index.js"
+      }
     }
   },
   "files": ["dist", "src"],
@@ -94,11 +97,12 @@
     "tsc": "../../config/cli/ts-compile.sh"
   },
   "dependencies": {
-    "@ethereumjs/rlp": "^10.1.1",
+    "@ethereumjs/rlp": "^10.1.2",
     "@noble/curves": "^2.0.1",
     "@noble/hashes": "^2.0.1"
   },
   "devDependencies": {
+    "@ethereumjs/testdata": "1.0.0",
     "@paulmillr/trusted-setups": "^0.2.0",
     "kzg-wasm": "1.0.0",
     "micro-eth-signer": "^0.15.0"

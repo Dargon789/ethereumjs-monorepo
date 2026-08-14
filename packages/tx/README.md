@@ -29,9 +29,11 @@
   - [Blob Transactions (EIP-4844 / EIP-7594)](#blob-transactions-eip-4844--eip-7594)
   - [EOA Code Transaction (EIP-7702)](#eoa-code-transaction-eip-7702)
   - [Legacy Transactions](#legacy-transactions)
+  - [Amsterdam transaction validation (EIP-7976, EIP-7981)](#amsterdam-transaction-validation-eip-7976-eip-7981)
 - [Transaction Factory](#transaction-factory)
 - [KZG Setup](#kzg-setup)
 - [Sending a Transaction](#sending-a-transaction)
+- [Architecture](#architecture)
 - [Browser](#browser)
 - [Hardware Wallets](#hardware-wallets)
 - [API](#api)
@@ -81,6 +83,7 @@ Hardforks adding features and/or tx types:
 | `london`         | `v3.2.0`   | `EIP-1559` Transactions                                                                                 |
 | `cancun`         | `v5.0.0`   | `EIP-4844` Transactions                                                                                 |
 | `prague`         | `v10.0.0`  | `EIP-7702` Transactions                                                                                 |
+| `amsterdam`      | `v10.x`    | `EIP-7976` / `EIP-7981` floor pricing, bundled with other Amsterdam EIPs (experimental)                 |
 
 ## Transaction Types
 
@@ -93,6 +96,7 @@ This library supports the following transaction types ([EIP-2718](https://eips.e
 - [Blob Transactions (EIP-4844)](#blob-transactions-eip-4844)
 - [EOA Code Transaction (EIP-7702)](#eoa-code-transaction-eip-7702)
 - [Legacy Transactions](#legacy-transactions) (original Ethereum txs)
+- [Amsterdam transaction validation (EIP-7976, EIP-7981)](#amsterdam-transaction-validation-eip-7976-eip-7981)
 
 ### Gas Fee Market Transactions (EIP-1559)
 
@@ -391,6 +395,20 @@ console.log(bytesToHex(signedTx.hash())) // 0x894b72d87f8333fccd29d1b3aca39af69d
 
 ```
 
+### Amsterdam transaction validation (EIP-7976, EIP-7981)
+
+See the [canonical Amsterdam overview](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/vm#amsterdam-hardfork-experimental) in `@ethereumjs/vm` for release ↔ spec tracking.
+
+On `Hardfork.Amsterdam` (experimental), two EIPs adjust the minimum gas a transaction must pay before execution:
+
+**[EIP-7976](https://eips.ethereum.org/EIPS/eip-7976) — calldata floor:** under EIP-7623, calldata is priced in **tokens** (1 per zero byte, 4 per non-zero byte pre-7976). EIP-7976 raises the floor to a uniform **4 tokens per byte** for all calldata bytes. The floor cost is `floor_base + totalCostFloorPerToken × tokens`, where `floor_base` is the decomposed EIP-2780 execution intrinsic (`txGas` + recipient/`TX_VALUE_COST` extras for calls, or `txGas` + `txCreationGas` for creates — **not** `TX_VALUE_COST` on value creates). Since glamsterdam-devnet v8, `TX_VALUE_COST` (6000) includes the EIP-7708 transfer log — it is not added separately. Self-transfers skip the extras. Enforced in `getValidationErrors()` / `getCalldataFloorGas()` for all tx types.
+
+**[EIP-7981](https://eips.ethereum.org/EIPS/eip-7981) — access-list floor:** for typed txs with an access list (types `1`, `2`, `3`, `4`), an additional floor charge applies to the raw access-list bytes: **20 bytes per address + 32 bytes per storage key**, each counted at 4 tokens per byte (`totalCostFloorPerToken × accessListBytes × 4`). Since glamsterdam-devnet v8 (EIP-8038), the separate execution component is **`COLD_*_ACCESS − WARM_ACCESS`**: **2900 per address**, **2000 per storage key** (v8.1.0 revised schedule), not the pre-v8 3000/3000 from EIP-7981 alone.
+
+Both floors feed into EIP-8037 block-level regular-gas accounting in the VM: `RunTxResult.txRegularGas = max(raw_regular_gas, calldata_floor)`. See [@ethereumjs/vm EIP-8037 docs](https://github.com/ethereumjs/ethereumjs-monorepo/tree/master/packages/vm#eip-8037-state-creation-gas-cost-increase-amsterdam).
+
+**Example:** Amsterdam txs in tests typically need `baseFeePerGas: 1n` on the block header and a sufficiently high `gasPrice` / `maxFeePerGas` on legacy/1559 txs to satisfy the 1559 base-fee check alongside the new floors.
+
 ## Transaction Factory
 
 If you only know at runtime which tx type will be used within your code or if you want to keep your code transparent to tx types, this library comes with a `TransactionFactory` for your convenience which can be used as follows:
@@ -484,6 +502,26 @@ const tx = createLegacyTx(txData, { common })
 const signedTx = tx.sign(pk)
 console.log(bytesToHex(signedTx.hash())) // 0xbf98f6f8700812ed6f2314275070256e11945fa48afd80fb301265f6a41a2dc2
 ```
+
+## Architecture
+
+This package implements every Ethereum transaction type behind a common interface, with shared behavior factored into reusable "capability" mixins.
+
+### Internal Module Map
+
+- **One directory per typed transaction** — `legacy/`, `2930/` (EIP-2930 access list), `1559/` (EIP-1559 fee market), `4844/` (EIP-4844 blob), `7702/` (EIP-7702 set-code). Each contains the transaction class and its `createX` constructors.
+- **`capabilities/`** — shared logic mixed into the transaction classes: `legacy.ts`, `eip2718.ts` (typed-transaction envelope), `eip2930.ts` (access lists), `eip1559.ts` (fee market), `eip7702.ts` (authorization lists). This is how common signing/serialization behavior is reused across types without inheritance trees.
+- **`transactionFactory.ts`** — the type-dispatching entry points `createTx`, `createTxFromRLP`, `createTxFromBlockBodyData`: given raw data or RLP, they detect the type byte and build the right transaction.
+- **`types.ts`** — `TransactionType` (the type enum), the per-type `…CompatibleTx` interfaces and shared option/data types.
+- **`params.ts`** — `paramsTx`, the EIP-indexed parameter dictionary merged into `Common`.
+- **`util/`**, **`constants.ts`** — encoding helpers and shared constants.
+
+### Extension Points
+
+- **Type dispatch** — prefer the `transactionFactory.ts` `createTx*` functions over importing a specific type's constructor when the type is data-driven; they return the correct `TransactionType` automatically.
+- **Custom `Common`** — every transaction is built with a `Common` (`createTx(data, { common })`), which determines chain id, active hardfork and which transaction types/fields are valid.
+- **Custom parameters** — override `paramsTx` values via the `params` option where supported.
+- **KZG backend** (EIP-4844) — blob transactions require a KZG implementation to be configured on `Common`; see [KZG Setup](#kzg-setup).
 
 ## Browser
 

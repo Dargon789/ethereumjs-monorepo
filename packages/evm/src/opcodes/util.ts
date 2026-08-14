@@ -87,9 +87,15 @@ export function setLengthLeftStorage(value: Uint8Array) {
 /**
  * Wraps error message as EVMError
  */
-export function trap(err: string) {
+export function trap(err: string): never {
   // TODO: facilitate extra data along with errors
   throw new EVMError(err as EVMErrorType)
+}
+
+export function readImmediateByteOrZero(runState: RunState): number {
+  const immediate = runState.code[runState.programCounter] ?? 0
+  runState.programCounter++
+  return immediate
 }
 
 /**

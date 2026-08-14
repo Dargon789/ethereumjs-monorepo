@@ -24,6 +24,10 @@
     }
   ],
   "words": [
+    "CPSB",
+    "undelegated",
+    "baljson",
+    "slotnum",
     "unpadding",
     "prehash",
     "viem",
@@ -32,10 +36,12 @@
     "bytelist",
     "bytestring",
     "binarytree",
+    "divmod",
     "merkelize",
     "kaust",
     "EEST",
     "paulmillr",
+    "jsbt",
     "t8ntool",
     "!Json",
     "!Rpc",
@@ -438,6 +444,7 @@
     "RIPEMD",
     "journaling",
     "BLOBHASH",
+    "BALJSON",
     "coldaccountaccess",
     "warmstorageread",
     "coldsload",
@@ -645,6 +652,12 @@
     "getpayload",
     "ckzg",
     "Damgård",
-    "viem"
+    "viem",
+    "snobal",
+    "glamsterdam",
+    "awasm",
+    "deopts",
+    "IMPLS",
+    "impls"
   ]
 }

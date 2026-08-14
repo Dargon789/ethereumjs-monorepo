@@ -285,7 +285,7 @@ const hardforkOpcodes: { hardfork: Hardfork; opcodes: OpcodeEntry }[] = [
 
 const eipOpcodes: { eip: number; opcodes: OpcodeEntry }[] = [
   {
-    eip: 663,
+    eip: 8024,
     opcodes: {
       0xe6: defaultOp('DUPN'),
       0xe7: defaultOp('SWAPN'),
@@ -366,6 +366,12 @@ const eipOpcodes: { eip: number; opcodes: OpcodeEntry }[] = [
     eip: 7516,
     opcodes: {
       0x4a: defaultOp('BLOBBASEFEE'),
+    },
+  },
+  {
+    eip: 7843,
+    opcodes: {
+      0x4b: asyncOp('SLOTNUM'),
     },
   },
   {
